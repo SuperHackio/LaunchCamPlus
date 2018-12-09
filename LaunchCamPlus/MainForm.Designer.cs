@@ -226,7 +226,7 @@
             // AddNewToolStripMenuItem
             // 
             this.AddNewToolStripMenuItem.Name = "AddNewToolStripMenuItem";
-            this.AddNewToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
+            this.AddNewToolStripMenuItem.ShortcutKeyDisplayString = "Shft+Ctrl+A";
             this.AddNewToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.AddNewToolStripMenuItem.Text = "Add";
             this.AddNewToolStripMenuItem.ToolTipText = "Adds a new Camera";
@@ -235,7 +235,7 @@
             // CopyToolStripMenuItem
             // 
             this.CopyToolStripMenuItem.Name = "CopyToolStripMenuItem";
-            this.CopyToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
+            this.CopyToolStripMenuItem.ShortcutKeyDisplayString = "Shft+Ctrl+C";
             this.CopyToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.CopyToolStripMenuItem.Text = "Copy";
             this.CopyToolStripMenuItem.ToolTipText = "Copies the selected Camera";
@@ -245,7 +245,7 @@
             // 
             this.PasteToolStripMenuItem.Enabled = false;
             this.PasteToolStripMenuItem.Name = "PasteToolStripMenuItem";
-            this.PasteToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+V";
+            this.PasteToolStripMenuItem.ShortcutKeyDisplayString = "Shft+Ctrl+V";
             this.PasteToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.PasteToolStripMenuItem.Text = "Paste";
             this.PasteToolStripMenuItem.ToolTipText = "Paste the copied Camera onto this one (OVERWRITES SELECTED CAMERA)";
@@ -271,7 +271,7 @@
             this.TopDownToolStripMenuItem,
             this.BasicPlanetToolStripMenuItem});
             this.CameraAreaToolStripMenuItem.Name = "CameraAreaToolStripMenuItem";
-            this.CameraAreaToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.CameraAreaToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.CameraAreaToolStripMenuItem.Text = "General";
             this.CameraAreaToolStripMenuItem.ToolTipText = "Camera Areas";
             // 
@@ -304,7 +304,7 @@
             // SpawnToolStripMenuItem
             // 
             this.SpawnToolStripMenuItem.Name = "SpawnToolStripMenuItem";
-            this.SpawnToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.SpawnToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.SpawnToolStripMenuItem.Text = "Spawn";
             this.SpawnToolStripMenuItem.ToolTipText = "Spawn Points";
             // 
@@ -314,7 +314,7 @@
             this.ScenarioStartersToolStripMenuItem,
             this.LaunchStarsToolStripMenuItem});
             this.EventsToolStripMenuItem.Name = "EventsToolStripMenuItem";
-            this.EventsToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.EventsToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.EventsToolStripMenuItem.Text = "Events";
             this.EventsToolStripMenuItem.ToolTipText = "Events (Like using Launch Stars)";
             // 
@@ -359,14 +359,14 @@
             // OtherToolStripMenuItem
             // 
             this.OtherToolStripMenuItem.Name = "OtherToolStripMenuItem";
-            this.OtherToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.OtherToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.OtherToolStripMenuItem.Text = "Other";
             this.OtherToolStripMenuItem.ToolTipText = "Other";
             // 
             // LoadPresetToolStripMenuItem
             // 
             this.LoadPresetToolStripMenuItem.Name = "LoadPresetToolStripMenuItem";
-            this.LoadPresetToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.LoadPresetToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.LoadPresetToolStripMenuItem.Text = "Load LCPP";
             this.LoadPresetToolStripMenuItem.ToolTipText = "Load Preset from .lcpp file";
             this.LoadPresetToolStripMenuItem.Click += new System.EventHandler(this.LoadPresetToolStripMenuItem_Click);
@@ -399,7 +399,7 @@
             this.ErrorCheckAllCamerasToolStripMenuItem});
             this.CheckForErrorsToolStripMenuItem.Enabled = false;
             this.CheckForErrorsToolStripMenuItem.Name = "CheckForErrorsToolStripMenuItem";
-            this.CheckForErrorsToolStripMenuItem.Size = new System.Drawing.Size(280, 26);
+            this.CheckForErrorsToolStripMenuItem.Size = new System.Drawing.Size(316, 26);
             this.CheckForErrorsToolStripMenuItem.Text = "Check for Errors";
             this.CheckForErrorsToolStripMenuItem.ToolTipText = "Unavailable";
             // 
@@ -407,7 +407,7 @@
             // 
             this.ErrorCheckSelectedCameraToolStripMenuItem.Enabled = false;
             this.ErrorCheckSelectedCameraToolStripMenuItem.Name = "ErrorCheckSelectedCameraToolStripMenuItem";
-            this.ErrorCheckSelectedCameraToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.ErrorCheckSelectedCameraToolStripMenuItem.Size = new System.Drawing.Size(196, 26);
             this.ErrorCheckSelectedCameraToolStripMenuItem.Text = "Selected Camera";
             this.ErrorCheckSelectedCameraToolStripMenuItem.ToolTipText = "Unavailible";
             // 
@@ -415,7 +415,7 @@
             // 
             this.ErrorCheckAllCamerasToolStripMenuItem.Enabled = false;
             this.ErrorCheckAllCamerasToolStripMenuItem.Name = "ErrorCheckAllCamerasToolStripMenuItem";
-            this.ErrorCheckAllCamerasToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.ErrorCheckAllCamerasToolStripMenuItem.Size = new System.Drawing.Size(196, 26);
             this.ErrorCheckAllCamerasToolStripMenuItem.Text = "All Cameras";
             this.ErrorCheckAllCamerasToolStripMenuItem.ToolTipText = "Unaviable";
             // 
@@ -423,14 +423,14 @@
             // 
             this.PreviewToolStripMenuItem.Enabled = false;
             this.PreviewToolStripMenuItem.Name = "PreviewToolStripMenuItem";
-            this.PreviewToolStripMenuItem.Size = new System.Drawing.Size(280, 26);
+            this.PreviewToolStripMenuItem.Size = new System.Drawing.Size(316, 26);
             this.PreviewToolStripMenuItem.Text = "Preview";
             this.PreviewToolStripMenuItem.ToolTipText = "Unavailable ";
             // 
             // ExportPresetToolStripMenuItem
             // 
             this.ExportPresetToolStripMenuItem.Name = "ExportPresetToolStripMenuItem";
-            this.ExportPresetToolStripMenuItem.Size = new System.Drawing.Size(280, 26);
+            this.ExportPresetToolStripMenuItem.Size = new System.Drawing.Size(316, 26);
             this.ExportPresetToolStripMenuItem.Text = "Export Preset";
             this.ExportPresetToolStripMenuItem.ToolTipText = "Opens the Preset Creator";
             this.ExportPresetToolStripMenuItem.Click += new System.EventHandler(this.ExportPresetToolStripMenuItem_Click);
@@ -438,8 +438,8 @@
             // IDAssistantToolStripMenuItem
             // 
             this.IDAssistantToolStripMenuItem.Name = "IDAssistantToolStripMenuItem";
-            this.IDAssistantToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+I";
-            this.IDAssistantToolStripMenuItem.Size = new System.Drawing.Size(280, 26);
+            this.IDAssistantToolStripMenuItem.ShortcutKeyDisplayString = "Shft+Ctrl+I";
+            this.IDAssistantToolStripMenuItem.Size = new System.Drawing.Size(316, 26);
             this.IDAssistantToolStripMenuItem.Text = "Identification Assistant";
             this.IDAssistantToolStripMenuItem.ToolTipText = "Spawns a window to help you with Camera IDs";
             this.IDAssistantToolStripMenuItem.Click += new System.EventHandler(this.IDAssistantToolStripMenuItem_Click);

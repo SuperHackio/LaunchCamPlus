@@ -38,6 +38,20 @@ namespace LaunchCamPlus
         Camera CopyCamera;
         BCSV bcsv;
 
+        int EmptyBCAMProgress = 0;
+        String[] EmptyBCAM = new String[] {
+            "What are trying to pull here?",
+            "This bcam file is empty!",
+            "Why do you even try?",
+            "Didn't you listen the first time?",
+            "Why are you still here?",
+            "You can just replace the empty bcam, you know...",
+            "Are you serious?",
+            "Just give up already!",
+            "No",
+            "Stop it"
+        };
+
         String[] Hashes = new String[]{
         #region General
         "14F51CD8", //Version
@@ -857,29 +871,31 @@ namespace LaunchCamPlus
         #region Keyboard Shortcuts
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Control && e.KeyCode == Keys.N)
-                NewToolStripMenuItem_Click(NewToolStripMenuItem, EventArgs.Empty);
-            if (e.Control && e.KeyCode == Keys.O)
-                OpenToolStripMenuItem_Click(OpenToolStripMenuItem, EventArgs.Empty);
-            if (e.Control && e.KeyCode == Keys.S)
-                SaveToolStripMenuItem_Click(SaveToolStripMenuItem, EventArgs.Empty);
-            if (e.Control && e.Shift && e.KeyCode == Keys.S)
-                SaveAsToolStripMenuItem_Click(SaveAsToolStripMenuItem, EventArgs.Empty);
-
+            if (FileToolStripMenuItem.Enabled)
+            {
+                if (e.Control && e.KeyCode == Keys.N && NewToolStripMenuItem.Enabled)
+                    NewToolStripMenuItem_Click(NewToolStripMenuItem, EventArgs.Empty);
+                if (e.Control && e.KeyCode == Keys.O && OpenToolStripMenuItem.Enabled)
+                    OpenToolStripMenuItem_Click(OpenToolStripMenuItem, EventArgs.Empty);
+                if (e.Control && e.KeyCode == Keys.S && SaveToolStripMenuItem.Enabled)
+                    SaveToolStripMenuItem_Click(SaveToolStripMenuItem, EventArgs.Empty);
+                if (e.Control && e.Shift && e.KeyCode == Keys.S && SaveAsToolStripMenuItem.Enabled)
+                    SaveAsToolStripMenuItem_Click(SaveAsToolStripMenuItem, EventArgs.Empty);
+            }
             if (EditToolStripMenuItem.Enabled)
             {
-                if (e.Control && e.KeyCode == Keys.A)
+                if (e.Control && e.Shift && e.KeyCode == Keys.A)
                     AddNewToolStripMenuItem_Click(AddNewToolStripMenuItem, EventArgs.Empty);
-                if (e.Control && e.KeyCode == Keys.C && CopyToolStripMenuItem.Enabled)
+                if (e.Control && e.Shift && e.KeyCode == Keys.C && CopyToolStripMenuItem.Enabled)
                     CopyToolStripMenuItem_Click(CopyToolStripMenuItem, EventArgs.Empty);
-                if ((e.Control && e.KeyCode == Keys.V)&&PasteToolStripMenuItem.Enabled)
+                if ((e.Control && e.Shift && e.KeyCode == Keys.V)&&PasteToolStripMenuItem.Enabled)
                     PasteToolStripMenuItem_Click(PasteToolStripMenuItem, EventArgs.Empty);
                 if ((e.Control && e.KeyCode == Keys.Delete && DeleteToolStripMenuItem.Enabled) && CameraList.Count != 0)
                     DeleteToolStripMenuItem_Click(DeleteToolStripMenuItem, EventArgs.Empty);
             }
             if (ToolsToolStripMenuItem.Enabled)
             {
-                if (e.Control && e.KeyCode == Keys.I)
+                if (e.Control && e.Shift && e.KeyCode == Keys.I)
                     IDAssistantToolStripMenuItem_Click(IDAssistantToolStripMenuItem, EventArgs.Empty);
             }
         }
@@ -1050,7 +1066,7 @@ namespace LaunchCamPlus
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ofd.Filter = "Camera Files (*.bcam)|*.bcam|Level Archive (*.rarc *.arc)|*.rarc; *.arc";
-            ofd.FilterIndex = 1;
+            //ofd.FilterIndex = 1;
             ofd.FileName = "";
             bool israrc = false;
             String bcsvName = "";
@@ -1094,6 +1110,15 @@ namespace LaunchCamPlus
 
                 this.bcsv = new BCSV(bcsvName, 0);
 
+                if (this.bcsv.header.entryCount == 0)
+                {
+                    MessageBox.Show(EmptyBCAM[EmptyBCAMProgress+1], EmptyBCAM[EmptyBCAMProgress], MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    if (EmptyBCAMProgress<8)
+                    {
+                        EmptyBCAMProgress += 2;
+                    }
+                    return;
+                }
                 for (uint i = 0; i < this.bcsv.header.entryCount; i++)
                 {
                     Camera addme = new Camera(CameraList.Count);
@@ -1459,7 +1484,6 @@ namespace LaunchCamPlus
             bool caught = false;
             for (int j = 0; j < JapCameraEvents.Length; j++)
             {
-
                 foreach (string sa in str)
                 {
                     if (sa == JapCameraEvents[j] || sa.Contains(JapCameraEvents[j]))
@@ -1616,7 +1640,7 @@ namespace LaunchCamPlus
             {
                 fieldCount = 52,
                 entryCount = (uint)CameraList.Count,
-                dataOffset = 628,
+                dataOffset = 640,
                 entryDataSize = 208
             };
 

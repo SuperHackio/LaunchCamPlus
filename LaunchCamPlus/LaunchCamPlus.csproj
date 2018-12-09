@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>LaunchCamPlusIcon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -129,6 +132,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Remove.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="LaunchCamPlusIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

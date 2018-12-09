@@ -395,7 +395,7 @@ namespace BCSV_Editor
 
             Byte[] Tempclomp;
             #region Write the Fields
-            for (int L = 0; L < 51; L++)
+            for (int L = 0; L < 52; L++)
             {
                 tempData = new Byte[4];
                 tempData = System.BitConverter.GetBytes((Int32)this.fieldList[L].nameHash);

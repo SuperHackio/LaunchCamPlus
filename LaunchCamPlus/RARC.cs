@@ -276,6 +276,10 @@ namespace RARCFiles
         public FileData(System.IO.FileStream rarcFile, FileEntry FE, Header head)
         {
             rarcFile.Seek(head.OffsetToFileData + FE.OffsetToFileData, System.IO.SeekOrigin.Begin);
+            if (FE.Filesize < 0)
+            {
+                return;
+            }
             Data = new byte[FE.Filesize];
             rarcFile.Read(Data, 0, FE.Filesize);
 

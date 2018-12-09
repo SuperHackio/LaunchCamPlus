@@ -119,7 +119,7 @@ namespace Cameras
         #endregion
     }
 
-    public partial class Camera  //Commands
+    public partial class Camera //Commands
     {
         /// <summary>
         /// Makes a new Object Array that can be put into a BCSV entry
