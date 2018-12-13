@@ -58,7 +58,7 @@ namespace LCPPManager
             byte[] tmp;
             #region Write the Header
             lcppFile.Write(new byte[4] { 0x4C, 0x43, 0x50, 0x50 }, 0, 4); //Format
-            lcppFile.Write(new byte[2] { 0x00, 0x01 }, 0, 2); //File Version
+            lcppFile.Write(new byte[2] { 0x00, 0x02 }, 0, 2); //File Version
 
             ToWrite = new byte[10];
             
@@ -384,7 +384,7 @@ namespace LCPPManager
                     case "EventUseTransition":
                         Properties.EventUseTransition = P[1] == "True" ? true : false;
                         break;
-                    default: System.Windows.Forms.MessageBox.Show("Sorry, but this Preset file is corrupted or outdated","LCPP Error"); break;
+                    default: System.Windows.Forms.MessageBox.Show("Sorry, but this Preset file is corrupted or outdated","LCPP Error"); return;
                 }
             }
 
