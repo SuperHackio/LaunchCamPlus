@@ -123,6 +123,7 @@
             this.EventTransCheckBox = new System.Windows.Forms.CheckBox();
             this.EventEndTransCheckBox = new System.Windows.Forms.CheckBox();
             this.VPanCheckBox = new System.Windows.Forms.CheckBox();
+            this.LaunchStarSmoothShakingAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RotationTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RotationValueNumericUpDown)).BeginInit();
@@ -271,7 +272,7 @@
             this.TopDownToolStripMenuItem,
             this.BasicPlanetToolStripMenuItem});
             this.CameraAreaToolStripMenuItem.Name = "CameraAreaToolStripMenuItem";
-            this.CameraAreaToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
+            this.CameraAreaToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.CameraAreaToolStripMenuItem.Text = "General";
             this.CameraAreaToolStripMenuItem.ToolTipText = "Camera Areas";
             // 
@@ -304,7 +305,7 @@
             // SpawnToolStripMenuItem
             // 
             this.SpawnToolStripMenuItem.Name = "SpawnToolStripMenuItem";
-            this.SpawnToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
+            this.SpawnToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.SpawnToolStripMenuItem.Text = "Spawn";
             this.SpawnToolStripMenuItem.ToolTipText = "Spawn Points";
             // 
@@ -314,7 +315,7 @@
             this.ScenarioStartersToolStripMenuItem,
             this.LaunchStarsToolStripMenuItem});
             this.EventsToolStripMenuItem.Name = "EventsToolStripMenuItem";
-            this.EventsToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
+            this.EventsToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.EventsToolStripMenuItem.Text = "Events";
             this.EventsToolStripMenuItem.ToolTipText = "Events (Like using Launch Stars)";
             // 
@@ -323,7 +324,7 @@
             this.ScenarioStartersToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ScenarioStarterSmoothMovingAToolStripMenuItem});
             this.ScenarioStartersToolStripMenuItem.Name = "ScenarioStartersToolStripMenuItem";
-            this.ScenarioStartersToolStripMenuItem.Size = new System.Drawing.Size(195, 26);
+            this.ScenarioStartersToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.ScenarioStartersToolStripMenuItem.Text = "Scenario Starters";
             this.ScenarioStartersToolStripMenuItem.ToolTipText = "ScenarioStarter";
             // 
@@ -339,9 +340,10 @@
             // LaunchStarsToolStripMenuItem
             // 
             this.LaunchStarsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.LaunchStarSmoothMovingAToolStripMenuItem});
+            this.LaunchStarSmoothMovingAToolStripMenuItem,
+            this.LaunchStarSmoothShakingAToolStripMenuItem});
             this.LaunchStarsToolStripMenuItem.Name = "LaunchStarsToolStripMenuItem";
-            this.LaunchStarsToolStripMenuItem.Size = new System.Drawing.Size(195, 26);
+            this.LaunchStarsToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.LaunchStarsToolStripMenuItem.Text = "Launch Stars";
             this.LaunchStarsToolStripMenuItem.ToolTipText = "SuperSpinDriver";
             // 
@@ -349,7 +351,7 @@
             // 
             this.LaunchStarSmoothMovingAToolStripMenuItem.Name = "LaunchStarSmoothMovingAToolStripMenuItem";
             this.LaunchStarSmoothMovingAToolStripMenuItem.ShortcutKeyDisplayString = "[Adds 3]";
-            this.LaunchStarSmoothMovingAToolStripMenuItem.Size = new System.Drawing.Size(269, 26);
+            this.LaunchStarSmoothMovingAToolStripMenuItem.Size = new System.Drawing.Size(271, 26);
             this.LaunchStarSmoothMovingAToolStripMenuItem.Text = "Smooth Moving A";
             this.LaunchStarSmoothMovingAToolStripMenuItem.ToolTipText = "The first second it stays in place, then, the angle changes less smoothly, and so" +
     "metimes \'stutters\' when the path isn\'t a curve, the last .5 second it freezes in" +
@@ -359,14 +361,14 @@
             // OtherToolStripMenuItem
             // 
             this.OtherToolStripMenuItem.Name = "OtherToolStripMenuItem";
-            this.OtherToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
+            this.OtherToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.OtherToolStripMenuItem.Text = "Other";
             this.OtherToolStripMenuItem.ToolTipText = "Other";
             // 
             // LoadPresetToolStripMenuItem
             // 
             this.LoadPresetToolStripMenuItem.Name = "LoadPresetToolStripMenuItem";
-            this.LoadPresetToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
+            this.LoadPresetToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.LoadPresetToolStripMenuItem.Text = "Load LCPP";
             this.LoadPresetToolStripMenuItem.ToolTipText = "Load Preset from .lcpp file";
             this.LoadPresetToolStripMenuItem.Click += new System.EventHandler(this.LoadPresetToolStripMenuItem_Click);
@@ -628,7 +630,7 @@
             // FOVLabel
             // 
             this.FOVLabel.AutoSize = true;
-            this.FOVLabel.Location = new System.Drawing.Point(460, 164);
+            this.FOVLabel.Location = new System.Drawing.Point(564, 197);
             this.FOVLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FOVLabel.Name = "FOVLabel";
             this.FOVLabel.Size = new System.Drawing.Size(94, 17);
@@ -638,7 +640,7 @@
             // CamFOVNumericUpDown
             // 
             this.CamFOVNumericUpDown.Enabled = false;
-            this.CamFOVNumericUpDown.Location = new System.Drawing.Point(564, 161);
+            this.CamFOVNumericUpDown.Location = new System.Drawing.Point(709, 195);
             this.CamFOVNumericUpDown.Margin = new System.Windows.Forms.Padding(4);
             this.CamFOVNumericUpDown.Maximum = new decimal(new int[] {
             10000000,
@@ -668,7 +670,7 @@
             // CamIntNumericUpDown
             // 
             this.CamIntNumericUpDown.Enabled = false;
-            this.CamIntNumericUpDown.Location = new System.Drawing.Point(459, 193);
+            this.CamIntNumericUpDown.Location = new System.Drawing.Point(460, 193);
             this.CamIntNumericUpDown.Margin = new System.Windows.Forms.Padding(4);
             this.CamIntNumericUpDown.Maximum = new decimal(new int[] {
             10000000,
@@ -676,7 +678,7 @@
             0,
             0});
             this.CamIntNumericUpDown.Name = "CamIntNumericUpDown";
-            this.CamIntNumericUpDown.Size = new System.Drawing.Size(93, 22);
+            this.CamIntNumericUpDown.Size = new System.Drawing.Size(92, 22);
             this.CamIntNumericUpDown.TabIndex = 15;
             this.CamIntNumericUpDown.ValueChanged += new System.EventHandler(this.CamIntnumericUpDown_ValueChanged);
             // 
@@ -693,7 +695,7 @@
             // CamEndIntNumericUpDown
             // 
             this.CamEndIntNumericUpDown.Enabled = false;
-            this.CamEndIntNumericUpDown.Location = new System.Drawing.Point(459, 225);
+            this.CamEndIntNumericUpDown.Location = new System.Drawing.Point(460, 225);
             this.CamEndIntNumericUpDown.Margin = new System.Windows.Forms.Padding(4);
             this.CamEndIntNumericUpDown.Maximum = new decimal(new int[] {
             10000000,
@@ -701,7 +703,7 @@
             0,
             0});
             this.CamEndIntNumericUpDown.Name = "CamEndIntNumericUpDown";
-            this.CamEndIntNumericUpDown.Size = new System.Drawing.Size(93, 22);
+            this.CamEndIntNumericUpDown.Size = new System.Drawing.Size(92, 22);
             this.CamEndIntNumericUpDown.TabIndex = 17;
             this.CamEndIntNumericUpDown.ValueChanged += new System.EventHandler(this.CamEndIntNumericUpDown_ValueChanged);
             // 
@@ -718,7 +720,7 @@
             // GndIntNumericUpDown
             // 
             this.GndIntNumericUpDown.Enabled = false;
-            this.GndIntNumericUpDown.Location = new System.Drawing.Point(459, 257);
+            this.GndIntNumericUpDown.Location = new System.Drawing.Point(460, 257);
             this.GndIntNumericUpDown.Margin = new System.Windows.Forms.Padding(4);
             this.GndIntNumericUpDown.Maximum = new decimal(new int[] {
             10000000,
@@ -726,7 +728,7 @@
             0,
             0});
             this.GndIntNumericUpDown.Name = "GndIntNumericUpDown";
-            this.GndIntNumericUpDown.Size = new System.Drawing.Size(93, 22);
+            this.GndIntNumericUpDown.Size = new System.Drawing.Size(92, 22);
             this.GndIntNumericUpDown.TabIndex = 19;
             this.GndIntNumericUpDown.ValueChanged += new System.EventHandler(this.GndIntNumericUpDown_ValueChanged);
             // 
@@ -734,7 +736,7 @@
             // 
             this.AllowDPadRotationCheckBox.AutoSize = true;
             this.AllowDPadRotationCheckBox.Enabled = false;
-            this.AllowDPadRotationCheckBox.Location = new System.Drawing.Point(665, 162);
+            this.AllowDPadRotationCheckBox.Location = new System.Drawing.Point(474, 162);
             this.AllowDPadRotationCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.AllowDPadRotationCheckBox.Name = "AllowDPadRotationCheckBox";
             this.AllowDPadRotationCheckBox.Size = new System.Drawing.Size(153, 21);
@@ -797,7 +799,7 @@
             // 
             this.Num2CheckBox.AutoSize = true;
             this.Num2CheckBox.Enabled = false;
-            this.Num2CheckBox.Location = new System.Drawing.Point(564, 194);
+            this.Num2CheckBox.Location = new System.Drawing.Point(653, 162);
             this.Num2CheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.Num2CheckBox.Name = "Num2CheckBox";
             this.Num2CheckBox.Size = new System.Drawing.Size(137, 21);
@@ -819,7 +821,7 @@
             // GroundMoveDelayNumericUpDown
             // 
             this.GroundMoveDelayNumericUpDown.Enabled = false;
-            this.GroundMoveDelayNumericUpDown.Location = new System.Drawing.Point(459, 289);
+            this.GroundMoveDelayNumericUpDown.Location = new System.Drawing.Point(460, 289);
             this.GroundMoveDelayNumericUpDown.Margin = new System.Windows.Forms.Padding(4);
             this.GroundMoveDelayNumericUpDown.Maximum = new decimal(new int[] {
             10000000,
@@ -827,7 +829,7 @@
             0,
             0});
             this.GroundMoveDelayNumericUpDown.Name = "GroundMoveDelayNumericUpDown";
-            this.GroundMoveDelayNumericUpDown.Size = new System.Drawing.Size(93, 22);
+            this.GroundMoveDelayNumericUpDown.Size = new System.Drawing.Size(92, 22);
             this.GroundMoveDelayNumericUpDown.TabIndex = 27;
             this.GroundMoveDelayNumericUpDown.ValueChanged += new System.EventHandler(this.GroundMoveDelayNumericUpDown_ValueChanged);
             // 
@@ -894,7 +896,7 @@
             // LOffsetNumericUpDown
             // 
             this.LOffsetNumericUpDown.Enabled = false;
-            this.LOffsetNumericUpDown.Location = new System.Drawing.Point(459, 321);
+            this.LOffsetNumericUpDown.Location = new System.Drawing.Point(460, 321);
             this.LOffsetNumericUpDown.Margin = new System.Windows.Forms.Padding(4);
             this.LOffsetNumericUpDown.Maximum = new decimal(new int[] {
             10000000,
@@ -902,7 +904,7 @@
             0,
             0});
             this.LOffsetNumericUpDown.Name = "LOffsetNumericUpDown";
-            this.LOffsetNumericUpDown.Size = new System.Drawing.Size(93, 22);
+            this.LOffsetNumericUpDown.Size = new System.Drawing.Size(92, 22);
             this.LOffsetNumericUpDown.TabIndex = 31;
             this.LOffsetNumericUpDown.ValueChanged += new System.EventHandler(this.LOffsetNumericUpDown_ValueChanged);
             // 
@@ -1171,7 +1173,7 @@
             // 
             this.LOffsetRPOffCheckBox.AutoSize = true;
             this.LOffsetRPOffCheckBox.Enabled = false;
-            this.LOffsetRPOffCheckBox.Location = new System.Drawing.Point(591, 417);
+            this.LOffsetRPOffCheckBox.Location = new System.Drawing.Point(577, 417);
             this.LOffsetRPOffCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.LOffsetRPOffCheckBox.Name = "LOffsetRPOffCheckBox";
             this.LOffsetRPOffCheckBox.Size = new System.Drawing.Size(184, 21);
@@ -1197,7 +1199,7 @@
             // 
             this.NoCollisionCheckBox.AutoSize = true;
             this.NoCollisionCheckBox.Enabled = false;
-            this.NoCollisionCheckBox.Location = new System.Drawing.Point(575, 446);
+            this.NoCollisionCheckBox.Location = new System.Drawing.Point(712, 446);
             this.NoCollisionCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.NoCollisionCheckBox.Name = "NoCollisionCheckBox";
             this.NoCollisionCheckBox.Size = new System.Drawing.Size(107, 21);
@@ -1210,7 +1212,7 @@
             // 
             this.NoPOVCheckBox.AutoSize = true;
             this.NoPOVCheckBox.Enabled = false;
-            this.NoPOVCheckBox.Location = new System.Drawing.Point(692, 446);
+            this.NoPOVCheckBox.Location = new System.Drawing.Point(577, 446);
             this.NoPOVCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.NoPOVCheckBox.Name = "NoPOVCheckBox";
             this.NoPOVCheckBox.Size = new System.Drawing.Size(128, 21);
@@ -1223,7 +1225,7 @@
             // 
             this.GEndTransCheckBox.AutoSize = true;
             this.GEndTransCheckBox.Enabled = false;
-            this.GEndTransCheckBox.Location = new System.Drawing.Point(692, 503);
+            this.GEndTransCheckBox.Location = new System.Drawing.Point(712, 504);
             this.GEndTransCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.GEndTransCheckBox.Name = "GEndTransCheckBox";
             this.GEndTransCheckBox.Size = new System.Drawing.Size(98, 21);
@@ -1236,7 +1238,7 @@
             // 
             this.GThruCheckBox.AutoSize = true;
             this.GThruCheckBox.Enabled = false;
-            this.GThruCheckBox.Location = new System.Drawing.Point(605, 502);
+            this.GThruCheckBox.Location = new System.Drawing.Point(577, 504);
             this.GThruCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.GThruCheckBox.Name = "GThruCheckBox";
             this.GThruCheckBox.Size = new System.Drawing.Size(60, 21);
@@ -1249,7 +1251,7 @@
             // 
             this.GEndErpFrameCheckBox.AutoSize = true;
             this.GEndErpFrameCheckBox.Enabled = false;
-            this.GEndErpFrameCheckBox.Location = new System.Drawing.Point(460, 502);
+            this.GEndErpFrameCheckBox.Location = new System.Drawing.Point(460, 504);
             this.GEndErpFrameCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.GEndErpFrameCheckBox.Name = "GEndErpFrameCheckBox";
             this.GEndErpFrameCheckBox.Size = new System.Drawing.Size(117, 21);
@@ -1262,7 +1264,7 @@
             // 
             this.EventTransCheckBox.AutoSize = true;
             this.EventTransCheckBox.Enabled = false;
-            this.EventTransCheckBox.Location = new System.Drawing.Point(700, 474);
+            this.EventTransCheckBox.Location = new System.Drawing.Point(712, 475);
             this.EventTransCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.EventTransCheckBox.Name = "EventTransCheckBox";
             this.EventTransCheckBox.Size = new System.Drawing.Size(96, 21);
@@ -1275,7 +1277,7 @@
             // 
             this.EventEndTransCheckBox.AutoSize = true;
             this.EventEndTransCheckBox.Enabled = false;
-            this.EventEndTransCheckBox.Location = new System.Drawing.Point(563, 474);
+            this.EventEndTransCheckBox.Location = new System.Drawing.Point(577, 475);
             this.EventEndTransCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.EventEndTransCheckBox.Name = "EventEndTransCheckBox";
             this.EventEndTransCheckBox.Size = new System.Drawing.Size(125, 21);
@@ -1296,6 +1298,14 @@
             this.VPanCheckBox.Text = "VPanUse";
             this.VPanCheckBox.UseVisualStyleBackColor = true;
             this.VPanCheckBox.CheckedChanged += new System.EventHandler(this.VPanCheckBox_CheckedChanged);
+            // 
+            // LaunchStarSmoothShakingAToolStripMenuItem
+            // 
+            this.LaunchStarSmoothShakingAToolStripMenuItem.Name = "LaunchStarSmoothShakingAToolStripMenuItem";
+            this.LaunchStarSmoothShakingAToolStripMenuItem.ShortcutKeyDisplayString = "[Adds 3]";
+            this.LaunchStarSmoothShakingAToolStripMenuItem.Size = new System.Drawing.Size(271, 26);
+            this.LaunchStarSmoothShakingAToolStripMenuItem.Text = "Smooth Shaking A";
+            this.LaunchStarSmoothShakingAToolStripMenuItem.Click += new System.EventHandler(this.LaunchStarSmoothShakingAToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -1366,6 +1376,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
             this.Text = "Launch Cam Plus";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.MenuStrip.ResumeLayout(false);
             this.MenuStrip.PerformLayout();
@@ -1491,6 +1502,7 @@
         public System.Windows.Forms.TextBox CamIDTextBox;
         private System.Windows.Forms.ToolStripMenuItem IDAssistantToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem BasicPlanetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem LaunchStarSmoothShakingAToolStripMenuItem;
     }
 }
 

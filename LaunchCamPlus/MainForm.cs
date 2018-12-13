@@ -26,7 +26,7 @@ namespace LaunchCamPlus
             Loading = false;
         }
         
-        OpenFileDialog ofd = new OpenFileDialog();
+        OpenFileDialog ofd = new OpenFileDialog() { Filter = "Camera Data (*.bcam)|*.bcam" };
         SaveFileDialog sfd = new SaveFileDialog();
         OpenFileDialog pofd = new OpenFileDialog() { Filter = "Camera Preset (*.lcpp)|*.lcpp" }; //presets
         SaveFileDialog psfd = new SaveFileDialog() { Filter = "Camera Preset (*.lcpp)|*.lcpp" }; //presets
@@ -37,6 +37,8 @@ namespace LaunchCamPlus
         List<Camera> BackupList;
         Camera CopyCamera;
         BCSV bcsv;
+        RARC rar = null;
+        string rarcpath;
 
         int EmptyBCAMProgress = 0;
         String[] EmptyBCAM = new String[] {
@@ -201,6 +203,8 @@ namespace LaunchCamPlus
         public void SetAppStatus(bool trigger, bool file = true)
         {
             FileToolStripMenuItem.Enabled = file;
+            SaveToolStripMenuItem.Enabled = trigger;
+            SaveAsToolStripMenuItem.Enabled = trigger;
 
             EditToolStripMenuItem.Enabled = trigger;
             ToolsToolStripMenuItem.Enabled = trigger;
@@ -953,6 +957,19 @@ namespace LaunchCamPlus
             CameraListBox.Items.Add(CameraList[CameraList.Count - 1].Identification);
             DoNameCheck(CameraList.Count - 1);
         }
+
+        private void LaunchStarSmoothShakingAToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CameraList.Add(new Camera(CameraList.Count) { Version = 196631, Identification = "e:スーパースピンドライバー:000:00番目", Num = 0, Type = "CAM_TYPE_XZ_PARA", RotationX = 0f, RotationY = 2.96706f, RotationZ = 0f, Zoom = 1560f, DPDRotation = 45, TransitionSpeed = 120, EndTransitionSpeed = 0, GroundMoveSpeed = 160, UseDPAD = false, UnknownNum2 = false, MaxY = 300, MinY = 800, GroundStartMoveDelay = 120, AirStartMoveDelay = 120, UnknownUDown = 120, UnknownLOffset = 0, UnknownLOffsetV = 0, UpperBorder = 0.3f, LowerBorder = 0.1f, EventFrames = 0, EventPriority = 1, FixpointOffsetX = 0, FixpointOffsetY = 0, FixpointOffsetZ = 0, WorldPointX = 0, WorldPointY = 0, WorldPointZ = 0, PlayerOffsetX = 0, PlayerOffsetY = 0, PlayerOffsetZ = 0, VPanAxisX = 0, VPanAxisY = 1, VPanAxisZ = 0, UnknownUpX = 0, UnknownUpY = 0, UnknownUpZ = 0, DisableReset = false, FlagLOffsetRPOff = false, DisableAntiBlur = false, DisableCollision = false, DisablePOV = false, GFlagEndErpFrame = false, GFlagThrough = false, GFlagEndTransitionSpeed = false, VPanUse = true, EventUseEndTransition = false, EventUseTransition = false });
+            CameraListBox.Items.Add(CameraList[CameraList.Count - 1].Identification);
+            DoNameCheck(CameraList.Count - 1);
+            CameraList.Add(new Camera(CameraList.Count) { Version = 196631, Identification = "e:スーパースピンドライバー:000:01番目", Num = 0, Type = "CAM_TYPE_XZ_PARA", RotationX = -0.2617994f, RotationY = 1f, RotationZ = 0f, Zoom = 1500f, DPDRotation = 45, TransitionSpeed = 120, EndTransitionSpeed = 0, GroundMoveSpeed = 160, UseDPAD = false, UnknownNum2 = false, MaxY = 300, MinY = 800, GroundStartMoveDelay = 120, AirStartMoveDelay = 120, UnknownUDown = 120, UnknownLOffset = 0, UnknownLOffsetV = 0, UpperBorder = 0.3f, LowerBorder = 0.1f, EventFrames = 310, EventPriority = 1, FixpointOffsetX = 0, FixpointOffsetY = 0, FixpointOffsetZ = 0, WorldPointX = -13500, WorldPointY = 9500, WorldPointZ = 53000, PlayerOffsetX = 0, PlayerOffsetY = 1, PlayerOffsetZ = 0, VPanAxisX = 0, VPanAxisY = 1, VPanAxisZ = 0, UnknownUpX = 0, UnknownUpY = 0, UnknownUpZ = 0, DisableReset = false, FlagLOffsetRPOff = false, DisableAntiBlur = false, DisableCollision = false, DisablePOV = false, GFlagEndErpFrame = false, GFlagThrough = false, GFlagEndTransitionSpeed = false, VPanUse = false, EventUseEndTransition = false, EventUseTransition = false });
+            CameraListBox.Items.Add(CameraList[CameraList.Count - 1].Identification);
+            DoNameCheck(CameraList.Count - 1);
+            CameraList.Add(new Camera(CameraList.Count) { Version = 196631, Identification = "e:スーパースピンドライバー:000:02番目", Num = 0, Type = "CAM_TYPE_XZ_PARA", RotationX = 0f, RotationY = 0f, RotationZ = 0f, Zoom = 0f, DPDRotation = 45, TransitionSpeed = 120, EndTransitionSpeed = 0, GroundMoveSpeed = 160, UseDPAD = false, UnknownNum2 = false, MaxY = 300, MinY = 800, GroundStartMoveDelay = 120, AirStartMoveDelay = 120, UnknownUDown = 120, UnknownLOffset = 0, UnknownLOffsetV = 0, UpperBorder = 0.3f, LowerBorder = 0.1f, EventFrames = 80, EventPriority = 1, FixpointOffsetX = 0, FixpointOffsetY = 0, FixpointOffsetZ = 0, WorldPointX = 0, WorldPointY = 0, WorldPointZ = 0, PlayerOffsetX = 0, PlayerOffsetY = 0, PlayerOffsetZ = 0, VPanAxisX = 0, VPanAxisY = 1, VPanAxisZ = 0, UnknownUpX = 0, UnknownUpY = 0, UnknownUpZ = 0, DisableReset = false, FlagLOffsetRPOff = false, DisableAntiBlur = false, DisableCollision = false, DisablePOV = false, GFlagEndErpFrame = false, GFlagThrough = false, GFlagEndTransitionSpeed = false, VPanUse = false, EventUseEndTransition = false, EventUseTransition = false });
+            CameraListBox.Items.Add(CameraList[CameraList.Count - 1].Identification);
+            DoNameCheck(CameraList.Count - 1);
+        }
         #endregion
         #endregion
 
@@ -1065,10 +1082,10 @@ namespace LaunchCamPlus
 
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ofd.Filter = "Camera Files (*.bcam)|*.bcam|Level Archive (*.rarc *.arc)|*.rarc; *.arc";
+            //ofd.Filter = "Camera Files (*.bcam)|*.bcam|Level Archive (*.rarc *.arc)|*.rarc; *.arc";
             //ofd.FilterIndex = 1;
             ofd.FileName = "";
-            bool israrc = false;
+            //bool israrc = false;
             String bcsvName = "";
             
             //BCAM only from here on out.... oh boy.
@@ -1079,7 +1096,8 @@ namespace LaunchCamPlus
                 if (ofd.FilterIndex != 1)
                 {
                     FileStream rarcFile = new FileStream(ofd.FileName, FileMode.Open);
-                    RARC rar = new RARC(rarcFile);
+                    rarcpath = ofd.FileName;
+                    rar = new RARC(rarcFile);
                     if (rar.Header.Format == "YAZ0")
                     {
                         MessageBox.Show("Yaz0 Encoded files are not supported. Please Decode your archive and try again", "Yaz0 Detected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -1094,12 +1112,11 @@ namespace LaunchCamPlus
                         {
                             File.WriteAllBytes(@AppDomain.CurrentDomain.BaseDirectory + "temp.bcam", D.Data);
                             ofd.FileName = @AppDomain.CurrentDomain.BaseDirectory + "temp.bcam";
-                            israrc = true;
                             break;
                         }
                     }
                     rarcFile.Close();
-                    rar = null;
+                    //rar = null;
                 }
 
                 fInfo = new FileInfo(ofd.FileName);
@@ -1117,6 +1134,7 @@ namespace LaunchCamPlus
                     {
                         EmptyBCAMProgress += 2;
                     }
+                    SetAppStatus(false, true);
                     return;
                 }
                 for (uint i = 0; i < this.bcsv.header.entryCount; i++)
@@ -1311,12 +1329,6 @@ namespace LaunchCamPlus
 
                 SaveToolStripMenuItem.Enabled = true;
                 SaveAsToolStripMenuItem.Enabled = true;
-
-                if (israrc)
-                {
-                    File.Delete(fInfo.FullName);
-                    fInfo = null;
-                }
             }
         }
 
@@ -1345,6 +1357,14 @@ namespace LaunchCamPlus
                 outfile = fInfo.FullName;
             }
             SaveToBCSV(outfile);
+            if (rar != null)
+            {
+                byte[] buffer = File.ReadAllBytes(outfile);
+                FileStream fs = new FileStream(rarcpath, FileMode.Create);
+
+                rar.WriteToFile(fs, buffer);
+                fs.Close();
+            }
         }
 
         private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1679,7 +1699,13 @@ namespace LaunchCamPlus
             Save.entryList = EntryList;
             Save.Write(CameraTypes, CameraIdentifications, outfile);
         }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+        }
+
         
+
         //private void GetPreset(string filename)
         //{
         //    LCPP ImportPreset = new LCPP(filename);

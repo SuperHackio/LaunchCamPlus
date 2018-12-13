@@ -191,11 +191,11 @@ namespace LCPPManager
         public Entry(Camera camera, System.Text.Encoding encoder)
         {
             Properties = camera;
-            write = "Version=" + Properties.Version + ",Identification=\"" + Properties.Identification +"\",Num="+Properties.Num + ",Type=\"" + Properties.Type + "\",RotationX=" + Properties.RotationX+"f,RotationY=" + Properties.RotationY +
-                "f,RotationZ="+Properties.RotationZ+"f,Zoom="+Properties.Zoom+"f,DPDRotation="+Properties.DPDRotation+",TransitionSpeed="+Properties.TransitionSpeed+",EndTransitionSpeed="+
+            write = "Version=" + Properties.Version + ",Identification=\"" + Properties.Identification +"\",Num="+Properties.Num + ",Type=\"" + Properties.Type + "\",RotationX=" + Properties.RotationX.ToString().Replace(',','.')+"f,RotationY=" + Properties.RotationY.ToString().Replace(',', '.') +
+                "f,RotationZ="+Properties.RotationZ.ToString().Replace(',', '.') + "f,Zoom="+Properties.Zoom+"f,DPDRotation="+Properties.DPDRotation+",TransitionSpeed="+Properties.TransitionSpeed+",EndTransitionSpeed="+
                 Properties.EndTransitionSpeed+",GroundMoveSpeed="+Properties.GroundMoveSpeed+",UseDPAD="+Properties.UseDPAD+",UnknownNum2="+Properties.UnknownNum2+",MaxY="+Properties.MaxY+",MinY="+Properties.MinY+
                 ",GroundStartMoveDelay="+Properties.GroundStartMoveDelay+",AirStartMoveDelay="+Properties.AirStartMoveDelay+",UnknownUDown="+Properties.UnknownUDown+",UnknownLOffset="+Properties.UnknownLOffset+
-                ",UnknownLOffsetV="+Properties.UnknownLOffsetV+",UpperBorder="+Properties.UpperBorder+"f,LowerBorder="+Properties.LowerBorder+"f,EventFrames="+Properties.EventFrames+",EventPriority="+Properties.EventPriority+
+                ",UnknownLOffsetV="+Properties.UnknownLOffsetV+",UpperBorder="+Properties.UpperBorder.ToString().Replace(',', '.') + "f,LowerBorder="+Properties.LowerBorder.ToString().Replace(',', '.') + "f,EventFrames="+Properties.EventFrames+",EventPriority="+Properties.EventPriority+
                 ",FixpointOffsetX="+Properties.FixpointOffsetX+",FixpointOffsetY="+Properties.FixpointOffsetX+",FixpointOffsetZ="+Properties.FixpointOffsetZ+",WorldPointX="+Properties.WorldPointX+",WorldPointY="+Properties.WorldPointY+
                 ",WorldPointZ="+Properties.WorldPointZ+",PlayerOffsetX="+Properties.PlayerOffsetX+",PlayerOffsetY="+Properties.PlayerOffsetY+",PlayerOffsetZ="+Properties.PlayerOffsetZ+",VPanAxisX="+Properties.VPanAxisX+
                 ",VPanAxisY="+Properties.VPanAxisY+",VPanAxisZ="+Properties.VPanAxisZ+",UnknownUpX="+Properties.UnknownUpX+",UnknownUpY="+Properties.UnknownUpY+",UnknownUpZ="+Properties.UnknownUpZ+",DisableReset="+Properties.DisableReset+
@@ -226,24 +226,28 @@ namespace LCPPManager
                         Properties.Version = Convert.ToInt32(P[1]);
                         break;
                     case "Identification":
-                        Properties.Identification = P[1];
+                        Properties.Identification = P[1].Replace("\"","");
                         break;
                     case "Num":
                         Properties.Num = Convert.ToInt32(P[1]);
                         break;
                     case "Type":
-                        Properties.Type = P[1];
+                        Properties.Type = P[1].Replace("\"", "");
                         break;
                     case "RotationX":
+                        P[1] = P[1].Replace("f", "");
                         Properties.RotationX = Convert.ToSingle(P[1]);
                         break;
                     case "RotationY":
+                        P[1] = P[1].Replace("f", "");
                         Properties.RotationY = Convert.ToSingle(P[1]);
                         break;
                     case "RotationZ":
+                        P[1] = P[1].Replace("f", "");
                         Properties.RotationZ = Convert.ToSingle(P[1]);
                         break;
                     case "Zoom":
+                        P[1] = P[1].Replace("f", "");
                         Properties.Zoom = Convert.ToSingle(P[1]);
                         break;
                     case "DPDRotation":
@@ -286,9 +290,11 @@ namespace LCPPManager
                         Properties.UnknownLOffsetV = Convert.ToSingle(P[1]);
                         break;
                     case "UpperBorder":
+                        P[1] = P[1].Replace("f", "");
                         Properties.UpperBorder = Convert.ToSingle(P[1]);
                         break;
                     case "LowerBorder":
+                        P[1] = P[1].Replace("f", "");
                         Properties.LowerBorder = Convert.ToSingle(P[1]);
                         break;
                     case "EventFrames":
@@ -378,7 +384,7 @@ namespace LCPPManager
                     case "EventUseTransition":
                         Properties.EventUseTransition = P[1] == "True" ? true : false;
                         break;
-                    default: throw new ArgumentOutOfRangeException();
+                    default: System.Windows.Forms.MessageBox.Show("Sorry, but this Preset file is corrupted or outdated","LCPP Error"); break;
                 }
             }
 
