@@ -8,6 +8,7 @@ using BCSV_Editor;
 using Cameras;
 using LCPPManager;
 using RARCFiles;
+using DiscordRichPresence;
 
 namespace LaunchCamPlus
 {
@@ -24,8 +25,11 @@ namespace LaunchCamPlus
             RotationAxisComboBox.SelectedIndex = 0;
             CoordinateComboBox.SelectedIndex = 0;
             Loading = false;
+            RP.Initialize();
         }
-        
+
+        DRPC RP = new DRPC();
+
         OpenFileDialog ofd = new OpenFileDialog() { Filter = "Camera Data (*.bcam)|*.bcam" };
         SaveFileDialog sfd = new SaveFileDialog();
         OpenFileDialog pofd = new OpenFileDialog() { Filter = "Camera Preset (*.lcpp)|*.lcpp" }; //presets
@@ -322,9 +326,12 @@ namespace LaunchCamPlus
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception y)
                 {
-
+                    if (y.Message == "Angle Axis")
+                    {
+                        MessageBox.Show("Failed to read the angle");
+                    }
                 }
                 CamZoomNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].Zoom;
                 CamFOVNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].DPDRotation;
@@ -409,6 +416,7 @@ namespace LaunchCamPlus
                 //--------------------------------------------------------------------------------------------------------------------------------------
 
                 DisableResetCheckBox.Checked = CameraList[CameraListBox.SelectedIndex].DisableReset;
+                NoCollisionCheckBox.Checked = CameraList[CameraListBox.SelectedIndex].DisableCollision;
                 LOffsetRPOffCheckBox.Checked = CameraList[CameraListBox.SelectedIndex].FlagLOffsetRPOff;
                 EnableBlurCheckbox.Checked = CameraList[CameraListBox.SelectedIndex].DisableAntiBlur;
                 NoPOVCheckBox.Checked = CameraList[CameraListBox.SelectedIndex].DisablePOV;
@@ -1077,6 +1085,7 @@ namespace LaunchCamPlus
                 CameraListBox.SelectedIndex = 0;
                 if (CopyCamera != null)
                     PasteToolStripMenuItem.Enabled = true;
+                RP.Update(MessageB:"Editing Cameras");
             }
         }
 
@@ -1329,6 +1338,7 @@ namespace LaunchCamPlus
 
                 SaveToolStripMenuItem.Enabled = true;
                 SaveAsToolStripMenuItem.Enabled = true;
+                RP.Update(MessageB: "Editing Cameras");
             }
         }
 
@@ -1462,7 +1472,9 @@ namespace LaunchCamPlus
         private void ExportPresetToolStripMenuItem_Click(object sender, EventArgs e)
         {
             BackupList = CameraList;
+            RP.Update(MessageB: "Exporting a Preset");
             new PresetForm(CameraList).ShowDialog();
+            RP.Update(MessageB: "Editing Cameras");
             CameraList = BackupList;
         }
 
@@ -1702,6 +1714,7 @@ namespace LaunchCamPlus
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            RP.Quit();
         }
 
         
