@@ -482,9 +482,16 @@ namespace LaunchCamPlus
 
         private void RotationValueNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            
             if (RotationRadRadioButton.Checked)
             {
+                if ((Double)RotationValueNumericUpDown.Value > 3.1415900)
+                {
+                    RotationValueNumericUpDown.Value = (Decimal)3.1415900f;
+                }
+                else if ((Double)RotationValueNumericUpDown.Value < -3.1415900)
+                {
+                    RotationValueNumericUpDown.Value = (Decimal)(-3.1415900f);
+                }
                 RotationTrackBar.Value = ConvertToAngle(RotationValueNumericUpDown.Value) + 180;
 
                 if (!Loading)
@@ -507,6 +514,14 @@ namespace LaunchCamPlus
             }
             else
             {
+                if ((Double)RotationValueNumericUpDown.Value > 180)
+                {
+                    RotationValueNumericUpDown.Value = (Decimal)180;
+                }
+                else if ((Double)RotationValueNumericUpDown.Value < -180)
+                {
+                    RotationValueNumericUpDown.Value = (Decimal)(-180);
+                }
                 RotationTrackBar.Value = (int)Math.Round(RotationValueNumericUpDown.Value + 180);
 
                 if (!Loading)

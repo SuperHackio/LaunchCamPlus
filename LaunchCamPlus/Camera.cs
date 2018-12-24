@@ -7,6 +7,9 @@ namespace Cameras
         public Camera(int id)
         {
             this.ListID = id;
+            this.RotationX = RefineAngle(this.RotationX);
+            this.RotationY = RefineAngle(this.RotationY);
+            this.RotationZ = RefineAngle(this.RotationZ);
         }
         //-----------------------------------------------------
         public int ListID { get; set; }
