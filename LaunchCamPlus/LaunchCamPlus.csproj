@@ -88,9 +88,6 @@
     <Reference Include="DiscordRPC">
       <HintPath>..\..\discord-rpc-csharp-master\DiscordRPC.Example\bin\Debug\DiscordRPC.dll</HintPath>
     </Reference>
-    <Reference Include="GameFormatReader">
-      <HintPath>..\..\..\..\..\source\repos\WArchive-Tools\lib\GameFormatReader.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
