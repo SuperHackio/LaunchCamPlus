@@ -97,7 +97,16 @@ namespace LaunchCamPlus
             ofd.ShowDialog();
             if (ofd.FileName != "")
             {
+                XPosComboBox.Items.Clear();
+                YPosComboBox.Items.Clear();
+                ZPosComboBox.Items.Clear();
+                XDirComboBox.Items.Clear();
+                YDirComboBox.Items.Clear();
+                ZDirComboBox.Items.Clear();
+                UnknownComboBox.Items.Clear();
+                ZoomComboBox.Items.Clear();
                 FileStream canmFile = new FileStream(ofd.FileName,FileMode.Open);
+                canm = null;
                 canm = new CANM(canmFile);
                 canmFile.Close();
 
@@ -663,7 +672,7 @@ namespace LaunchCamPlus
         private void ExitToLaunchCamPlusToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Random ran = new Random();
-            int i = 13;// ran.Next(0, 12);
+            int i = ran.Next(0, 13);
             switch (i)
             {
                 case 0:
@@ -696,6 +705,11 @@ namespace LaunchCamPlus
                 case 13:
                     throw new Exception("SnooPING AS usual I see?", new EntryPointNotFoundException());
             }
+        }
+
+        private void UnknownGroupBox_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }

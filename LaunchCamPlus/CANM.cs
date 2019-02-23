@@ -81,14 +81,14 @@ namespace CANMFiles
             Array.Reverse(Wright);
             canmFile.Write(Wright, 0, 4);
 
-
+            
             int prevoffset = 0;
             for (int i = 0; i < Keys.Count; i++)
             {
                 Wright = BitConverter.GetBytes(Keys[i].KeyframeCount);
                 Array.Reverse(Wright);
                 canmFile.Write(Wright,0,4);
-                if (Keys[i].KeyframeCount == 1)
+                if (Keys[i].KeyframeCount <= 2)
                 {
                     try
                     {
@@ -115,7 +115,7 @@ namespace CANMFiles
                 canmFile.Write(Wright, 0, 4);
                 canmFile.Write(new byte[4] { 0x00, 0x00, 0x00, 0x00 }, 0, 4);//Padding
             }
-
+            
             List<byte> Miles = new List<byte>();
             foreach (Keyset K in Keys)
             {

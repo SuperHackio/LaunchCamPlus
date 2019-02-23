@@ -10,8 +10,7 @@ Features:
 Planned Features:
 - Previewing your cameras (This won't come for a while, sorry)
 - Checking your cameras for errors (This will come sooner)
-- Allow you to save the file directly into the .arc
-- Allow Yaz0 Encoded files to be loaded/saved
+- Preset Compression (These won't be allowed to be submitted for Official Presets)
 
 # Submitting a Preset
 If you want one of your presets to become an "Official Preset", open a new issue and attach your .lcpp file.

@@ -18,6 +18,10 @@ namespace LaunchCamPlus
             Application.SetCompatibleTextRenderingDefault(false);
             try
             {
+                //if (args[0] == "-compress")
+                //{
+                //    LCPCManager.LCPC LCPC = new LCPCManager.LCPC(args[1]);
+                //}
                 if (args[0] == "-secret")
                 {
                     Application.Run(new IntroForm());

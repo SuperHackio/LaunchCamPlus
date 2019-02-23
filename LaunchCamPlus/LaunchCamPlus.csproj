@@ -88,6 +88,9 @@
     <Reference Include="DiscordRPC">
       <HintPath>..\..\discord-rpc-csharp-master\DiscordRPC.Example\bin\Debug\DiscordRPC.dll</HintPath>
     </Reference>
+    <Reference Include="GameFormatReader">
+      <HintPath>..\..\..\..\..\source\repos\WArchive-Tools\lib\GameFormatReader.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -117,6 +120,7 @@
     <Compile Include="IntroForm.Designer.cs">
       <DependentUpon>IntroForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="LCPC.cs" />
     <Compile Include="LCPP.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -186,7 +190,11 @@
     <None Include="Resources\Remove.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="External Rarc Managment\Yaz0Dec.exe" />
+    <Content Include="External Rarc Managment\Yaz0Enc.exe" />
     <Content Include="LaunchCamPlusIcon.ico" />
+    <Content Include="External Rarc Managment\ArcPack.exe" />
+    <Content Include="External Rarc Managment\RarcDump.exe" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">

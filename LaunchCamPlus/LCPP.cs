@@ -26,11 +26,14 @@ namespace LCPPManager
 
     public class LCPP
     {
+        public string Name;
+        public string Creator;
+
         public int CameraCount;
         public List<Camera> PresetList;
 
         public List<Entry> EntryList = new List<Entry>();
-        System.Text.Encoding enc = System.Text.Encoding.GetEncoding(932);
+        public System.Text.Encoding enc = System.Text.Encoding.GetEncoding(932);
 
         /// <summary>
         /// Writes a LCPP file
@@ -127,8 +130,8 @@ namespace LCPPManager
             string format;
             int version;
             string LCPVersion;
-            string PresetName;
-            string Creator;
+            string presetname = "Untitled";
+            string creator = "Unknown";
             int cameranum;
             int nextoffset=0;
 
@@ -152,10 +155,10 @@ namespace LCPPManager
             LCPVersion = enc.GetString(ToRead);
             ToRead = new byte[49]; //Preset Name
             lcppFile.Read(ToRead, 0, 48);
-            PresetName = enc.GetString(ToRead).Replace("\0","");
+            presetname = enc.GetString(ToRead).Replace("\0","");
             ToRead = new byte[49]; //Preset Creator
             lcppFile.Read(ToRead, 0, 48);
-            Creator = enc.GetString(ToRead).Replace("\0", "");
+            creator = enc.GetString(ToRead).Replace("\0", "");
             ToRead = new byte[4]; //Number of Cameras
             lcppFile.Read(ToRead, 0, 4);
             cameranum = Convert.ToInt32(ToRead[0] + ToRead[1] + ToRead[2] + ToRead[3]);
@@ -174,6 +177,9 @@ namespace LCPPManager
             }
 
             lcppFile.Close();
+            Creator = creator;
+            Name = presetname;
+            CameraCount = cameranum;
         }
     }
 
@@ -196,7 +202,7 @@ namespace LCPPManager
                 Properties.EndTransitionSpeed+",GroundMoveSpeed="+Properties.GroundMoveSpeed+",UseDPAD="+Properties.UseDPAD+",UnknownNum2="+Properties.UnknownNum2+",MaxY="+Properties.MaxY+",MinY="+Properties.MinY+
                 ",GroundStartMoveDelay="+Properties.GroundStartMoveDelay+",AirStartMoveDelay="+Properties.AirStartMoveDelay+",UnknownUDown="+Properties.UnknownUDown+",UnknownLOffset="+Properties.UnknownLOffset+
                 ",UnknownLOffsetV="+Properties.UnknownLOffsetV+",UpperBorder="+Properties.UpperBorder.ToString().Replace(',', '.') + "f,LowerBorder="+Properties.LowerBorder.ToString().Replace(',', '.') + "f,EventFrames="+Properties.EventFrames+",EventPriority="+Properties.EventPriority+
-                ",FixpointOffsetX="+Properties.FixpointOffsetX+",FixpointOffsetY="+Properties.FixpointOffsetX+",FixpointOffsetZ="+Properties.FixpointOffsetZ+",WorldPointX="+Properties.WorldPointX+",WorldPointY="+Properties.WorldPointY+
+                ",FixpointOffsetX="+Properties.FixpointOffsetX+",FixpointOffsetY="+Properties.FixpointOffsetY+",FixpointOffsetZ="+Properties.FixpointOffsetZ+",WorldPointX="+Properties.WorldPointX+",WorldPointY="+Properties.WorldPointY+
                 ",WorldPointZ="+Properties.WorldPointZ+",PlayerOffsetX="+Properties.PlayerOffsetX+",PlayerOffsetY="+Properties.PlayerOffsetY+",PlayerOffsetZ="+Properties.PlayerOffsetZ+",VPanAxisX="+Properties.VPanAxisX+
                 ",VPanAxisY="+Properties.VPanAxisY+",VPanAxisZ="+Properties.VPanAxisZ+",UnknownUpX="+Properties.UnknownUpX+",UnknownUpY="+Properties.UnknownUpY+",UnknownUpZ="+Properties.UnknownUpZ+",DisableReset="+Properties.DisableReset+
                 ",FlagLOffsetRPOff="+Properties.FlagLOffsetRPOff+",DisableAntiBlur="+Properties.DisableAntiBlur+",DisableCollision="+Properties.DisableCollision+",DisablePOV="+Properties.DisablePOV+",GFlagEndErpFrame="+Properties.GFlagEndErpFrame+
@@ -263,10 +269,10 @@ namespace LCPPManager
                         Properties.GroundMoveSpeed = Convert.ToInt32(P[1]);
                         break;
                     case "UseDPAD":
-                        Properties.UseDPAD = P[1] == "True" ? true : false;
+                        Properties.UseDPAD = P[1] == "true" ? true : false;
                         break;
                     case "UnknownNum2":
-                        Properties.UnknownNum2 = P[1] == "True" ? true : false;
+                        Properties.UnknownNum2 = P[1] == "true" ? true : false;
                         break;
                     case "MaxY":
                         Properties.MaxY = Convert.ToSingle(P[1]);
@@ -349,40 +355,40 @@ namespace LCPPManager
                         Properties.UnknownUpZ= Convert.ToSingle(P[1]);
                         break;
                     case "DisableReset":
-                        Properties.DisableReset = P[1] == "True" ? true : false;
+                        Properties.DisableReset = P[1] == "true" ? true : false;
                         break;
                     case "DisableDPAD":
                         Properties.SetDPADUse();
                         break;
                     case "FlagLOffsetRPOff":
-                        Properties.FlagLOffsetRPOff = P[1] == "True" ? true : false;
+                        Properties.FlagLOffsetRPOff = P[1] == "true" ? true : false;
                         break;
                     case "DisableAntiBlur":
-                        Properties.DisableAntiBlur = P[1] == "True" ? true : false;
+                        Properties.DisableAntiBlur = P[1] == "true" ? true : false;
                         break;
                     case "DisableCollision":
-                        Properties.DisableCollision = P[1] == "True" ? true : false;
+                        Properties.DisableCollision = P[1] == "true" ? true : false;
                         break;
                     case "DisablePOV":
-                        Properties.DisablePOV = P[1] == "True" ? true : false;
+                        Properties.DisablePOV = P[1] == "true" ? true : false;
                         break;
                     case "GFlagEndErpFrame":
-                        Properties.GFlagEndErpFrame= P[1] == "True" ? true : false;
+                        Properties.GFlagEndErpFrame= P[1] == "true" ? true : false;
                         break;
                     case "GFlagThrough":
-                        Properties.GFlagThrough = P[1] == "True" ? true : false;
+                        Properties.GFlagThrough = P[1] == "true" ? true : false;
                         break;
                     case "GFlagEndTransitionSpeed":
-                        Properties.GFlagEndTransitionSpeed = P[1] == "True" ? true : false;
+                        Properties.GFlagEndTransitionSpeed = P[1] == "true" ? true : false;
                         break;
                     case "VPanUse":
-                        Properties.VPanUse = P[1] == "True" ? true : false;
+                        Properties.VPanUse = P[1] == "true" ? true : false;
                         break;
                     case "EventUseEndTransition":
-                        Properties.EventUseEndTransition = P[1] == "True" ? true : false;
+                        Properties.EventUseEndTransition = P[1] == "true" ? true : false;
                         break;
                     case "EventUseTransition":
-                        Properties.EventUseTransition = P[1] == "True" ? true : false;
+                        Properties.EventUseTransition = P[1] == "true" ? true : false;
                         break;
                     default: System.Windows.Forms.MessageBox.Show("Sorry, but this Preset file is corrupted or outdated","LCPP Error"); return;
                 }

@@ -20,25 +20,39 @@ namespace LaunchCamPlus
         }
 
         MainForm Employer;
+        //ToolTip TT = new ToolTip() { ShowAlways = true };
 
         bool startup = false;
 
         bool[] EventNeedsColin = new bool[] {
-            true, //- シナリオスターター
-            false, //- ピンクスーパースピンドライバー固有出現イベント用
-            true, //- ピンクスーパースピンドライバー
-            false, //- スーパースピンドライバー固有出現イベント用
-            true, //- スーパースピンドライバー
-            false, //- スピンドライバ固有
-            true, //- スピンドライバ
-            false, //- パワースター固有
-            false, //- 土管固有出現
-            false, //- 簡易デモ実行固有簡易デモ
-            false, //- 引き戻し
-            false, //- 水上フォロー
-            false, //- 水中フォロー
-            false, //- 水中プラネット
-            false //- フーファイターカメラ
+            true, //- シナリオスターター    Scenario starter
+            false, //- ピンクスーパースピンドライバー固有出現イベント用    Pink Launch Star Appearance
+            true, //- ピンクスーパースピンドライバー    Pink Launch Star
+            false, //- スーパースピンドライバー固有出現イベント用    Launch Star Appearance
+            true, //- スーパースピンドライバー    Launch Star
+            false, //- スピンドライバ固有    Sling Star Appearance
+            true, //- スピンドライバ    Sling Star
+            false, //- パワースター固有    Power Star Appearance
+            false, //- 土管固有出現    Warp Pipe
+            false, //- 簡易デモ実行固有簡易デモ    Simple Demo Executor
+            false, //- 伸び植物固有出現デモ    Sproutle Vine Appearance
+            false, //- 伸び植物固有掴まり    Sproutle Vine
+            false, //- つるスライダー固有滑り    Sprauto Vine
+            false, //- ハラペココインチコ固有飛行    Hungry Luma (SMG2)
+            false, //- デブチコ固有変身    Hungry Luma Transformation (SMG1)
+            false, //- デブチコ固有飛行    Hungry Luma Flight (SMG1)
+            //----------------------------------------------------------------------------------------
+            false, //- 引き戻し    Pull Back
+            false, //- 水上フォロー    Water Follow
+            false, //- 水中フォロー    Underwater Follow
+            false, //- 水中プラネット    Underwater Planet
+            false, //- フーファイターカメラ    Foo Fighter
+            //----------------------------------------------------------------------------------------
+            false, //- デフォルト水面カメラ    Default Water Surface Camera
+            false, //- デフォルト水中カメラ    Default Underwater Camera
+            false, //- デフォルトフーファイターカメラ    Default Flying Mario Camera
+            false, //- スタートカメラ    Start Camera
+            false, //- デフォルトカメラ    Default Camera
         };
 
         private void GetID()
@@ -47,13 +61,16 @@ namespace LaunchCamPlus
             IDTextBox.Text += ((Camera.IDOptions)CategoryComboBox.SelectedIndex).ToString();
             IDTextBox.Text += ":";
 
+            string tmp;
             switch (CategoryComboBox.SelectedIndex)
             {
                 case 0:
                 case 1:
-                    IDTextBox.Text += CamIDNumericUpDown.Value.ToString().PadLeft(4, '0');
+                    tmp = Convert.ToInt32(CamIDNumericUpDown.Value).ToString("X");
+                    IDTextBox.Text += tmp.PadLeft(4, '0');
                     break;
                 case 2:
+                    tmp = Convert.ToInt32(CamIDNumericUpDown.Value).ToString("X");
                     IDTextBox.Text += Employer.JapCameraEvents[EventComboBox.SelectedIndex];
                     if (EventNeedsColin[EventComboBox.SelectedIndex])
                     {
@@ -63,7 +80,7 @@ namespace LaunchCamPlus
                         EventComboBox.SelectedItem.ToString() != "Underwater Follow" && EventComboBox.SelectedItem.ToString() != "Underwater Follow" &&
                         EventComboBox.SelectedItem.ToString() != "Water Follow" && EventComboBox.SelectedItem.ToString() != "Pull Back")
                     {
-                        IDTextBox.Text += CamIDNumericUpDown.Value.ToString().PadLeft(4, '0').Remove(0, 1);
+                        IDTextBox.Text += tmp.PadLeft(4, '0').Remove(0, 1);
                     }
                     if (AddSubCheckBox.Checked)
                     {
