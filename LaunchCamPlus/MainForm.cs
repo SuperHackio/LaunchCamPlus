@@ -140,7 +140,7 @@ namespace LaunchCamPlus
             "伸び植物固有出現デモ", //- Extended plants unique appearance demonstration
             "伸び植物固有掴まり", //- Extended plant-specific grafting
             "つるスライダー固有滑り", //- Vine slider intrinsic slip
-            "ハラペココインチコ固有飛行", //- Halapeco Coin Chico specific flight
+            //"ハラペココインチコ固有飛行", //- Halapeco Coin Chico specific flight
             "デブチコ固有変身", //- Debuchico specific makeover
             "デブチコ固有飛行", //- Debuchico specific flight
             #endregion
@@ -178,7 +178,7 @@ namespace LaunchCamPlus
             "Sproutle Vine Appearance", //- 伸び植物固有出現デモ
             "Sproutle Vine", //- 伸び植物固有掴まり
             "Sprauto Vine", //- つるスライダー固有滑り
-            "Hungry Luma (SMG2)", //- ハラペココインチコ固有飛行
+            //"Hungry Luma (SMG2)", //- ハラペココインチコ固有飛行
             "Hungry Luma Transformation (SMG1)", //- デブチコ固有変身
             "Hungry Luma Flight (SMG1)", //- デブチコ固有飛行
             #endregion

@@ -38,7 +38,7 @@ namespace LaunchCamPlus
             false, //- 伸び植物固有出現デモ    Sproutle Vine Appearance
             false, //- 伸び植物固有掴まり    Sproutle Vine
             false, //- つるスライダー固有滑り    Sprauto Vine
-            false, //- ハラペココインチコ固有飛行    Hungry Luma (SMG2)
+            //false, //- ハラペココインチコ固有飛行    Hungry Luma (SMG2)
             false, //- デブチコ固有変身    Hungry Luma Transformation (SMG1)
             false, //- デブチコ固有飛行    Hungry Luma Flight (SMG1)
             //----------------------------------------------------------------------------------------
