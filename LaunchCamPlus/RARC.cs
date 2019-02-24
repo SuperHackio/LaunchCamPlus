@@ -426,6 +426,10 @@ namespace RARCManagment
                 string type = Encoding.ASCII.GetString(tmp);
                 type = type.ToUpper();
                 Process cmd;
+
+                if (File.Exists(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + rarcInfo.Name))
+                    File.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + rarcInfo.Name);
+
                 File.Copy(rarcInfo.FullName, @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + rarcInfo.Name);
                 if (type == "YAZ0")
                 {
@@ -496,7 +500,20 @@ namespace RARCManagment
         public FileInfo FindFile(string filename)
         {
             string file = "";
-            string[] files = Directory.GetFiles(rootpath, "*" + filename, SearchOption.AllDirectories);
+            string[] files = new string[1] { "Nope" };
+            try
+            {
+                files = Directory.GetFiles(rootpath, "*" + filename, SearchOption.AllDirectories);
+            }
+            catch (Exception)
+            {
+                string x = rootpath.Remove(rootpath.Length - 5);
+                Directory.Delete(x+this.name,true);
+                x = x + this.name +"."+ this.ext;
+                File.Delete(x);
+                System.Windows.Forms.MessageBox.Show("This is not a Map file!","No U");
+                return null;
+            }
             file = files[0];
 
             return new FileInfo(file);

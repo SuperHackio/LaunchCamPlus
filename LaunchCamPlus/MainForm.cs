@@ -1138,6 +1138,11 @@ namespace LaunchCamPlus
             if (ofd.FileName != "")
             {
                 if (rarcpath != "") { Directory.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\Stage", true); File.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\"+rar.name+"."+rar.ext); rarcpath = ""; }
+                FileInfo old = null;
+                if (fInfo != null)
+                {
+                     old = fInfo;
+                }
                 fInfo = new FileInfo(ofd.FileName);
                 //RARC Pitstop
                 if (ofd.FilterIndex != 1)
@@ -1146,6 +1151,11 @@ namespace LaunchCamPlus
                     FileInfo fi = new FileInfo(ofd.FileName);
                     rar = new RARC(fs, fi);
                     FileInfo ffff = rar.FindFile("cameraparam.bcam");
+                    if (ffff == null) {
+                        fs.Close();
+                        fInfo = old;
+                        return;
+                    }
                     rarcpath = fi.FullName;
 
                     ofd.FileName = ffff.FullName;

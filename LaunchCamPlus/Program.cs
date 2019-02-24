@@ -36,10 +36,14 @@ namespace LaunchCamPlus
                 if (e.InnerException is EntryPointNotFoundException)
                 {
                     MessageBox.Show(e.Message,"Loading...");
+                    Application.Run(new MainForm());
                 }
-                Application.Run(new MainForm());
+                else
+                {
+                    throw e;
+                }
             }
-            
+
         }
     }
 }

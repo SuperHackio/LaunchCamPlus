@@ -480,13 +480,7 @@
             "",
             "",
             "Inspired by: thegreatwaluigi",
-            " ",
-            "-------------------------",
-            "Archive Managment uses WArchive by:",
-            "Lord Ned & Sage of Mirrors",
-            "Yaz0 decoding by Thakis ",
-            "Yaz0 encoding by Shevious",
-            "RARC loading by Lioncash"});
+            " "});
             this.CameraListBox.Location = new System.Drawing.Point(12, 27);
             this.CameraListBox.Name = "CameraListBox";
             this.CameraListBox.Size = new System.Drawing.Size(207, 407);
