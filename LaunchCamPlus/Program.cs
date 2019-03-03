@@ -40,7 +40,7 @@ namespace LaunchCamPlus
                 }
                 else
                 {
-                    throw e;
+                    Application.Run(new MainForm());
                 }
             }
 
