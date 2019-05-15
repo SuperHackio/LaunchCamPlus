@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 /// <summary>
-/// 
+/// Depricated in LCP 1.1.0.0
 /// </summary>
 namespace RARCFiles
 {
@@ -449,7 +448,7 @@ namespace RARCManagment
                     //cmd.StandardInput.WriteLine("move /y \"" + rarcInfo.Directory.FullName + "\\" + rarcInfo.Name + " 0.rarc_dir\" "+"\"" + @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\"");
                     cmd.StandardInput.Flush();
                     cmd.StandardInput.Close();
-                    File.WriteAllText(@AppDomain.CurrentDomain.BaseDirectory + "SuperBMDLog.txt", cmd.StandardOutput.ReadToEnd());// (This line of code copied from SuperJSON lol)
+                    File.WriteAllText(@AppDomain.CurrentDomain.BaseDirectory + "UnpackLog.txt", cmd.StandardOutput.ReadToEnd());
                     cmd.WaitForExit();
                     
                     File.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + rarcInfo.Name + " 0.rarc");
@@ -471,6 +470,7 @@ namespace RARCManagment
                     //cmd.StandardInput.WriteLine("All");
                     cmd.StandardInput.Flush();
                     cmd.StandardInput.Close();
+                    File.WriteAllText(@AppDomain.CurrentDomain.BaseDirectory + "UnpackLog.txt", cmd.StandardOutput.ReadToEnd());
                     cmd.WaitForExit();
                     //System.Windows.Forms.MessageBox.Show(cmd.StandardOutput.ReadToEnd());
                     rootpath = @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\Stage";
@@ -544,7 +544,7 @@ namespace RARCManagment
                 cmd.StandardInput.WriteLine("exit");
                 cmd.StandardInput.Flush();
                 cmd.StandardInput.Close();
-                File.WriteAllText(@AppDomain.CurrentDomain.BaseDirectory + "SuperBMDLog.txt", cmd.StandardOutput.ReadToEnd());// (This like of code copied from SuperJSON lol)
+                File.WriteAllText(@AppDomain.CurrentDomain.BaseDirectory + "PackLog.txt", cmd.StandardOutput.ReadToEnd());
                 cmd.WaitForExit();
 
                 File.Delete(originalpath);

@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Windows.Forms;
-using BCSV_Editor;
 using Cameras;
 using LCPPManager;
+using LCPCManager;
 
 namespace LaunchCamPlus
 {
@@ -29,7 +26,7 @@ namespace LaunchCamPlus
             PresetCreatorTextBox.Text = "Me";
         }
 
-        SaveFileDialog psfd = new SaveFileDialog() { Filter = "Camera Preset (*.lcpp)|*.lcpp" }; //presets
+        SaveFileDialog psfd = new SaveFileDialog() { Filter = "Camera Preset |*.lcpp|Compressed Camera Preset |*.lcpc" }; //presets
         List<Camera> CameraList;
         List<Camera> PresetList = new List<Camera>();
 
@@ -43,7 +40,16 @@ namespace LaunchCamPlus
 
             if (psfd.FileName != "")
             {
-                new LCPP(psfd.FileName, PresetList, PresetNameTextBox.Text, PresetCreatorTextBox.Text);
+                if (psfd.FilterIndex != 1)
+                {
+                    new LCPP(psfd.FileName.Replace(".lcpc",".lcpp"), PresetList, PresetNameTextBox.Text, PresetCreatorTextBox.Text);
+                    new LCPC(psfd.FileName.Replace(".lcpc",".lcpp"));
+                    System.IO.File.Delete(psfd.FileName.Replace(".lcpc", ".lcpp"));
+                }
+                else
+                {
+                    new LCPP(psfd.FileName, PresetList, PresetNameTextBox.Text, PresetCreatorTextBox.Text);
+                }
                 Close();
             }
         }

@@ -45,6 +45,7 @@
             this.StandardCameraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TopDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BasicPlanetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenWorldToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SpawnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EventsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ScenarioStartersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,6 +64,11 @@
             this.PreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExportPresetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.IDAssistantToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AutoSortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.GitHubIssuesPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.GitHubReleasesPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.GitHubWikipediaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CameraListBox = new System.Windows.Forms.ListBox();
             this.NewFileTimer = new System.Windows.Forms.Timer(this.components);
             this.CamIDTextBox = new System.Windows.Forms.TextBox();
@@ -95,10 +101,10 @@
             this.GroundMoveDelayNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.AirDelayLabel = new System.Windows.Forms.Label();
             this.AirMoveDelayNumericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.LOffsetVLabel = new System.Windows.Forms.Label();
-            this.LOffsetVNumericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.LOffsetLabel = new System.Windows.Forms.Label();
-            this.LOffsetNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.HeightZoomLabel = new System.Windows.Forms.Label();
+            this.HeightZoomNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.FrontZoomLabel = new System.Windows.Forms.Label();
+            this.FrontZoomNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.LowerLabel = new System.Windows.Forms.Label();
             this.UpperLabel = new System.Windows.Forms.Label();
             this.UpperNumericUpDown = new System.Windows.Forms.NumericUpDown();
@@ -115,16 +121,19 @@
             this.EventLengthNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.EventPriorityLabel = new System.Windows.Forms.Label();
             this.EventPriorityNumericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.LOffsetRPOffCheckBox = new System.Windows.Forms.CheckBox();
+            this.SharpZoomCheckBox = new System.Windows.Forms.CheckBox();
             this.EnableBlurCheckbox = new System.Windows.Forms.CheckBox();
             this.NoCollisionCheckBox = new System.Windows.Forms.CheckBox();
-            this.NoPOVCheckBox = new System.Windows.Forms.CheckBox();
+            this.DisableFirstPersonCheckBox = new System.Windows.Forms.CheckBox();
             this.GEndTransCheckBox = new System.Windows.Forms.CheckBox();
             this.GThruCheckBox = new System.Windows.Forms.CheckBox();
             this.GEndErpFrameCheckBox = new System.Windows.Forms.CheckBox();
             this.EventTransCheckBox = new System.Windows.Forms.CheckBox();
             this.EventEndTransCheckBox = new System.Windows.Forms.CheckBox();
             this.VPanCheckBox = new System.Windows.Forms.CheckBox();
+            this.MainToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.MoveUpButton = new System.Windows.Forms.Button();
+            this.MoveDownButton = new System.Windows.Forms.Button();
             this.MenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RotationTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RotationValueNumericUpDown)).BeginInit();
@@ -137,8 +146,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.MinYNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.GroundMoveDelayNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AirMoveDelayNumericUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.LOffsetVNumericUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.LOffsetNumericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HeightZoomNumericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FrontZoomNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.UpperNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LowerNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.UDownNumericUpDown)).BeginInit();
@@ -156,7 +165,8 @@
             this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileToolStripMenuItem,
             this.EditToolStripMenuItem,
-            this.ToolsToolStripMenuItem});
+            this.ToolsToolStripMenuItem,
+            this.AboutToolStripMenuItem});
             this.MenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip.Name = "MenuStrip";
             this.MenuStrip.Size = new System.Drawing.Size(624, 24);
@@ -175,6 +185,7 @@
             // 
             // NewToolStripMenuItem
             // 
+            this.NewToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.New_File;
             this.NewToolStripMenuItem.Name = "NewToolStripMenuItem";
             this.NewToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+N";
             this.NewToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -184,6 +195,7 @@
             // 
             // OpenToolStripMenuItem
             // 
+            this.OpenToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Open_File;
             this.OpenToolStripMenuItem.Name = "OpenToolStripMenuItem";
             this.OpenToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+O";
             this.OpenToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -194,6 +206,7 @@
             // SaveToolStripMenuItem
             // 
             this.SaveToolStripMenuItem.Enabled = false;
+            this.SaveToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Save_File;
             this.SaveToolStripMenuItem.Name = "SaveToolStripMenuItem";
             this.SaveToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+S ";
             this.SaveToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -204,6 +217,7 @@
             // SaveAsToolStripMenuItem
             // 
             this.SaveAsToolStripMenuItem.Enabled = false;
+            this.SaveAsToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Save_As;
             this.SaveAsToolStripMenuItem.Name = "SaveAsToolStripMenuItem";
             this.SaveAsToolStripMenuItem.ShortcutKeyDisplayString = "Shft+Ctrl+S ";
             this.SaveAsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -226,6 +240,7 @@
             // 
             // AddNewToolStripMenuItem
             // 
+            this.AddNewToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.AddCamera;
             this.AddNewToolStripMenuItem.Name = "AddNewToolStripMenuItem";
             this.AddNewToolStripMenuItem.ShortcutKeyDisplayString = "Shft+Ctrl+A";
             this.AddNewToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
@@ -235,6 +250,7 @@
             // 
             // CopyToolStripMenuItem
             // 
+            this.CopyToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Copy;
             this.CopyToolStripMenuItem.Name = "CopyToolStripMenuItem";
             this.CopyToolStripMenuItem.ShortcutKeyDisplayString = "Shft+Ctrl+C";
             this.CopyToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
@@ -245,6 +261,7 @@
             // PasteToolStripMenuItem
             // 
             this.PasteToolStripMenuItem.Enabled = false;
+            this.PasteToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Paste;
             this.PasteToolStripMenuItem.Name = "PasteToolStripMenuItem";
             this.PasteToolStripMenuItem.ShortcutKeyDisplayString = "Shft+Ctrl+V";
             this.PasteToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
@@ -260,6 +277,7 @@
             this.EventsToolStripMenuItem,
             this.OtherToolStripMenuItem,
             this.LoadPresetToolStripMenuItem});
+            this.PresetsToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Presets;
             this.PresetsToolStripMenuItem.Name = "PresetsToolStripMenuItem";
             this.PresetsToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.PresetsToolStripMenuItem.Text = "Presets";
@@ -270,7 +288,8 @@
             this.CameraAreaToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.StandardCameraToolStripMenuItem,
             this.TopDownToolStripMenuItem,
-            this.BasicPlanetToolStripMenuItem});
+            this.BasicPlanetToolStripMenuItem,
+            this.OpenWorldToolStripMenuItem});
             this.CameraAreaToolStripMenuItem.Name = "CameraAreaToolStripMenuItem";
             this.CameraAreaToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.CameraAreaToolStripMenuItem.Text = "General";
@@ -300,7 +319,17 @@
             this.BasicPlanetToolStripMenuItem.ShortcutKeyDisplayString = "[Adds 1]";
             this.BasicPlanetToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
             this.BasicPlanetToolStripMenuItem.Text = "Basic Planet";
+            this.BasicPlanetToolStripMenuItem.ToolTipText = "A Basic Planet Camera";
             this.BasicPlanetToolStripMenuItem.Click += new System.EventHandler(this.BasicPlanetToolStripMenuItem_Click_1);
+            // 
+            // OpenWorldToolStripMenuItem
+            // 
+            this.OpenWorldToolStripMenuItem.Name = "OpenWorldToolStripMenuItem";
+            this.OpenWorldToolStripMenuItem.ShortcutKeyDisplayString = "[Adds 1]";
+            this.OpenWorldToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.OpenWorldToolStripMenuItem.Text = "Open World";
+            this.OpenWorldToolStripMenuItem.ToolTipText = "An Open World Camera that rotates and moves with mario";
+            this.OpenWorldToolStripMenuItem.Click += new System.EventHandler(this.OpenWorldToolStripMenuItem_Click);
             // 
             // SpawnToolStripMenuItem
             // 
@@ -391,6 +420,7 @@
             // 
             // DeleteToolStripMenuItem
             // 
+            this.DeleteToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Delete;
             this.DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem";
             this.DeleteToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Delete";
             this.DeleteToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
@@ -404,7 +434,8 @@
             this.CheckForErrorsToolStripMenuItem,
             this.PreviewToolStripMenuItem,
             this.ExportPresetToolStripMenuItem,
-            this.IDAssistantToolStripMenuItem});
+            this.IDAssistantToolStripMenuItem,
+            this.AutoSortToolStripMenuItem});
             this.ToolsToolStripMenuItem.Enabled = false;
             this.ToolsToolStripMenuItem.Name = "ToolsToolStripMenuItem";
             this.ToolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
@@ -415,31 +446,32 @@
             this.CheckForErrorsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ErrorCheckSelectedCameraToolStripMenuItem,
             this.ErrorCheckAllCamerasToolStripMenuItem});
-            this.CheckForErrorsToolStripMenuItem.Enabled = false;
+            this.CheckForErrorsToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Check_Errors;
             this.CheckForErrorsToolStripMenuItem.Name = "CheckForErrorsToolStripMenuItem";
             this.CheckForErrorsToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
             this.CheckForErrorsToolStripMenuItem.Text = "Check for Errors";
-            this.CheckForErrorsToolStripMenuItem.ToolTipText = "Unavailable";
+            this.CheckForErrorsToolStripMenuItem.ToolTipText = "Check your cameras for errors";
             // 
             // ErrorCheckSelectedCameraToolStripMenuItem
             // 
-            this.ErrorCheckSelectedCameraToolStripMenuItem.Enabled = false;
             this.ErrorCheckSelectedCameraToolStripMenuItem.Name = "ErrorCheckSelectedCameraToolStripMenuItem";
             this.ErrorCheckSelectedCameraToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.ErrorCheckSelectedCameraToolStripMenuItem.Text = "Selected Camera";
-            this.ErrorCheckSelectedCameraToolStripMenuItem.ToolTipText = "Unavailible";
+            this.ErrorCheckSelectedCameraToolStripMenuItem.ToolTipText = "Scan the selected Camera for errors";
+            this.ErrorCheckSelectedCameraToolStripMenuItem.Click += new System.EventHandler(this.ErrorCheckSelectedCameraToolStripMenuItem_Click);
             // 
             // ErrorCheckAllCamerasToolStripMenuItem
             // 
-            this.ErrorCheckAllCamerasToolStripMenuItem.Enabled = false;
             this.ErrorCheckAllCamerasToolStripMenuItem.Name = "ErrorCheckAllCamerasToolStripMenuItem";
             this.ErrorCheckAllCamerasToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.ErrorCheckAllCamerasToolStripMenuItem.Text = "All Cameras";
-            this.ErrorCheckAllCamerasToolStripMenuItem.ToolTipText = "Unaviable";
+            this.ErrorCheckAllCamerasToolStripMenuItem.ToolTipText = "Scan All Cameras for errors";
+            this.ErrorCheckAllCamerasToolStripMenuItem.Click += new System.EventHandler(this.ErrorCheckAllCamerasToolStripMenuItem_Click);
             // 
             // PreviewToolStripMenuItem
             // 
             this.PreviewToolStripMenuItem.Enabled = false;
+            this.PreviewToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Preview;
             this.PreviewToolStripMenuItem.Name = "PreviewToolStripMenuItem";
             this.PreviewToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
             this.PreviewToolStripMenuItem.Text = "Preview";
@@ -447,6 +479,7 @@
             // 
             // ExportPresetToolStripMenuItem
             // 
+            this.ExportPresetToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Export_Preset;
             this.ExportPresetToolStripMenuItem.Name = "ExportPresetToolStripMenuItem";
             this.ExportPresetToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
             this.ExportPresetToolStripMenuItem.Text = "Export Preset";
@@ -455,6 +488,7 @@
             // 
             // IDAssistantToolStripMenuItem
             // 
+            this.IDAssistantToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Assistant;
             this.IDAssistantToolStripMenuItem.Name = "IDAssistantToolStripMenuItem";
             this.IDAssistantToolStripMenuItem.ShortcutKeyDisplayString = "Shft+Ctrl+I";
             this.IDAssistantToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
@@ -462,10 +496,59 @@
             this.IDAssistantToolStripMenuItem.ToolTipText = "Spawns a window to help you with Camera IDs";
             this.IDAssistantToolStripMenuItem.Click += new System.EventHandler(this.IDAssistantToolStripMenuItem_Click);
             // 
+            // AutoSortToolStripMenuItem
+            // 
+            this.AutoSortToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Reoganize;
+            this.AutoSortToolStripMenuItem.Name = "AutoSortToolStripMenuItem";
+            this.AutoSortToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.AutoSortToolStripMenuItem.Text = "Auto Sort";
+            this.AutoSortToolStripMenuItem.ToolTipText = "Automatically reorganizes the Camera List";
+            this.AutoSortToolStripMenuItem.Click += new System.EventHandler(this.AutoSortToolStripMenuItem_Click);
+            // 
+            // AboutToolStripMenuItem
+            // 
+            this.AboutToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.GitHubIssuesPageToolStripMenuItem,
+            this.GitHubReleasesPageToolStripMenuItem,
+            this.GitHubWikipediaToolStripMenuItem});
+            this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
+            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.AboutToolStripMenuItem.Text = "About";
+            // 
+            // GitHubIssuesPageToolStripMenuItem
+            // 
+            this.GitHubIssuesPageToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.IssuePage;
+            this.GitHubIssuesPageToolStripMenuItem.Name = "GitHubIssuesPageToolStripMenuItem";
+            this.GitHubIssuesPageToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.GitHubIssuesPageToolStripMenuItem.Text = "GitHub Issues Page";
+            this.GitHubIssuesPageToolStripMenuItem.ToolTipText = "Found a bug?\r\nClick this to go to the GitHub Issues Page.";
+            this.GitHubIssuesPageToolStripMenuItem.Click += new System.EventHandler(this.GitHubIssuesPageToolStripMenuItem_Click);
+            // 
+            // GitHubReleasesPageToolStripMenuItem
+            // 
+            this.GitHubReleasesPageToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.ReleasesPage;
+            this.GitHubReleasesPageToolStripMenuItem.Name = "GitHubReleasesPageToolStripMenuItem";
+            this.GitHubReleasesPageToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.GitHubReleasesPageToolStripMenuItem.Text = "GitHub Releases Page";
+            this.GitHubReleasesPageToolStripMenuItem.ToolTipText = "Want to check and see if you have the Latest version of Launch Cam Plus?\r\nClick h" +
+    "ere to see all Launch Cam Plus Releases.";
+            this.GitHubReleasesPageToolStripMenuItem.Click += new System.EventHandler(this.GitHubReleasesPageToolStripMenuItem_Click);
+            // 
+            // GitHubWikipediaToolStripMenuItem
+            // 
+            this.GitHubWikipediaToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.WikiPage;
+            this.GitHubWikipediaToolStripMenuItem.Name = "GitHubWikipediaToolStripMenuItem";
+            this.GitHubWikipediaToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.GitHubWikipediaToolStripMenuItem.Text = "GitHub Wikipedia";
+            this.GitHubWikipediaToolStripMenuItem.ToolTipText = "Want to know more about how to use Launch Cam Plus?\r\nRead the Launch Cam Plus Wik" +
+    "ipedia by clicking this link";
+            this.GitHubWikipediaToolStripMenuItem.Click += new System.EventHandler(this.GitHubWikipediaToolStripMenuItem_Click);
+            // 
             // CameraListBox
             // 
             this.CameraListBox.Enabled = false;
             this.CameraListBox.FormattingEnabled = true;
+            this.CameraListBox.HorizontalScrollbar = true;
             this.CameraListBox.Items.AddRange(new object[] {
             "No BCAM loaded",
             "-------------------------",
@@ -483,8 +566,10 @@
             " "});
             this.CameraListBox.Location = new System.Drawing.Point(12, 27);
             this.CameraListBox.Name = "CameraListBox";
-            this.CameraListBox.Size = new System.Drawing.Size(207, 407);
+            this.CameraListBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.CameraListBox.Size = new System.Drawing.Size(207, 368);
             this.CameraListBox.TabIndex = 1;
+            this.MainToolTip.SetToolTip(this.CameraListBox, "Click to select a Camera");
             this.CameraListBox.SelectedIndexChanged += new System.EventHandler(this.CameraListBox_SelectedIndexChanged);
             // 
             // NewFileTimer
@@ -498,6 +583,8 @@
             this.CamIDTextBox.Name = "CamIDTextBox";
             this.CamIDTextBox.Size = new System.Drawing.Size(321, 20);
             this.CamIDTextBox.TabIndex = 2;
+            this.MainToolTip.SetToolTip(this.CamIDTextBox, "Camera Identification.\r\nUsed by the game to tell what this camera is used for.\r\nE" +
+        "xample: \"c:0000\" is used by a Camera Area with Camera ID 0.");
             this.CamIDTextBox.TextChanged += new System.EventHandler(this.CamIDTextBox_TextChanged);
             // 
             // IDLabel
@@ -508,6 +595,8 @@
             this.IDLabel.Size = new System.Drawing.Size(60, 13);
             this.IDLabel.TabIndex = 3;
             this.IDLabel.Text = "Camera ID:";
+            this.MainToolTip.SetToolTip(this.IDLabel, "Camera Identification.\r\nUsed by the game to tell what this camera is used for.\r\nE" +
+        "xample: \"c:0000\" is used by a Camera Area with Camera ID 0.\r\n");
             // 
             // CamTypeComboBox
             // 
@@ -518,6 +607,7 @@
             this.CamTypeComboBox.Name = "CamTypeComboBox";
             this.CamTypeComboBox.Size = new System.Drawing.Size(308, 21);
             this.CamTypeComboBox.TabIndex = 4;
+            this.MainToolTip.SetToolTip(this.CamTypeComboBox, "Camera Type.\r\nThe standard option is CAM_TYPE_XZ_PARA");
             this.CamTypeComboBox.SelectedIndexChanged += new System.EventHandler(this.CamTypeComboBox_SelectedIndexChanged);
             // 
             // TypeLabel
@@ -528,6 +618,7 @@
             this.TypeLabel.Size = new System.Drawing.Size(73, 13);
             this.TypeLabel.TabIndex = 5;
             this.TypeLabel.Text = "Camera Type:";
+            this.MainToolTip.SetToolTip(this.TypeLabel, "Camera Type.\r\nThe standard option is CAM_TYPE_XZ_PARA");
             // 
             // CopyTimer
             // 
@@ -544,6 +635,7 @@
             this.RotationTrackBar.SmallChange = 5;
             this.RotationTrackBar.TabIndex = 6;
             this.RotationTrackBar.TickFrequency = 45;
+            this.MainToolTip.SetToolTip(this.RotationTrackBar, "Change the current angle with this");
             this.RotationTrackBar.Value = 180;
             this.RotationTrackBar.Scroll += new System.EventHandler(this.RotationTrackBar_Scroll);
             // 
@@ -560,6 +652,8 @@
             this.RotationAxisComboBox.Name = "RotationAxisComboBox";
             this.RotationAxisComboBox.Size = new System.Drawing.Size(73, 21);
             this.RotationAxisComboBox.TabIndex = 7;
+            this.MainToolTip.SetToolTip(this.RotationAxisComboBox, "Angle Axis.\r\nX Axis will rotate Up/Down\r\nY Axis will rotate Left/Right\r\nZ Axis wi" +
+        "ll Roll the camera\r\n");
             this.RotationAxisComboBox.SelectedIndexChanged += new System.EventHandler(this.RotationAxisComboBox_SelectedIndexChanged);
             // 
             // RotationValueNumericUpDown
@@ -580,6 +674,7 @@
             this.RotationValueNumericUpDown.Name = "RotationValueNumericUpDown";
             this.RotationValueNumericUpDown.Size = new System.Drawing.Size(73, 20);
             this.RotationValueNumericUpDown.TabIndex = 8;
+            this.MainToolTip.SetToolTip(this.RotationValueNumericUpDown, "Shows the exact number that will be used for this angle");
             this.RotationValueNumericUpDown.ValueChanged += new System.EventHandler(this.RotationValueNumericUpDown_ValueChanged);
             // 
             // RotationDegRadioButton
@@ -593,6 +688,7 @@
             this.RotationDegRadioButton.TabIndex = 9;
             this.RotationDegRadioButton.TabStop = true;
             this.RotationDegRadioButton.Text = "Degrees";
+            this.MainToolTip.SetToolTip(this.RotationDegRadioButton, "Degrees:\r\n0, 90, 180, etc.");
             this.RotationDegRadioButton.UseVisualStyleBackColor = true;
             this.RotationDegRadioButton.CheckedChanged += new System.EventHandler(this.RotationDegRadioButton_CheckedChanged);
             // 
@@ -605,6 +701,7 @@
             this.RotationRadRadioButton.Size = new System.Drawing.Size(64, 17);
             this.RotationRadRadioButton.TabIndex = 10;
             this.RotationRadRadioButton.Text = "Radians";
+            this.MainToolTip.SetToolTip(this.RotationRadRadioButton, "Radians:\r\n0, 1.5708, 3.14159, etc.");
             this.RotationRadRadioButton.UseVisualStyleBackColor = true;
             this.RotationRadRadioButton.CheckedChanged += new System.EventHandler(this.RotationRadRadioButton_CheckedChanged);
             // 
@@ -620,6 +717,9 @@
             this.CamZoomNumericUpDown.Name = "CamZoomNumericUpDown";
             this.CamZoomNumericUpDown.Size = new System.Drawing.Size(70, 20);
             this.CamZoomNumericUpDown.TabIndex = 11;
+            this.MainToolTip.SetToolTip(this.CamZoomNumericUpDown, "Camera Zoom\r\nDetermines how far away the camera will be from the Fixpoint\r\nExampl" +
+        "e: 1000 with CAM_TYPE_XZ_PARA will have the camera\r\nbe close to the player, but " +
+        "not too close.");
             this.CamZoomNumericUpDown.ValueChanged += new System.EventHandler(this.CamZoomumericUpDown_ValueChanged);
             // 
             // ZoomLabel
@@ -630,6 +730,9 @@
             this.ZoomLabel.Size = new System.Drawing.Size(37, 13);
             this.ZoomLabel.TabIndex = 12;
             this.ZoomLabel.Text = "Zoom:";
+            this.MainToolTip.SetToolTip(this.ZoomLabel, "Camera Zoom\r\nDetermines how far away the camera will be from the Fixpoint\r\nExampl" +
+        "e: 1000 with CAM_TYPE_XZ_PARA will have the camera\r\nbe close to the player, but " +
+        "not too close.");
             // 
             // FOVLabel
             // 
@@ -667,6 +770,8 @@
             this.CamIntLabel.Size = new System.Drawing.Size(90, 13);
             this.CamIntLabel.TabIndex = 16;
             this.CamIntLabel.Text = "Transition Speed:";
+            this.MainToolTip.SetToolTip(this.CamIntLabel, "Transition Speed\r\nSmaller numbers mean that the transition is faster.\r\n100 means " +
+        "it takes one second to change.");
             // 
             // CamIntNumericUpDown
             // 
@@ -680,6 +785,8 @@
             this.CamIntNumericUpDown.Name = "CamIntNumericUpDown";
             this.CamIntNumericUpDown.Size = new System.Drawing.Size(69, 20);
             this.CamIntNumericUpDown.TabIndex = 15;
+            this.MainToolTip.SetToolTip(this.CamIntNumericUpDown, "Transition Speed\r\nSmaller numbers mean that the transition is faster.\r\n100 means " +
+        "it takes one second to change.");
             this.CamIntNumericUpDown.ValueChanged += new System.EventHandler(this.CamIntnumericUpDown_ValueChanged);
             // 
             // CamEndIntLabel
@@ -690,6 +797,8 @@
             this.CamEndIntLabel.Size = new System.Drawing.Size(112, 13);
             this.CamEndIntLabel.TabIndex = 18;
             this.CamEndIntLabel.Text = "End Transition Speed:";
+            this.MainToolTip.SetToolTip(this.CamEndIntLabel, "End Transition Speed\r\nSmaller numbers mean that the transition is faster.\r\n100 me" +
+        "ans it takes one second to deactivate");
             // 
             // CamEndIntNumericUpDown
             // 
@@ -713,6 +822,7 @@
             this.GndIntLabel.Size = new System.Drawing.Size(79, 13);
             this.GndIntLabel.TabIndex = 20;
             this.GndIntLabel.Text = "Ground Speed:";
+            this.MainToolTip.SetToolTip(this.GndIntLabel, "Ground Speed\r\nUnconfirmed");
             // 
             // GndIntNumericUpDown
             // 
@@ -726,6 +836,7 @@
             this.GndIntNumericUpDown.Name = "GndIntNumericUpDown";
             this.GndIntNumericUpDown.Size = new System.Drawing.Size(69, 20);
             this.GndIntNumericUpDown.TabIndex = 19;
+            this.MainToolTip.SetToolTip(this.GndIntNumericUpDown, "Ground Speed\r\nUnconfirmed");
             this.GndIntNumericUpDown.ValueChanged += new System.EventHandler(this.GndIntNumericUpDown_ValueChanged);
             // 
             // AllowDPadRotationCheckBox
@@ -734,9 +845,10 @@
             this.AllowDPadRotationCheckBox.Enabled = false;
             this.AllowDPadRotationCheckBox.Location = new System.Drawing.Point(356, 132);
             this.AllowDPadRotationCheckBox.Name = "AllowDPadRotationCheckBox";
-            this.AllowDPadRotationCheckBox.Size = new System.Drawing.Size(119, 17);
+            this.AllowDPadRotationCheckBox.Size = new System.Drawing.Size(127, 17);
             this.AllowDPadRotationCheckBox.TabIndex = 21;
-            this.AllowDPadRotationCheckBox.Text = "Allow DPad rotation";
+            this.AllowDPadRotationCheckBox.Text = "Enable DPad rotation";
+            this.MainToolTip.SetToolTip(this.AllowDPadRotationCheckBox, "Enable/Disable the ability to rotate the Camera using the DPAD");
             this.AllowDPadRotationCheckBox.UseVisualStyleBackColor = true;
             this.AllowDPadRotationCheckBox.CheckedChanged += new System.EventHandler(this.AllowDPadRotationCheckBox_CheckedChanged);
             // 
@@ -790,11 +902,12 @@
             // 
             this.Num2CheckBox.AutoSize = true;
             this.Num2CheckBox.Enabled = false;
-            this.Num2CheckBox.Location = new System.Drawing.Point(490, 132);
+            this.Num2CheckBox.Location = new System.Drawing.Point(433, 362);
             this.Num2CheckBox.Name = "Num2CheckBox";
-            this.Num2CheckBox.Size = new System.Drawing.Size(109, 17);
+            this.Num2CheckBox.Size = new System.Drawing.Size(101, 17);
             this.Num2CheckBox.TabIndex = 26;
-            this.Num2CheckBox.Text = "Unknown [Num2]";
+            this.Num2CheckBox.Text = "No DPad Reset";
+            this.MainToolTip.SetToolTip(this.Num2CheckBox, "Disable/Enable the camera resetting it\'s DPad Rotation");
             this.Num2CheckBox.UseVisualStyleBackColor = true;
             this.Num2CheckBox.CheckedChanged += new System.EventHandler(this.Num2CheckBox_CheckedChanged);
             // 
@@ -806,6 +919,7 @@
             this.GroundMoveDelayLabel.Size = new System.Drawing.Size(105, 13);
             this.GroundMoveDelayLabel.TabIndex = 28;
             this.GroundMoveDelayLabel.Text = "Ground Move Delay:";
+            this.MainToolTip.SetToolTip(this.GroundMoveDelayLabel, "Ground Move Delay\r\nUnconfirmed");
             // 
             // GroundMoveDelayNumericUpDown
             // 
@@ -819,6 +933,7 @@
             this.GroundMoveDelayNumericUpDown.Name = "GroundMoveDelayNumericUpDown";
             this.GroundMoveDelayNumericUpDown.Size = new System.Drawing.Size(69, 20);
             this.GroundMoveDelayNumericUpDown.TabIndex = 27;
+            this.MainToolTip.SetToolTip(this.GroundMoveDelayNumericUpDown, "Ground Move Delay\r\nUnconfirmed");
             this.GroundMoveDelayNumericUpDown.ValueChanged += new System.EventHandler(this.GroundMoveDelayNumericUpDown_ValueChanged);
             // 
             // AirDelayLabel
@@ -844,51 +959,57 @@
             this.AirMoveDelayNumericUpDown.TabIndex = 29;
             this.AirMoveDelayNumericUpDown.ValueChanged += new System.EventHandler(this.AirMoveDelayNumericUpDown_ValueChanged);
             // 
-            // LOffsetVLabel
+            // HeightZoomLabel
             // 
-            this.LOffsetVLabel.AutoSize = true;
-            this.LOffsetVLabel.Location = new System.Drawing.Point(420, 263);
-            this.LOffsetVLabel.Name = "LOffsetVLabel";
-            this.LOffsetVLabel.Size = new System.Drawing.Size(106, 13);
-            this.LOffsetVLabel.TabIndex = 34;
-            this.LOffsetVLabel.Text = "Unknown [LOffsetV]:";
+            this.HeightZoomLabel.AutoSize = true;
+            this.HeightZoomLabel.Location = new System.Drawing.Point(420, 263);
+            this.HeightZoomLabel.Name = "HeightZoomLabel";
+            this.HeightZoomLabel.Size = new System.Drawing.Size(71, 13);
+            this.HeightZoomLabel.TabIndex = 34;
+            this.HeightZoomLabel.Text = "Height Zoom:";
+            this.MainToolTip.SetToolTip(this.HeightZoomLabel, resources.GetString("HeightZoomLabel.ToolTip"));
             // 
-            // LOffsetVNumericUpDown
+            // HeightZoomNumericUpDown
             // 
-            this.LOffsetVNumericUpDown.Enabled = false;
-            this.LOffsetVNumericUpDown.Location = new System.Drawing.Point(532, 261);
-            this.LOffsetVNumericUpDown.Maximum = new decimal(new int[] {
+            this.HeightZoomNumericUpDown.Enabled = false;
+            this.HeightZoomNumericUpDown.Location = new System.Drawing.Point(532, 261);
+            this.HeightZoomNumericUpDown.Maximum = new decimal(new int[] {
             10000000,
             0,
             0,
             0});
-            this.LOffsetVNumericUpDown.Name = "LOffsetVNumericUpDown";
-            this.LOffsetVNumericUpDown.Size = new System.Drawing.Size(70, 20);
-            this.LOffsetVNumericUpDown.TabIndex = 33;
-            this.LOffsetVNumericUpDown.ValueChanged += new System.EventHandler(this.LOffsetVNumericUpDown_ValueChanged);
+            this.HeightZoomNumericUpDown.Name = "HeightZoomNumericUpDown";
+            this.HeightZoomNumericUpDown.Size = new System.Drawing.Size(70, 20);
+            this.HeightZoomNumericUpDown.TabIndex = 33;
+            this.MainToolTip.SetToolTip(this.HeightZoomNumericUpDown, resources.GetString("HeightZoomNumericUpDown.ToolTip"));
+            this.HeightZoomNumericUpDown.ValueChanged += new System.EventHandler(this.HeightZoomNumericUpDown_ValueChanged);
             // 
-            // LOffsetLabel
+            // FrontZoomLabel
             // 
-            this.LOffsetLabel.AutoSize = true;
-            this.LOffsetLabel.Location = new System.Drawing.Point(226, 263);
-            this.LOffsetLabel.Name = "LOffsetLabel";
-            this.LOffsetLabel.Size = new System.Drawing.Size(99, 13);
-            this.LOffsetLabel.TabIndex = 32;
-            this.LOffsetLabel.Text = "Unknown [LOffset]:";
+            this.FrontZoomLabel.AutoSize = true;
+            this.FrontZoomLabel.Location = new System.Drawing.Point(226, 263);
+            this.FrontZoomLabel.Name = "FrontZoomLabel";
+            this.FrontZoomLabel.Size = new System.Drawing.Size(64, 13);
+            this.FrontZoomLabel.TabIndex = 32;
+            this.FrontZoomLabel.Text = "Front Zoom:";
+            this.MainToolTip.SetToolTip(this.FrontZoomLabel, "Front Zoom\r\nThe Distance ahead of Mario to look at.\r\nHigher numbers means that th" +
+        "e camera will show further ahead of mario.\r\nUsed in CAM_TYPE_FOLLOW");
             // 
-            // LOffsetNumericUpDown
+            // FrontZoomNumericUpDown
             // 
-            this.LOffsetNumericUpDown.Enabled = false;
-            this.LOffsetNumericUpDown.Location = new System.Drawing.Point(345, 261);
-            this.LOffsetNumericUpDown.Maximum = new decimal(new int[] {
+            this.FrontZoomNumericUpDown.Enabled = false;
+            this.FrontZoomNumericUpDown.Location = new System.Drawing.Point(345, 261);
+            this.FrontZoomNumericUpDown.Maximum = new decimal(new int[] {
             10000000,
             0,
             0,
             0});
-            this.LOffsetNumericUpDown.Name = "LOffsetNumericUpDown";
-            this.LOffsetNumericUpDown.Size = new System.Drawing.Size(69, 20);
-            this.LOffsetNumericUpDown.TabIndex = 31;
-            this.LOffsetNumericUpDown.ValueChanged += new System.EventHandler(this.LOffsetNumericUpDown_ValueChanged);
+            this.FrontZoomNumericUpDown.Name = "FrontZoomNumericUpDown";
+            this.FrontZoomNumericUpDown.Size = new System.Drawing.Size(69, 20);
+            this.FrontZoomNumericUpDown.TabIndex = 31;
+            this.MainToolTip.SetToolTip(this.FrontZoomNumericUpDown, "Front Zoom\r\nThe Distance ahead of Mario to look at.\r\nHigher numbers means that th" +
+        "e camera will show further ahead of mario.\r\nUsed in CAM_TYPE_FOLLOW");
+            this.FrontZoomNumericUpDown.ValueChanged += new System.EventHandler(this.FrontZoomNumericUpDown_ValueChanged);
             // 
             // LowerLabel
             // 
@@ -1012,6 +1133,7 @@
             this.ZNumericUpDown.Name = "ZNumericUpDown";
             this.ZNumericUpDown.Size = new System.Drawing.Size(102, 20);
             this.ZNumericUpDown.TabIndex = 45;
+            this.MainToolTip.SetToolTip(this.ZNumericUpDown, "Z Position");
             this.ZNumericUpDown.ValueChanged += new System.EventHandler(this.ZNumericUpDown_ValueChanged);
             // 
             // YNumericUpDown
@@ -1032,6 +1154,7 @@
             this.YNumericUpDown.Name = "YNumericUpDown";
             this.YNumericUpDown.Size = new System.Drawing.Size(102, 20);
             this.YNumericUpDown.TabIndex = 44;
+            this.MainToolTip.SetToolTip(this.YNumericUpDown, "Y Position");
             this.YNumericUpDown.ValueChanged += new System.EventHandler(this.YNumericUpDown_ValueChanged);
             // 
             // XNumericUpDown
@@ -1052,6 +1175,7 @@
             this.XNumericUpDown.Name = "XNumericUpDown";
             this.XNumericUpDown.Size = new System.Drawing.Size(102, 20);
             this.XNumericUpDown.TabIndex = 43;
+            this.MainToolTip.SetToolTip(this.XNumericUpDown, "X position");
             this.XNumericUpDown.ValueChanged += new System.EventHandler(this.XNumericUpDown_ValueChanged);
             // 
             // CoordinateComboBox
@@ -1064,11 +1188,12 @@
             "World Point",
             "Player Offset",
             "Unknown [Up]",
-            "VPan Axis"});
+            "Panning Bounds"});
             this.CoordinateComboBox.Location = new System.Drawing.Point(6, 16);
             this.CoordinateComboBox.Name = "CoordinateComboBox";
             this.CoordinateComboBox.Size = new System.Drawing.Size(102, 21);
             this.CoordinateComboBox.TabIndex = 43;
+            this.MainToolTip.SetToolTip(this.CoordinateComboBox, resources.GetString("CoordinateComboBox.ToolTip"));
             this.CoordinateComboBox.SelectedIndexChanged += new System.EventHandler(this.CoordinateComboBox_SelectedIndexChanged);
             // 
             // DisableResetCheckBox
@@ -1080,6 +1205,7 @@
             this.DisableResetCheckBox.Size = new System.Drawing.Size(92, 17);
             this.DisableResetCheckBox.TabIndex = 43;
             this.DisableResetCheckBox.Text = "Disable Reset";
+            this.MainToolTip.SetToolTip(this.DisableResetCheckBox, "Disables the Camera angle from resetting.");
             this.DisableResetCheckBox.UseVisualStyleBackColor = true;
             this.DisableResetCheckBox.CheckedChanged += new System.EventHandler(this.DisableResetCheckBox_CheckedChanged);
             // 
@@ -1091,6 +1217,7 @@
             this.EventFrameLabel.Size = new System.Drawing.Size(74, 13);
             this.EventFrameLabel.TabIndex = 45;
             this.EventFrameLabel.Text = "Event Length:";
+            this.MainToolTip.SetToolTip(this.EventFrameLabel, "Length of the Event.\r\n100 = 1 second");
             // 
             // EventLengthNumericUpDown
             // 
@@ -1109,6 +1236,7 @@
             this.EventLengthNumericUpDown.Name = "EventLengthNumericUpDown";
             this.EventLengthNumericUpDown.Size = new System.Drawing.Size(69, 20);
             this.EventLengthNumericUpDown.TabIndex = 44;
+            this.MainToolTip.SetToolTip(this.EventLengthNumericUpDown, "Length of the Event.\r\n100 = 1 second");
             this.EventLengthNumericUpDown.ValueChanged += new System.EventHandler(this.EventLengthNumericUpDown_ValueChanged);
             // 
             // EventPriorityLabel
@@ -1119,6 +1247,8 @@
             this.EventPriorityLabel.Size = new System.Drawing.Size(72, 13);
             this.EventPriorityLabel.TabIndex = 47;
             this.EventPriorityLabel.Text = "Event Priority:";
+            this.MainToolTip.SetToolTip(this.EventPriorityLabel, "Priority of the current Event\r\nHigher Priorities will overthrow already playing e" +
+        "vents with lower Priority\r\n");
             // 
             // EventPriorityNumericUpDown
             // 
@@ -1132,19 +1262,22 @@
             this.EventPriorityNumericUpDown.Name = "EventPriorityNumericUpDown";
             this.EventPriorityNumericUpDown.Size = new System.Drawing.Size(34, 20);
             this.EventPriorityNumericUpDown.TabIndex = 46;
+            this.MainToolTip.SetToolTip(this.EventPriorityNumericUpDown, "Priority of the current Event\r\nHigher Priorities will overthrow already playing e" +
+        "vents with lower Priority");
             this.EventPriorityNumericUpDown.ValueChanged += new System.EventHandler(this.EventPriorityNumericUpDown_ValueChanged);
             // 
-            // LOffsetRPOffCheckBox
+            // SharpZoomCheckBox
             // 
-            this.LOffsetRPOffCheckBox.AutoSize = true;
-            this.LOffsetRPOffCheckBox.Enabled = false;
-            this.LOffsetRPOffCheckBox.Location = new System.Drawing.Point(433, 339);
-            this.LOffsetRPOffCheckBox.Name = "LOffsetRPOffCheckBox";
-            this.LOffsetRPOffCheckBox.Size = new System.Drawing.Size(144, 17);
-            this.LOffsetRPOffCheckBox.TabIndex = 48;
-            this.LOffsetRPOffCheckBox.Text = "Unknown [LOffsetRPOff]";
-            this.LOffsetRPOffCheckBox.UseVisualStyleBackColor = true;
-            this.LOffsetRPOffCheckBox.CheckedChanged += new System.EventHandler(this.LOffsetRPOffCheckBox_CheckedChanged);
+            this.SharpZoomCheckBox.AutoSize = true;
+            this.SharpZoomCheckBox.Enabled = false;
+            this.SharpZoomCheckBox.Location = new System.Drawing.Point(433, 339);
+            this.SharpZoomCheckBox.Name = "SharpZoomCheckBox";
+            this.SharpZoomCheckBox.Size = new System.Drawing.Size(137, 17);
+            this.SharpZoomCheckBox.TabIndex = 48;
+            this.SharpZoomCheckBox.Text = "Sharp Zoom Movement";
+            this.MainToolTip.SetToolTip(this.SharpZoomCheckBox, "Makes the movement done with Front Zoom and Height Zoom not be smooth");
+            this.SharpZoomCheckBox.UseVisualStyleBackColor = true;
+            this.SharpZoomCheckBox.CheckedChanged += new System.EventHandler(this.SharpZoomCheckBox_CheckedChanged);
             // 
             // EnableBlurCheckbox
             // 
@@ -1155,6 +1288,7 @@
             this.EnableBlurCheckbox.Size = new System.Drawing.Size(80, 17);
             this.EnableBlurCheckbox.TabIndex = 49;
             this.EnableBlurCheckbox.Text = "Enable Blur";
+            this.MainToolTip.SetToolTip(this.EnableBlurCheckbox, "Enables a Blurry effect when moving the camera");
             this.EnableBlurCheckbox.UseVisualStyleBackColor = true;
             this.EnableBlurCheckbox.CheckedChanged += new System.EventHandler(this.EnableBlurCheckbox_CheckedChanged);
             // 
@@ -1167,20 +1301,22 @@
             this.NoCollisionCheckBox.Size = new System.Drawing.Size(82, 17);
             this.NoCollisionCheckBox.TabIndex = 50;
             this.NoCollisionCheckBox.Text = "Collisionless";
+            this.MainToolTip.SetToolTip(this.NoCollisionCheckBox, "Allows the camera to go through walls");
             this.NoCollisionCheckBox.UseVisualStyleBackColor = true;
             this.NoCollisionCheckBox.CheckedChanged += new System.EventHandler(this.NoCollisionCheckBox_CheckedChanged);
             // 
-            // NoPOVCheckBox
+            // DisableFirstPersonCheckBox
             // 
-            this.NoPOVCheckBox.AutoSize = true;
-            this.NoPOVCheckBox.Enabled = false;
-            this.NoPOVCheckBox.Location = new System.Drawing.Point(433, 362);
-            this.NoPOVCheckBox.Name = "NoPOVCheckBox";
-            this.NoPOVCheckBox.Size = new System.Drawing.Size(101, 17);
-            this.NoPOVCheckBox.TabIndex = 51;
-            this.NoPOVCheckBox.Text = "No PointOfView";
-            this.NoPOVCheckBox.UseVisualStyleBackColor = true;
-            this.NoPOVCheckBox.CheckedChanged += new System.EventHandler(this.NoPOVCheckBox_CheckedChanged);
+            this.DisableFirstPersonCheckBox.AutoSize = true;
+            this.DisableFirstPersonCheckBox.Enabled = false;
+            this.DisableFirstPersonCheckBox.Location = new System.Drawing.Point(489, 132);
+            this.DisableFirstPersonCheckBox.Name = "DisableFirstPersonCheckBox";
+            this.DisableFirstPersonCheckBox.Size = new System.Drawing.Size(119, 17);
+            this.DisableFirstPersonCheckBox.TabIndex = 51;
+            this.DisableFirstPersonCheckBox.Text = "Disable First Person";
+            this.MainToolTip.SetToolTip(this.DisableFirstPersonCheckBox, "Enable/Disable the ability to use First Person View\r\n");
+            this.DisableFirstPersonCheckBox.UseVisualStyleBackColor = true;
+            this.DisableFirstPersonCheckBox.CheckedChanged += new System.EventHandler(this.DisableFirstPersonCheckBox_CheckedChanged);
             // 
             // GEndTransCheckBox
             // 
@@ -1191,6 +1327,7 @@
             this.GEndTransCheckBox.Size = new System.Drawing.Size(78, 17);
             this.GEndTransCheckBox.TabIndex = 54;
             this.GEndTransCheckBox.Text = "CamEndInt";
+            this.MainToolTip.SetToolTip(this.GEndTransCheckBox, "Unknown");
             this.GEndTransCheckBox.UseVisualStyleBackColor = true;
             this.GEndTransCheckBox.CheckedChanged += new System.EventHandler(this.GEndTransCheckBox_CheckedChanged);
             // 
@@ -1203,6 +1340,7 @@
             this.GThruCheckBox.Size = new System.Drawing.Size(48, 17);
             this.GThruCheckBox.TabIndex = 53;
             this.GThruCheckBox.Text = "Thru";
+            this.MainToolTip.SetToolTip(this.GThruCheckBox, "Unknown");
             this.GThruCheckBox.UseVisualStyleBackColor = true;
             this.GThruCheckBox.CheckedChanged += new System.EventHandler(this.GThruCheckBox_CheckedChanged);
             // 
@@ -1215,6 +1353,7 @@
             this.GEndErpFrameCheckBox.Size = new System.Drawing.Size(90, 17);
             this.GEndErpFrameCheckBox.TabIndex = 52;
             this.GEndErpFrameCheckBox.Text = "EndErpFrame";
+            this.MainToolTip.SetToolTip(this.GEndErpFrameCheckBox, "Unknown");
             this.GEndErpFrameCheckBox.UseVisualStyleBackColor = true;
             this.GEndErpFrameCheckBox.CheckedChanged += new System.EventHandler(this.GEndErpFrameCheckBox_CheckedChanged);
             // 
@@ -1227,6 +1366,7 @@
             this.EventTransCheckBox.Size = new System.Drawing.Size(75, 17);
             this.EventTransCheckBox.TabIndex = 57;
             this.EventTransCheckBox.Text = "Use Trans";
+            this.MainToolTip.SetToolTip(this.EventTransCheckBox, "Enable the use of the Transition Speed\r\n(Event Cameras)");
             this.EventTransCheckBox.UseVisualStyleBackColor = true;
             this.EventTransCheckBox.CheckedChanged += new System.EventHandler(this.EventTransCheckBox_CheckedChanged);
             // 
@@ -1239,6 +1379,7 @@
             this.EventEndTransCheckBox.Size = new System.Drawing.Size(97, 17);
             this.EventEndTransCheckBox.TabIndex = 56;
             this.EventEndTransCheckBox.Text = "Use End Trans";
+            this.MainToolTip.SetToolTip(this.EventEndTransCheckBox, "Enable the use of the End Transition Speed\r\n(Event Cameras)");
             this.EventEndTransCheckBox.UseVisualStyleBackColor = true;
             this.EventEndTransCheckBox.CheckedChanged += new System.EventHandler(this.EventEndTransCheckBox_CheckedChanged);
             // 
@@ -1248,27 +1389,64 @@
             this.VPanCheckBox.Enabled = false;
             this.VPanCheckBox.Location = new System.Drawing.Point(345, 385);
             this.VPanCheckBox.Name = "VPanCheckBox";
-            this.VPanCheckBox.Size = new System.Drawing.Size(71, 17);
+            this.VPanCheckBox.Size = new System.Drawing.Size(84, 17);
             this.VPanCheckBox.TabIndex = 55;
-            this.VPanCheckBox.Text = "VPanUse";
+            this.VPanCheckBox.Text = "Pan Bounds";
+            this.MainToolTip.SetToolTip(this.VPanCheckBox, "Toggles the use of the Panning Bounds\r\nPanning bounds determind how far mario can" +
+        " move before the camera moves to catch up\r\n");
             this.VPanCheckBox.UseVisualStyleBackColor = true;
             this.VPanCheckBox.CheckedChanged += new System.EventHandler(this.VPanCheckBox_CheckedChanged);
+            // 
+            // MainToolTip
+            // 
+            this.MainToolTip.AutomaticDelay = 100;
+            this.MainToolTip.AutoPopDelay = 15000;
+            this.MainToolTip.InitialDelay = 1000;
+            this.MainToolTip.ReshowDelay = 200;
+            this.MainToolTip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.MainToolTip.ToolTipTitle = "Help";
+            // 
+            // MoveUpButton
+            // 
+            this.MoveUpButton.Enabled = false;
+            this.MoveUpButton.Location = new System.Drawing.Point(12, 406);
+            this.MoveUpButton.Name = "MoveUpButton";
+            this.MoveUpButton.Size = new System.Drawing.Size(100, 23);
+            this.MoveUpButton.TabIndex = 58;
+            this.MoveUpButton.Text = "Move Up";
+            this.MainToolTip.SetToolTip(this.MoveUpButton, "Move the selected camera up");
+            this.MoveUpButton.UseVisualStyleBackColor = true;
+            this.MoveUpButton.Click += new System.EventHandler(this.MoveUpButton_Click);
+            // 
+            // MoveDownButton
+            // 
+            this.MoveDownButton.Enabled = false;
+            this.MoveDownButton.Location = new System.Drawing.Point(118, 406);
+            this.MoveDownButton.Name = "MoveDownButton";
+            this.MoveDownButton.Size = new System.Drawing.Size(101, 23);
+            this.MoveDownButton.TabIndex = 59;
+            this.MoveDownButton.Text = "Move Down";
+            this.MainToolTip.SetToolTip(this.MoveDownButton, "Move the selected Camera down");
+            this.MoveDownButton.UseVisualStyleBackColor = true;
+            this.MoveDownButton.Click += new System.EventHandler(this.MoveDownButton_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 441);
+            this.Controls.Add(this.MoveDownButton);
+            this.Controls.Add(this.MoveUpButton);
             this.Controls.Add(this.EventTransCheckBox);
             this.Controls.Add(this.EventEndTransCheckBox);
             this.Controls.Add(this.VPanCheckBox);
             this.Controls.Add(this.GEndTransCheckBox);
             this.Controls.Add(this.GThruCheckBox);
             this.Controls.Add(this.GEndErpFrameCheckBox);
-            this.Controls.Add(this.NoPOVCheckBox);
+            this.Controls.Add(this.DisableFirstPersonCheckBox);
             this.Controls.Add(this.NoCollisionCheckBox);
             this.Controls.Add(this.EnableBlurCheckbox);
-            this.Controls.Add(this.LOffsetRPOffCheckBox);
+            this.Controls.Add(this.SharpZoomCheckBox);
             this.Controls.Add(this.EventPriorityLabel);
             this.Controls.Add(this.EventPriorityNumericUpDown);
             this.Controls.Add(this.EventFrameLabel);
@@ -1281,10 +1459,10 @@
             this.Controls.Add(this.LowerLabel);
             this.Controls.Add(this.UpperLabel);
             this.Controls.Add(this.UpperNumericUpDown);
-            this.Controls.Add(this.LOffsetVLabel);
-            this.Controls.Add(this.LOffsetVNumericUpDown);
-            this.Controls.Add(this.LOffsetLabel);
-            this.Controls.Add(this.LOffsetNumericUpDown);
+            this.Controls.Add(this.HeightZoomLabel);
+            this.Controls.Add(this.HeightZoomNumericUpDown);
+            this.Controls.Add(this.FrontZoomLabel);
+            this.Controls.Add(this.FrontZoomNumericUpDown);
             this.Controls.Add(this.AirDelayLabel);
             this.Controls.Add(this.AirMoveDelayNumericUpDown);
             this.Controls.Add(this.GroundMoveDelayLabel);
@@ -1338,8 +1516,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.MinYNumericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.GroundMoveDelayNumericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.AirMoveDelayNumericUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.LOffsetVNumericUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.LOffsetNumericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HeightZoomNumericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FrontZoomNumericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.UpperNumericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.LowerNumericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.UDownNumericUpDown)).EndInit();
@@ -1410,10 +1588,10 @@
         private System.Windows.Forms.NumericUpDown GroundMoveDelayNumericUpDown;
         private System.Windows.Forms.Label AirDelayLabel;
         private System.Windows.Forms.NumericUpDown AirMoveDelayNumericUpDown;
-        private System.Windows.Forms.Label LOffsetVLabel;
-        private System.Windows.Forms.NumericUpDown LOffsetVNumericUpDown;
-        private System.Windows.Forms.Label LOffsetLabel;
-        private System.Windows.Forms.NumericUpDown LOffsetNumericUpDown;
+        private System.Windows.Forms.Label HeightZoomLabel;
+        private System.Windows.Forms.NumericUpDown HeightZoomNumericUpDown;
+        private System.Windows.Forms.Label FrontZoomLabel;
+        private System.Windows.Forms.NumericUpDown FrontZoomNumericUpDown;
         private System.Windows.Forms.Label LowerLabel;
         private System.Windows.Forms.Label UpperLabel;
         private System.Windows.Forms.NumericUpDown UpperNumericUpDown;
@@ -1430,10 +1608,10 @@
         private System.Windows.Forms.NumericUpDown EventLengthNumericUpDown;
         private System.Windows.Forms.Label EventPriorityLabel;
         private System.Windows.Forms.NumericUpDown EventPriorityNumericUpDown;
-        private System.Windows.Forms.CheckBox LOffsetRPOffCheckBox;
+        private System.Windows.Forms.CheckBox SharpZoomCheckBox;
         private System.Windows.Forms.CheckBox EnableBlurCheckbox;
         private System.Windows.Forms.CheckBox NoCollisionCheckBox;
-        private System.Windows.Forms.CheckBox NoPOVCheckBox;
+        private System.Windows.Forms.CheckBox DisableFirstPersonCheckBox;
         private System.Windows.Forms.CheckBox GEndTransCheckBox;
         private System.Windows.Forms.CheckBox GThruCheckBox;
         private System.Windows.Forms.CheckBox GEndErpFrameCheckBox;
@@ -1451,6 +1629,15 @@
         private System.Windows.Forms.ToolStripMenuItem BasicPlanetToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LaunchStarSmoothShakingAToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SimpleDemoExecutorToolStripMenuItem;
+        private System.Windows.Forms.ToolTip MainToolTip;
+        private System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem GitHubIssuesPageToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem GitHubReleasesPageToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem GitHubWikipediaToolStripMenuItem;
+        private System.Windows.Forms.Button MoveUpButton;
+        private System.Windows.Forms.Button MoveDownButton;
+        private System.Windows.Forms.ToolStripMenuItem AutoSortToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem OpenWorldToolStripMenuItem;
     }
 }
 

@@ -126,6 +126,15 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="RARC.cs" />
+    <Compile Include="SplashForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SplashForm.Designer.cs">
+      <DependentUpon>SplashForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="SplashForm.resx">
+      <DependentUpon>SplashForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Presets.cs" />
     <Compile Include="PresetForm.cs">
       <SubType>Form</SubType>
@@ -192,6 +201,34 @@
     <Content Include="LaunchCamPlusIcon.ico" />
     <Content Include="External Rarc Managment\ArcPack.exe" />
     <Content Include="External Rarc Managment\RarcDump.exe" />
+    <None Include="Resources\RMGE01-4.png" />
+    <None Include="Resources\RMGE01-3.png" />
+    <None Include="Resources\RMGE01-2.png" />
+    <None Include="Resources\RMGE01-1.png" />
+    <None Include="Resources\LCPCanvas.png" />
+    <None Include="Resources\LCP.png" />
+    <None Include="Resources\SB4E01-4.png" />
+    <None Include="Resources\SB4E01-3.png" />
+    <None Include="Resources\SB4E01-2.png" />
+    <None Include="Resources\SB4E01-1.png" />
+    <None Include="Resources\LCPLogo.png" />
+    <None Include="Resources\Reoganize.png" />
+    <None Include="Resources\WikiPage.png" />
+    <None Include="Resources\ReleasesPage.png" />
+    <None Include="Resources\IssuePage.png" />
+    <None Include="Resources\Save File.png" />
+    <None Include="Resources\Save As.png" />
+    <None Include="Resources\Preview.png" />
+    <None Include="Resources\Presets.png" />
+    <None Include="Resources\Paste.png" />
+    <None Include="Resources\Open File.png" />
+    <None Include="Resources\New File.png" />
+    <None Include="Resources\Export Preset.png" />
+    <None Include="Resources\Delete.png" />
+    <None Include="Resources\Copy.png" />
+    <None Include="Resources\Check Errors.png" />
+    <None Include="Resources\Assistant.png" />
+    <None Include="Resources\AddCamera.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">

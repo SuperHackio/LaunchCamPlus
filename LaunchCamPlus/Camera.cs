@@ -4,6 +4,7 @@ namespace Cameras
 {
     public partial class Camera //There are 52
     {
+        public Camera() { }
         public Camera(int id)
         {
             this.ListID = id;
@@ -66,13 +67,14 @@ namespace Cameras
         public float MaxY { get; set; } //The location that the camera starts following the player (Jumping up) [Max. Movement on Y-axis]
         public float MinY { get; set; } //The location that the camera starts following the player (Falling down) [Min. Movement on Y-axis]
 
-        #region Delays (and 3 unknowns) [5]
+        #region Delays (and 1 unknown) [3]
         public int GroundStartMoveDelay { get; set; } //Delay before the camera starts moving on the ground [PushDelay]
         public int AirStartMoveDelay { get; set; } //Delay before the camera starts moving in the air [PushDelayLow]
         public int UnknownUDown { get; set; } //???????? [UDown]
-        public float UnknownLOffset { get; set; } //???????? [LOffset]
-        public float UnknownLOffsetV { get; set; } //???????? [LOffsetV]
         #endregion
+
+        public float FrontZoom { get; set; } //Distance in front of mario to look at [LOffset]
+        public float HeightZoom { get; set; } //Distance above/below mario to look at [LOffsetV]
 
         public float UpperBorder { get; set; } //Camera Border [Upper]
         public float LowerBorder { get; set; } //Camera Border [Lower]
@@ -106,11 +108,11 @@ namespace Cameras
         public bool DisableReset { get; set; } //Prevents the camera from rotating to the original camera angle when re-entering the Camera Area [Disable reset]
         private bool DisableDPAD { get; set; } //I don't know why this exists, but if Num1 is true then this setting is useless. Will auto-set to true [Disable D-Pad Rotation]
 
-        public bool FlagLOffsetRPOff { get; set; } //???????? [Flag.LOfserpOff]
+        public bool SharpZoom { get; set; } //Disables Smooth Movement when zooming with Front Zoom and Height Zoom [Flag.LOfserpOff]
 
         public bool DisableAntiBlur { get; set; } //Enables Blur, apparently [Disable Anti-Blur]
         public bool DisableCollision { get; set; } //Allows the camera to go through the collision [Disable Collision]
-        public bool DisablePOV { get; set; } //idek what this does. Orthographic anybody? [Disable Point-of-View]
+        public bool DisableFirstPerson { get; set; } //Disables First Person [Disable Point-of-View]
 
         public bool GFlagEndErpFrame { get; set; } //???????? [GFlag.EnableEndErpFrame]
         public bool GFlagThrough { get; set; } //???????? [GFlag.thru]
@@ -150,8 +152,8 @@ namespace Cameras
                 this.GroundStartMoveDelay,
                 this.AirStartMoveDelay,
                 this.UnknownUDown,
-                this.UnknownLOffset,
-                this.UnknownLOffsetV,
+                this.FrontZoom,
+                this.HeightZoom,
                 this.UpperBorder,
                 this.LowerBorder,
                 this.EventFrames,
@@ -173,10 +175,10 @@ namespace Cameras
                 this.UnknownUpZ,
                 this.DisableReset ? 1 : 0,
                 this.DisableDPAD ? 1 : 0,
-                this.FlagLOffsetRPOff ? 1 : 0,
+                this.SharpZoom ? 1 : 0,
                 this.DisableAntiBlur ? 1 : 0,
                 this.DisableCollision ? 1 : 0,
-                this.DisablePOV ? 1 : 0,
+                this.DisableFirstPerson ? 1 : 0,
                 this.GFlagEndErpFrame ? 1 : 0,
                 this.GFlagThrough ? 1 : 0,
                 this.GFlagEndTransitionSpeed ? 1 : 0,
@@ -315,18 +317,42 @@ namespace Cameras
 
         public float RefineAngle(float angle)
         {
-            while (!((angle * System.Math.PI / 180 ) < 180 && (angle * System.Math.PI / 180) > -180))
+            float NewAngle = RadianToDegree(angle);
+            if (NewAngle < -180)
             {
-                if ((angle * System.Math.PI / 180) > 180)
+                while (NewAngle < -180)
                 {
-                    angle -= 6.28319f;
-                }
-                else
-                {
-                    angle += 6.28319f;
+                    NewAngle += 360;
                 }
             }
-            return angle;
+            else if (NewAngle > 180)
+            {
+                while (NewAngle > 180)
+                {
+                    NewAngle -= 360;
+                }
+            }
+            
+            return DegreeToRadian(NewAngle);
+        }
+
+        /// <summary>
+        /// Converts a Radian to a Degree
+        /// </summary>
+        /// <param name="angle">Radian angle</param>
+        /// <returns>Degree Angle</returns>
+        private float RadianToDegree(float angle)
+        {
+            return (float)(angle * (180.0 / System.Math.PI));
+        }
+        /// <summary>
+        /// Converts a Degree to a Radian
+        /// </summary>
+        /// <param name="angle">Degree Angle</param>
+        /// <returns>Radian Angle</returns>
+        private float DegreeToRadian(float angle)
+        {
+            return (float)(System.Math.PI * angle / 180.0);
         }
     }
 

@@ -24,8 +24,13 @@ namespace LCPPManager
     */
     #endregion
 
+    /// <summary>
+    /// Launch Cam Plus Preset
+    /// </summary>
     public class LCPP
     {
+        public FileInfo File;
+
         public string Name;
         public string Creator;
 
@@ -36,11 +41,13 @@ namespace LCPPManager
         public System.Text.Encoding enc = System.Text.Encoding.GetEncoding(932);
 
         /// <summary>
-        /// Writes a LCPP file
+        /// Writes a LCPP File
         /// </summary>
-        /// <param name="filename">string</param>
-        /// <param name="CamList">CameraList</param>
-        public LCPP(string filename, List<Camera> CamList, string PresetName = "Untitled", string PresetCreator = "Unknown") //Write
+        /// <param name="filename">Path and Filename</param>
+        /// <param name="CamList">List of Cameras to include</param>
+        /// <param name="PresetName">Name of the Preset. Optional</param>
+        /// <param name="PresetCreator">Name of the Preeset Creator. Optional</param>
+        public LCPP(string filename, List<Camera> CamList, string PresetName = "Untitled", string PresetCreator = "Unknown")
         {
             for (int i = 0; i < CamList.Count; i++)
             {
@@ -125,8 +132,9 @@ namespace LCPPManager
         /// Reads a LCPP file
         /// </summary>
         /// <param name="filename">string</param>
-        public LCPP(string filename)//Read
+        public LCPP(string filename)
         {
+            File = new FileInfo(filename);
             string format;
             int version;
             string LCPVersion;
@@ -140,9 +148,9 @@ namespace LCPPManager
             {
                 lcppFile = new FileStream(filename, FileMode.Open);
             }
-            catch (Exception)
+            catch (Exception E)
             {
-                throw new System.IO.IOException("The file could not be accessed for reading.");
+                throw E;
             }
             byte[] ToRead = new byte[4]; //Format
             lcppFile.Read(ToRead, 0, 4);
@@ -181,6 +189,10 @@ namespace LCPPManager
             Name = presetname;
             CameraCount = cameranum;
         }
+        /// <summary>
+        /// Creates an empty LCPP object
+        /// </summary>
+        public LCPP() => PresetList = new List<Camera>();
     }
 
     public class Entry
@@ -200,18 +212,17 @@ namespace LCPPManager
             write = "Version=" + Properties.Version + ",Identification=\"" + Properties.Identification +"\",Num="+Properties.Num + ",Type=\"" + Properties.Type + "\",RotationX=" + Properties.RotationX.ToString().Replace(',','.')+"f,RotationY=" + Properties.RotationY.ToString().Replace(',', '.') +
                 "f,RotationZ="+Properties.RotationZ.ToString().Replace(',', '.') + "f,Zoom="+Properties.Zoom+"f,DPDRotation="+Properties.DPDRotation+",TransitionSpeed="+Properties.TransitionSpeed+",EndTransitionSpeed="+
                 Properties.EndTransitionSpeed+",GroundMoveSpeed="+Properties.GroundMoveSpeed+",UseDPAD="+Properties.UseDPAD+",UnknownNum2="+Properties.UnknownNum2+",MaxY="+Properties.MaxY+",MinY="+Properties.MinY+
-                ",GroundStartMoveDelay="+Properties.GroundStartMoveDelay+",AirStartMoveDelay="+Properties.AirStartMoveDelay+",UnknownUDown="+Properties.UnknownUDown+",UnknownLOffset="+Properties.UnknownLOffset+
-                ",UnknownLOffsetV="+Properties.UnknownLOffsetV+",UpperBorder="+Properties.UpperBorder.ToString().Replace(',', '.') + "f,LowerBorder="+Properties.LowerBorder.ToString().Replace(',', '.') + "f,EventFrames="+Properties.EventFrames+",EventPriority="+Properties.EventPriority+
+                ",GroundStartMoveDelay="+Properties.GroundStartMoveDelay+",AirStartMoveDelay="+Properties.AirStartMoveDelay+",UnknownUDown="+Properties.UnknownUDown+",FrontZoom="+Properties.FrontZoom+
+                ",HeightZoom="+Properties.HeightZoom+",UpperBorder="+Properties.UpperBorder.ToString().Replace(',', '.') + "f,LowerBorder="+Properties.LowerBorder.ToString().Replace(',', '.') + "f,EventFrames="+Properties.EventFrames+",EventPriority="+Properties.EventPriority+
                 ",FixpointOffsetX="+Properties.FixpointOffsetX+",FixpointOffsetY="+Properties.FixpointOffsetY+",FixpointOffsetZ="+Properties.FixpointOffsetZ+",WorldPointX="+Properties.WorldPointX+",WorldPointY="+Properties.WorldPointY+
                 ",WorldPointZ="+Properties.WorldPointZ+",PlayerOffsetX="+Properties.PlayerOffsetX+",PlayerOffsetY="+Properties.PlayerOffsetY+",PlayerOffsetZ="+Properties.PlayerOffsetZ+",VPanAxisX="+Properties.VPanAxisX+
                 ",VPanAxisY="+Properties.VPanAxisY+",VPanAxisZ="+Properties.VPanAxisZ+",UnknownUpX="+Properties.UnknownUpX+",UnknownUpY="+Properties.UnknownUpY+",UnknownUpZ="+Properties.UnknownUpZ+",DisableReset="+Properties.DisableReset+
-                ",FlagLOffsetRPOff="+Properties.FlagLOffsetRPOff+",DisableAntiBlur="+Properties.DisableAntiBlur+",DisableCollision="+Properties.DisableCollision+",DisablePOV="+Properties.DisablePOV+",GFlagEndErpFrame="+Properties.GFlagEndErpFrame+
+                ",SharpZoom="+Properties.SharpZoom+",DisableAntiBlur="+Properties.DisableAntiBlur+",DisableCollision="+Properties.DisableCollision+",DisableFirstPerson="+Properties.DisableFirstPerson+",GFlagEndErpFrame="+Properties.GFlagEndErpFrame+
                 ",GFlagThrough="+Properties.GFlagThrough+",GFlagEndTransitionSpeed="+Properties.GFlagEndTransitionSpeed+",VPanUse="+Properties.VPanUse+",EventUseEndTransition="+Properties.EventUseEndTransition+",EventUseTransition="+Properties.EventUseTransition;
             length = encoder.GetBytes(write).Length;
             write = write.Replace("False","false");
             write = write.Replace("True", "true");
         }
-
         /// <summary>
         /// Makes an Entry from a File
         /// </summary>
@@ -289,11 +300,11 @@ namespace LCPPManager
                     case "UnknownUDown":
                         Properties.UnknownUDown = Convert.ToInt32(P[1]);
                         break;
-                    case "UnknownLOffset":
-                        Properties.UnknownLOffset = Convert.ToSingle(P[1]);
+                    case "FrontZoom":
+                        Properties.FrontZoom = Convert.ToSingle(P[1]);
                         break;
-                    case "UnknownLOffsetV":
-                        Properties.UnknownLOffsetV = Convert.ToSingle(P[1]);
+                    case "HeightZoom":
+                        Properties.HeightZoom = Convert.ToSingle(P[1]);
                         break;
                     case "UpperBorder":
                         P[1] = P[1].Replace("f", "");
@@ -360,8 +371,8 @@ namespace LCPPManager
                     case "DisableDPAD":
                         Properties.SetDPADUse();
                         break;
-                    case "FlagLOffsetRPOff":
-                        Properties.FlagLOffsetRPOff = P[1] == "true" ? true : false;
+                    case "SharpZoom":
+                        Properties.SharpZoom = P[1] == "true" ? true : false;
                         break;
                     case "DisableAntiBlur":
                         Properties.DisableAntiBlur = P[1] == "true" ? true : false;
@@ -369,8 +380,8 @@ namespace LCPPManager
                     case "DisableCollision":
                         Properties.DisableCollision = P[1] == "true" ? true : false;
                         break;
-                    case "DisablePOV":
-                        Properties.DisablePOV = P[1] == "true" ? true : false;
+                    case "DisableFirstPerson":
+                        Properties.DisableFirstPerson = P[1] == "true" ? true : false;
                         break;
                     case "GFlagEndErpFrame":
                         Properties.GFlagEndErpFrame= P[1] == "true" ? true : false;
@@ -396,6 +407,11 @@ namespace LCPPManager
 
 
         }
+        /// <summary>
+        /// Makes an entry using a pre-existing camera
+        /// </summary>
+        /// <param name="Cam">Input Camera</param>
+        public Entry(Camera Cam) => Properties = Cam;
 
         /// <summary>
         /// Get the Camera
