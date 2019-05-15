@@ -22,5 +22,5 @@ If you want one of your presets to become an "Official Preset", open a new issue
 
 
 
-Icons by [Yusuke Kamiyamane] (https://p.yusukekamiyamane.com/). Licensed under a [Creative Commons Attribution 3.0 License] (https://creativecommons.org/licenses/by/3.0/).
-Icons in the ABOUT Tab by [GitHub] (https://octicons.github.com/). Licensed under a [MIT License] (https://github.com/primer/octicons/blob/master/LICENSE)
+Icons by [Yusuke Kamiyamane](https://p.yusukekamiyamane.com/). Licensed under a [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/).<br>
+Icons in the ABOUT Tab by [GitHub](https://octicons.github.com/). Licensed under a [MIT License](https://github.com/primer/octicons/blob/master/LICENSE)
