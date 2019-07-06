@@ -13,6 +13,8 @@ Planned Features:
 - Previewing your cameras (This won't come for a while, sorry)
 - Full Camera Documentation (This will happen gradually)
 - Complete list of Event Cameras (This will happen gradually)
+- Rail Camera Support (Next Majour Update)
+- Plugins (Next Majour Update)
 
 # Submitting a Preset
 If you want one of your presets to become an "Official Preset", open a new issue and attach your .lcpp file.<br>
