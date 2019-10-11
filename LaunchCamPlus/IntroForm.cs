@@ -13,6 +13,12 @@ namespace LaunchCamPlus
             InitializeComponent();
             CenterToScreen();
         }
+        public IntroForm(string Filename)
+        {
+            InitializeComponent();
+            CenterToScreen();
+            OpenWith(Filename);
+        }
 
         OpenFileDialog ofd = new OpenFileDialog() { Filter = "Camera Keyframes (*.canm)|*.canm" };
         SaveFileDialog sfd = new SaveFileDialog() { Filter = "Camera Keyframes (*.canm)|*.canm" };
@@ -156,6 +162,69 @@ namespace LaunchCamPlus
 
                 SetAppStatus(true);
             }
+        }
+
+        private void OpenWith(string File)
+        {
+            ofd.FileName = File;
+            XPosComboBox.Items.Clear();
+            YPosComboBox.Items.Clear();
+            ZPosComboBox.Items.Clear();
+            XDirComboBox.Items.Clear();
+            YDirComboBox.Items.Clear();
+            ZDirComboBox.Items.Clear();
+            UnknownComboBox.Items.Clear();
+            ZoomComboBox.Items.Clear();
+            FileStream canmFile = new FileStream(ofd.FileName, FileMode.Open);
+            canm = null;
+            canm = new CANM(canmFile);
+            canmFile.Close();
+
+            for (int i = 0; i < canm.Keys[0].KeyframeCount; i++)
+            {
+                XPosComboBox.Items.Add("Keyframe " + i);
+            }
+            XPosComboBox.SelectedIndex = 0;
+            for (int i = 0; i < canm.Keys[1].KeyframeCount; i++)
+            {
+                YPosComboBox.Items.Add("Keyframe " + i);
+            }
+            YPosComboBox.SelectedIndex = 0;
+            for (int i = 0; i < canm.Keys[2].KeyframeCount; i++)
+            {
+                ZPosComboBox.Items.Add("Keyframe " + i);
+            }
+            ZPosComboBox.SelectedIndex = 0;
+
+
+            for (int i = 0; i < canm.Keys[3].KeyframeCount; i++)
+            {
+                XDirComboBox.Items.Add("Keyframe " + i);
+            }
+            XDirComboBox.SelectedIndex = 0;
+            for (int i = 0; i < canm.Keys[4].KeyframeCount; i++)
+            {
+                YDirComboBox.Items.Add("Keyframe " + i);
+            }
+            YDirComboBox.SelectedIndex = 0;
+            for (int i = 0; i < canm.Keys[5].KeyframeCount; i++)
+            {
+                ZDirComboBox.Items.Add("Keyframe " + i);
+            }
+            ZDirComboBox.SelectedIndex = 0;
+
+            for (int i = 0; i < canm.Keys[6].KeyframeCount; i++)
+            {
+                UnknownComboBox.Items.Add("Keyframe " + i);
+            }
+            UnknownComboBox.SelectedIndex = 0;
+            for (int i = 0; i < canm.Keys[7].KeyframeCount; i++)
+            {
+                ZoomComboBox.Items.Add("Keyframe " + i);
+            }
+            ZoomComboBox.SelectedIndex = 0;
+
+            SetAppStatus(true);
         }
 
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)

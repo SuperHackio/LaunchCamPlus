@@ -105,6 +105,7 @@
     <Compile Include="Camera.cs" />
     <Compile Include="CANM.cs" />
     <Compile Include="DRPC.cs" />
+    <Compile Include="FileStreamEx.cs" />
     <Compile Include="IdentificationAssistance.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,12 +119,18 @@
       <DependentUpon>IntroForm.cs</DependentUpon>
     </Compile>
     <Compile Include="LCPC.cs" />
+    <Compile Include="LCPE.cs" />
     <Compile Include="LCPP.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RARC.cs" />
     <Compile Include="SplashForm.cs">
@@ -158,14 +165,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -201,16 +203,12 @@
     <Content Include="LaunchCamPlusIcon.ico" />
     <Content Include="External Rarc Managment\ArcPack.exe" />
     <Content Include="External Rarc Managment\RarcDump.exe" />
-    <None Include="Resources\RMGE01-4.png" />
-    <None Include="Resources\RMGE01-3.png" />
-    <None Include="Resources\RMGE01-2.png" />
-    <None Include="Resources\RMGE01-1.png" />
+    <Content Include="UpdateAlert.txt" />
+    <None Include="Resources\Plugins.png" />
+    <None Include="Resources\PluginRun.png" />
+    <None Include="Resources\PluginError.png" />
     <None Include="Resources\LCPCanvas.png" />
     <None Include="Resources\LCP.png" />
-    <None Include="Resources\SB4E01-4.png" />
-    <None Include="Resources\SB4E01-3.png" />
-    <None Include="Resources\SB4E01-2.png" />
-    <None Include="Resources\SB4E01-1.png" />
     <None Include="Resources\LCPLogo.png" />
     <None Include="Resources\Reoganize.png" />
     <None Include="Resources\WikiPage.png" />

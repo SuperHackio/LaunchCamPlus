@@ -394,34 +394,41 @@ namespace RARCFiles
 }
 
 /// <summary>
-/// Implemented in LCP 2.0.0.0
+/// Implemented in LCP 2.0.0.0. Upgraded in LCP 2.5.5.0
 /// </summary>
 namespace RARCManagment
 {
     public class RARC
     {
-        public string originalpath = "";
-        public string rootpath = "";
-        public string name = "";
-        public string ext = "";
+        public string OriginalPath = "";
+        public string FolderRootPath = "";
+        public string OpenedArchive = "";
+        public string ArchiveName = "";
+        public string Extension = "";
         public FileInfo Selfinfo;
+        public FileStream Lock;
 
         /// <summary>
-        /// Read a RARC
+        /// Creates a new RARC object
         /// </summary>
-        /// <param name="rarcFile">string</param>
-        public RARC(FileStream rarcFile,FileInfo rarcInfo)
+        /// <param name="rarcFile">Filestream of the Archive</param>
+        /// <param name="rarcInfo">FileInfo of the Archive</param>
+        /// <param name="ExpectedFoldername">Root Folder of the Archive. Default is the Archive name</param>
+        /// <param name="OutputFolderName">Name to Rename the Root Folder to</param>
+        public RARC(FileStream rarcFile, FileInfo rarcInfo, string ExpectedFoldername = "", string OutputFolderName = "")
         {
+            rarcFile.Close();
+            Lock = new FileStream(rarcInfo.FullName,FileMode.Open);
             Selfinfo = rarcInfo;
-            originalpath = rarcInfo.FullName;
+            OriginalPath = rarcInfo.FullName;
             string[] s = rarcInfo.Name.Split('.');
-            name = s[0];
-            ext = s[1];
-            if (File.Exists(@AppDomain.CurrentDomain.BaseDirectory+ "External Rarc Managment\\RarcDump.exe") && File.Exists(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\Yaz0Dec.exe"))
+            ArchiveName = s[0];
+            Extension = s[1];
+            if (File.Exists(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\RarcDump.exe") && File.Exists(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\Yaz0Dec.exe"))
             {
-                rarcFile.Position = 0;
+                Lock.Position = 0;
                 byte[] tmp = new byte[4];
-                rarcFile.Read(tmp, 0, 4);
+                Lock.Read(tmp, 0, 4);
                 string type = Encoding.ASCII.GetString(tmp);
                 type = type.ToUpper();
                 Process cmd;
@@ -450,10 +457,14 @@ namespace RARCManagment
                     cmd.StandardInput.Close();
                     File.WriteAllText(@AppDomain.CurrentDomain.BaseDirectory + "UnpackLog.txt", cmd.StandardOutput.ReadToEnd());
                     cmd.WaitForExit();
-                    
+
                     File.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + rarcInfo.Name + " 0.rarc");
                     //Directory.Move(rarcInfo.Directory.FullName + "\\" + rarcInfo.Name + " 0.rarc_dir", @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\"+rarcInfo.Name+ " 0.rarc_dir");
-                    rootpath = @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\Stage";
+                    if (Directory.Exists(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + OutputFolderName))
+                        Directory.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + OutputFolderName, true);
+                    if (OutputFolderName != "")
+                        Directory.Move(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + ExpectedFoldername, @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + OutputFolderName);
+                    FolderRootPath = @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + OutputFolderName + (OutputFolderName != "" ? "\\" : (ExpectedFoldername != "" ? ExpectedFoldername + "\\" : rarcInfo.Name.Replace(rarcInfo.Extension, "") + "\\"));
                 }
                 else if (type == "RARC")
                 {
@@ -465,64 +476,88 @@ namespace RARCManagment
                     cmd.StartInfo.UseShellExecute = false;
                     cmd.Start();
 
-                    cmd.StandardInput.WriteLine("\""+@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\RarcDump.exe\""+" \""+ @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + rarcInfo.Name + "\"");
-                    //cmd.StandardInput.WriteLine("move \"" + rarcInfo.Directory.FullName + "\\" + rarcInfo.Name + "_dir\" " + "\"" + @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\"");
-                    //cmd.StandardInput.WriteLine("All");
+                    cmd.StandardInput.WriteLine("\"" + @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\RarcDump.exe\"" + " \"" + @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + rarcInfo.Name + "\"");
+
                     cmd.StandardInput.Flush();
                     cmd.StandardInput.Close();
                     File.WriteAllText(@AppDomain.CurrentDomain.BaseDirectory + "UnpackLog.txt", cmd.StandardOutput.ReadToEnd());
                     cmd.WaitForExit();
-                    //System.Windows.Forms.MessageBox.Show(cmd.StandardOutput.ReadToEnd());
-                    rootpath = @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\Stage";
+                    
+                    if (Directory.Exists(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + OutputFolderName))
+                        Directory.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + OutputFolderName, true);
+                    if (OutputFolderName != "")
+                        Directory.Move(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + ExpectedFoldername, @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + OutputFolderName);
+                    FolderRootPath = @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + OutputFolderName + (OutputFolderName != "" ? "\\" : (ExpectedFoldername != "" ? ExpectedFoldername + "\\" : rarcInfo.Name.Replace(rarcInfo.Extension, "") + "\\"));
+
                 }
                 else
                 {
-                    rootpath = null;
+                    FolderRootPath = null;
                     return;
                 }
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("Something is missing...\nRun the automatic fixer?","Oh no...",System.Windows.Forms.MessageBoxButtons.YesNo,System.Windows.Forms.MessageBoxIcon.Warning);
-                System.Threading.Thread.Sleep(5000);
-                System.Windows.Forms.MessageBox.Show("Oh wait, we don't have an automatic fixer", "This is embarassing...", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
-                System.Threading.Thread.Sleep(5000);
-                System.Windows.Forms.MessageBox.Show("Well... This is awkward...", "So...", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
-                System.Threading.Thread.Sleep(5000);
-                System.Windows.Forms.MessageBox.Show("So uh, I guess you could try re-dowloading me.", "Yeah, ok.", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
-                System.Threading.Thread.Sleep(5000);
-                System.Windows.Forms.MessageBox.Show("You could also put RarcDump.exe and Yaz0Dec.exe back into the folder?", "Or maybe...", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
-                rootpath = originalpath = null;
-                throw new Exception("RarcDump.exe or Yaz0Dec.exe is missing from \""+ @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\"");
+                throw new Exception("RarcDump.exe or Yaz0Dec.exe is missing from \"" + @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\"");
             }
+
+            Lock.Lock(0, Lock.Length);
+            OpenedArchive = @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + rarcInfo.Name;
         }
 
-        public FileInfo FindFile(string filename)
+        /// <summary>
+        /// Searches for a File within the Archive Directory.
+        /// </summary>
+        /// <param name="filename">Filename to search for. Requires the Extension to be included in the string.</param>
+        /// <param name="RootExtension">Subpath to search in</param>
+        /// <returns>FileInfo containing information on the Input File. "null" if the file can't be found</returns>
+        public FileInfo FindFile(string filename, string RootExtension = "")
         {
             string file = "";
             string[] files = new string[1] { "Nope" };
             try
             {
-                files = Directory.GetFiles(rootpath, "*" + filename, SearchOption.AllDirectories);
+                files = Directory.GetFiles(FolderRootPath + RootExtension, "*" + filename, SearchOption.AllDirectories);
             }
             catch (Exception)
             {
-                string x = rootpath.Remove(rootpath.Length - 5);
-                Directory.Delete(x+this.name,true);
-                x = x + this.name +"."+ this.ext;
-                File.Delete(x);
-                System.Windows.Forms.MessageBox.Show("This is not a Map file!","No U");
+                //System.Windows.Forms.MessageBox.Show(filename + " was not found!",filename);
                 return null;
             }
+
+            if (files.Length == 0)
+                return null;
+
             file = files[0];
 
             return new FileInfo(file);
         }
-
-        public void Return(bool Encode = false)
+        /// <summary>
+        /// Returns a list of all the files within the Root Directory (+and specified subdirectory)
+        /// </summary>
+        /// <param name="RootExtension">Subpath to search in</param>
+        /// <returns>String[] containing filenames</returns>
+        public string[] ListFiles(string RootExtension = "")
         {
+            return Directory.GetFiles(FolderRootPath + RootExtension, "*", SearchOption.AllDirectories);
+        }
+
+        /// <summary>
+        /// Saves the archive
+        /// </summary>
+        /// <param name="Encode">Yaz0 Encode the Archive?</param>
+        /// <param name="RootName">Name the root of the archive</param>
+        /// <param name="savepath">New path to save the Archive</param>
+        public void Save(bool Encode = false, string RootName = "", string savepath = "")
+        {
+            Lock.Unlock(0, Lock.Length);
             if (File.Exists(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\ArcPack.exe") && File.Exists(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\Yaz0Enc.exe"))
             {
+                if (RootName != "")
+                    Directory.Move(FolderRootPath, FolderRootPath.Replace(ArchiveName, RootName));
+
+                string Folder = RootName == "" ? FolderRootPath.Remove(FolderRootPath.Length - 1, 1) : FolderRootPath.Remove(FolderRootPath.Length - 1, 1).Replace(ArchiveName, RootName);
+
                 Process cmd;
                 cmd = new Process();
                 cmd.StartInfo.FileName = "cmd.exe";
@@ -534,12 +569,10 @@ namespace RARCManagment
 
                 cmd.StandardInput.WriteLine("@echo off");
                 //cmd.StandardInput.WriteLine("rename "+ "\"" + rootpath + "\" " + "Stage");
-                cmd.StandardInput.WriteLine("\""+@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\ArcPack.exe\" \""+ @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + "Stage" +"\"");
+                cmd.StandardInput.WriteLine("\"" + @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\ArcPack.exe\" \"" + Folder + "\"");
 
                 if (Encode)
-                {
-                    cmd.StandardInput.WriteLine("\"" + @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\Yaz0Enc.exe\" \"" + @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + "Stage.arc" + "\"");
-                }
+                    cmd.StandardInput.WriteLine("\"" + @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\Yaz0Enc.exe\" \"" + Folder + ".arc" + "\"");
 
                 cmd.StandardInput.WriteLine("exit");
                 cmd.StandardInput.Flush();
@@ -547,30 +580,52 @@ namespace RARCManagment
                 File.WriteAllText(@AppDomain.CurrentDomain.BaseDirectory + "PackLog.txt", cmd.StandardOutput.ReadToEnd());
                 cmd.WaitForExit();
 
-                File.Delete(originalpath);
+                if (savepath == "")
+                {
+                    Lock.Close();
+                    File.Delete(OriginalPath);
+                }
+
                 if (Encode)
                 {
-                    File.Move(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + "Stage.arc.yaz0", originalpath);
-                    File.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + "Stage.arc");
+                    File.Move(Folder + ".arc.yaz0", savepath != "" ? (savepath + Selfinfo.Name) : OriginalPath);
+                    File.Delete(Folder + ".arc");
                 }
                 else
-                {
-                    File.Move(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + "Stage.arc", originalpath);
-                }
+                    File.Move(Folder + ".arc", savepath != "" ? (savepath + Selfinfo.Name) : OriginalPath);
+
+                //Directory.Delete(RootName == "" ? FolderRootPath : FolderRootPath.Replace(ArchiveName,RootName),true);
+                if (RootName != "")
+                    Directory.Move(FolderRootPath.Replace(ArchiveName, RootName), FolderRootPath);
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("Something is missing...\nRun the automatic fixer?", "Oh no...", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Warning);
-                System.Threading.Thread.Sleep(5000);
-                System.Windows.Forms.MessageBox.Show("Oh wait, we don't have an automatic fixer", "This is embarassing...", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
-                System.Threading.Thread.Sleep(5000);
-                System.Windows.Forms.MessageBox.Show("Well... This is awkward...", "So...", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
-                System.Threading.Thread.Sleep(5000);
-                System.Windows.Forms.MessageBox.Show("So uh, I guess you could try re-dowloading me.", "Yeah, ok.", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
-                System.Threading.Thread.Sleep(5000);
-                System.Windows.Forms.MessageBox.Show("You could also put ArcPack.exe and Yaz0Enc.exe back into the folder?", "Or maybe...", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
-                rootpath = originalpath = null;
                 throw new Exception("ArcPack.exe or Yaz0Enc.exe is missing from \"" + @AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\"");
+            }
+
+            if (savepath == "")
+                Lock = new FileStream(Selfinfo.FullName, FileMode.Open);
+            Lock.Lock(0, Lock.Length);
+        }
+
+        /// <summary>
+        /// Trashes this Archive
+        /// </summary>
+        /// <param name="ShowTrashAlert">Display if the Archive failed to be trashed fully.</param>
+        public void Dispose(bool ShowTrashAlert = false)
+        {
+            Lock.Unlock(0,Lock.Length);
+            Lock.Close();
+            File.Delete(OpenedArchive);
+            if (ShowTrashAlert && !Directory.Exists(FolderRootPath))
+            {
+                //System.Windows.Forms.MessageBox.Show("Failed to clean up temporary files.","Garbage alert");
+                Console.WriteLine("Failed to clean up temporary files");
+                return;
+            }
+            else if (Directory.Exists(FolderRootPath))
+            {
+                Directory.Delete(FolderRootPath, true);
             }
         }
     }

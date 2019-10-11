@@ -21,8 +21,11 @@ If you want one of your presets to become an "Official Preset", open a new issue
 .lcpc is not accepted.
 - **Name the Issue "Preset Request" Alternatively, use the Issue Template for presets**
 
+# Other Information
+As of Launch Cam Plus 2.3.0.0, the program has an Update Alert option. If the ABOUT button (At the top of the main menu) is RED, a new LCP update is available.<br>
+In the event that LCP crashes on you, it will print out a Crash Log. Open a [New Issue](https://github.com/SuperHackio/LaunchCamPlus/issues) and attach your Crash Log.<br>
+Speak another language that's not English? Don't worry, you don't need to translate the Crash Log **UNLESS** asked otherwise.
 
-
-
+# Credits
 Icons by [Yusuke Kamiyamane](https://p.yusukekamiyamane.com/). Licensed under a [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/).<br>
 Icons in the ABOUT Tab by [GitHub](https://octicons.github.com/). Licensed under a [MIT License](https://github.com/primer/octicons/blob/master/LICENSE)

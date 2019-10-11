@@ -32,6 +32,7 @@ namespace LaunchCamPlus
             true, //- スーパースピンドライバー    Launch Star
             false, //- スピンドライバ固有    Sling Star Appearance
             true, //- スピンドライバ    Sling Star
+            false, //- Power Star Appear point
             false, //- パワースター固有    Power Star Appearance
             false, //- 土管固有出現    Warp Pipe
             false, //- 簡易デモ実行固有簡易デモ    Simple Demo Executor

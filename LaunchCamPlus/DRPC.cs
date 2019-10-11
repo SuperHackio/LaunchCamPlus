@@ -9,8 +9,9 @@ namespace DiscordRichPresence
     class DRPC
     {
         public DiscordRpcClient client;
-        public string DisplayA = "Super Mario Galaxy Camera Editor";
-        public string DisplayB = "No BCAM Loaded";
+        //public string DisplayA = "LCP Debugging Unit";
+        public string DisplayA = "Super Mario Galaxy 1/2 Camera Editor";
+        public string DisplayB = "No Cameras Loaded";
         //private static int DiscordPipe = -1;
         
         public void Initialize()
@@ -20,10 +21,11 @@ namespace DiscordRichPresence
             NOTE: 	If you are using Unity3D, you must use the full constructor and define
                      the pipe connection as DiscordRPC.IO.NativeNamedPipeClient
             */
-            client = new DiscordRpcClient("523299319097327658");
-
-            //Set the logger
-            client.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
+            client = new DiscordRpcClient("523299319097327658")
+            {
+                //Set the logger
+                Logger = new ConsoleLogger() { Level = LogLevel.Warning }
+            };
 
             var timer = new System.Timers.Timer(150);
             timer.Elapsed += (sender, evt) => { client.Invoke(); };
@@ -34,9 +36,12 @@ namespace DiscordRichPresence
             Update();
         }
 
-        public void Update(string MessageA = "Super Mario Galaxy Camera Editor", string MessageB = "No BCAM Loaded")
+        public void Update(string MessageA = "Super Mario Galaxy 1/2 Camera Editor", string MessageB = "No Cameras Loaded", string SmallImageKey = "active", string SmallImageMessage = "Active", bool IsDev = true)
         {
-            DisplayA = MessageA;
+            if (IsDev)
+                DisplayA = "LCP Debugging Unit";
+            else
+                DisplayA = MessageA;
             DisplayB = MessageB;
 
             client.SetPresence(new RichPresence()
@@ -46,9 +51,10 @@ namespace DiscordRichPresence
                 Assets = new Assets()
                 {
                     LargeImageKey = "launchcamplus",
-                    LargeImageText = "Launch Cam Plus by Super Hackio"
+                    LargeImageText = "Launch Cam Plus V" + System.Windows.Forms.Application.ProductVersion + " by Super Hackio",
+                    SmallImageKey = SmallImageKey,
+                    SmallImageText = SmallImageMessage
                 },
-                Timestamps = Timestamps.Now
             });
 
             client.Invoke();

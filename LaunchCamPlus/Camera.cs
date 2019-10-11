@@ -145,7 +145,7 @@ namespace Cameras
                 this.TransitionSpeed,
                 this.EndTransitionSpeed,
                 this.GroundMoveSpeed,
-                this.UseDPAD ? 1 : 0,
+                this.Type == CameraType.CAM_TYPE_RAIL_WATCH.ToString() ? this.RailID : (this.UseDPAD ? 1 : 0),
                 this.UnknownNum2 ? 1 : 0,
                 this.MaxY,
                 this.MinY,
@@ -421,6 +421,14 @@ namespace Cameras
             CAM_TYPE_XZ_PARA //The most basic camera ever.
         }
 
+    }
+
+    public partial class Camera //Specific Camera Extensions
+    {
+        /// <summary>
+        /// For a Rail that uses Cameras, the Path Argument 0 must equal this number
+        /// </summary>
+        public int RailID { get; set; } //Only confirmed to be used by CAM_TYPE_RAIL_WATCH & CAM_TYPE_RAIL_FOLLOW
     }
 
     public class CameraEvent //Represent Event Cameras

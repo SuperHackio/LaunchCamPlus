@@ -160,9 +160,9 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(12, 122);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(89, 13);
+            this.label5.Size = new System.Drawing.Size(82, 13);
             this.label5.TabIndex = 9;
-            this.label5.Text = "Minor Camera ID:";
+            this.label5.Text = "Sub Camera ID:";
             // 
             // AddSubCheckBox
             // 

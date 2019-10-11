@@ -65,6 +65,7 @@
             this.ExportPresetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.IDAssistantToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AutoSortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.PluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GitHubIssuesPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GitHubReleasesPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -134,6 +135,9 @@
             this.MainToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.MoveUpButton = new System.Windows.Forms.Button();
             this.MoveDownButton = new System.Windows.Forms.Button();
+            this.RailCamIDLabel = new System.Windows.Forms.Label();
+            this.RailCamIDNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.DiscordTimer = new System.Windows.Forms.Timer(this.components);
             this.MenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RotationTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RotationValueNumericUpDown)).BeginInit();
@@ -157,6 +161,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.XNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.EventLengthNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.EventPriorityNumericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RailCamIDNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // MenuStrip
@@ -243,7 +248,7 @@
             this.AddNewToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.AddCamera;
             this.AddNewToolStripMenuItem.Name = "AddNewToolStripMenuItem";
             this.AddNewToolStripMenuItem.ShortcutKeyDisplayString = "Shft+Ctrl+A";
-            this.AddNewToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.AddNewToolStripMenuItem.Size = new System.Drawing.Size(184, 26);
             this.AddNewToolStripMenuItem.Text = "Add";
             this.AddNewToolStripMenuItem.ToolTipText = "Adds a new Camera";
             this.AddNewToolStripMenuItem.Click += new System.EventHandler(this.AddNewToolStripMenuItem_Click);
@@ -253,7 +258,7 @@
             this.CopyToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Copy;
             this.CopyToolStripMenuItem.Name = "CopyToolStripMenuItem";
             this.CopyToolStripMenuItem.ShortcutKeyDisplayString = "Shft+Ctrl+C";
-            this.CopyToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.CopyToolStripMenuItem.Size = new System.Drawing.Size(184, 26);
             this.CopyToolStripMenuItem.Text = "Copy";
             this.CopyToolStripMenuItem.ToolTipText = "Copies the selected Camera";
             this.CopyToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
@@ -264,7 +269,7 @@
             this.PasteToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Paste;
             this.PasteToolStripMenuItem.Name = "PasteToolStripMenuItem";
             this.PasteToolStripMenuItem.ShortcutKeyDisplayString = "Shft+Ctrl+V";
-            this.PasteToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.PasteToolStripMenuItem.Size = new System.Drawing.Size(184, 26);
             this.PasteToolStripMenuItem.Text = "Paste";
             this.PasteToolStripMenuItem.ToolTipText = "Paste the copied Camera onto this one (OVERWRITES SELECTED CAMERA)";
             this.PasteToolStripMenuItem.Click += new System.EventHandler(this.PasteToolStripMenuItem_Click);
@@ -279,7 +284,7 @@
             this.LoadPresetToolStripMenuItem});
             this.PresetsToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Presets;
             this.PresetsToolStripMenuItem.Name = "PresetsToolStripMenuItem";
-            this.PresetsToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.PresetsToolStripMenuItem.Size = new System.Drawing.Size(184, 26);
             this.PresetsToolStripMenuItem.Text = "Presets";
             this.PresetsToolStripMenuItem.ToolTipText = "Official Preset Library";
             // 
@@ -354,7 +359,7 @@
             this.ScenarioStartersToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ScenarioStarterSmoothMovingAToolStripMenuItem});
             this.ScenarioStartersToolStripMenuItem.Name = "ScenarioStartersToolStripMenuItem";
-            this.ScenarioStartersToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.ScenarioStartersToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.ScenarioStartersToolStripMenuItem.Text = "Scenario Starters";
             this.ScenarioStartersToolStripMenuItem.ToolTipText = "ScenarioStarter";
             // 
@@ -373,7 +378,7 @@
             this.LaunchStarSmoothMovingAToolStripMenuItem,
             this.LaunchStarSmoothShakingAToolStripMenuItem});
             this.LaunchStarsToolStripMenuItem.Name = "LaunchStarsToolStripMenuItem";
-            this.LaunchStarsToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.LaunchStarsToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.LaunchStarsToolStripMenuItem.Text = "Launch Stars";
             this.LaunchStarsToolStripMenuItem.ToolTipText = "SuperSpinDriver";
             // 
@@ -399,7 +404,7 @@
             // SimpleDemoExecutorToolStripMenuItem
             // 
             this.SimpleDemoExecutorToolStripMenuItem.Name = "SimpleDemoExecutorToolStripMenuItem";
-            this.SimpleDemoExecutorToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.SimpleDemoExecutorToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.SimpleDemoExecutorToolStripMenuItem.Text = "Simple Demo Executor";
             this.SimpleDemoExecutorToolStripMenuItem.Click += new System.EventHandler(this.SimpleDemoExecutorToolStripMenuItem_Click);
             // 
@@ -423,7 +428,7 @@
             this.DeleteToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Delete;
             this.DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem";
             this.DeleteToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Delete";
-            this.DeleteToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.DeleteToolStripMenuItem.Size = new System.Drawing.Size(184, 26);
             this.DeleteToolStripMenuItem.Text = "Delete";
             this.DeleteToolStripMenuItem.ToolTipText = "Delete the selected Camera";
             this.DeleteToolStripMenuItem.Click += new System.EventHandler(this.DeleteToolStripMenuItem_Click);
@@ -435,10 +440,11 @@
             this.PreviewToolStripMenuItem,
             this.ExportPresetToolStripMenuItem,
             this.IDAssistantToolStripMenuItem,
-            this.AutoSortToolStripMenuItem});
+            this.AutoSortToolStripMenuItem,
+            this.PluginsToolStripMenuItem});
             this.ToolsToolStripMenuItem.Enabled = false;
             this.ToolsToolStripMenuItem.Name = "ToolsToolStripMenuItem";
-            this.ToolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.ToolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.ToolsToolStripMenuItem.Text = "Tools";
             // 
             // CheckForErrorsToolStripMenuItem
@@ -448,7 +454,7 @@
             this.ErrorCheckAllCamerasToolStripMenuItem});
             this.CheckForErrorsToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Check_Errors;
             this.CheckForErrorsToolStripMenuItem.Name = "CheckForErrorsToolStripMenuItem";
-            this.CheckForErrorsToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.CheckForErrorsToolStripMenuItem.Size = new System.Drawing.Size(264, 26);
             this.CheckForErrorsToolStripMenuItem.Text = "Check for Errors";
             this.CheckForErrorsToolStripMenuItem.ToolTipText = "Check your cameras for errors";
             // 
@@ -473,7 +479,7 @@
             this.PreviewToolStripMenuItem.Enabled = false;
             this.PreviewToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Preview;
             this.PreviewToolStripMenuItem.Name = "PreviewToolStripMenuItem";
-            this.PreviewToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.PreviewToolStripMenuItem.Size = new System.Drawing.Size(264, 26);
             this.PreviewToolStripMenuItem.Text = "Preview";
             this.PreviewToolStripMenuItem.ToolTipText = "Unavailable ";
             // 
@@ -481,7 +487,7 @@
             // 
             this.ExportPresetToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Export_Preset;
             this.ExportPresetToolStripMenuItem.Name = "ExportPresetToolStripMenuItem";
-            this.ExportPresetToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.ExportPresetToolStripMenuItem.Size = new System.Drawing.Size(264, 26);
             this.ExportPresetToolStripMenuItem.Text = "Export Preset";
             this.ExportPresetToolStripMenuItem.ToolTipText = "Opens the Preset Creator";
             this.ExportPresetToolStripMenuItem.Click += new System.EventHandler(this.ExportPresetToolStripMenuItem_Click);
@@ -491,7 +497,7 @@
             this.IDAssistantToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Assistant;
             this.IDAssistantToolStripMenuItem.Name = "IDAssistantToolStripMenuItem";
             this.IDAssistantToolStripMenuItem.ShortcutKeyDisplayString = "Shft+Ctrl+I";
-            this.IDAssistantToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.IDAssistantToolStripMenuItem.Size = new System.Drawing.Size(264, 26);
             this.IDAssistantToolStripMenuItem.Text = "Identification Assistant";
             this.IDAssistantToolStripMenuItem.ToolTipText = "Spawns a window to help you with Camera IDs";
             this.IDAssistantToolStripMenuItem.Click += new System.EventHandler(this.IDAssistantToolStripMenuItem_Click);
@@ -500,10 +506,19 @@
             // 
             this.AutoSortToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Reoganize;
             this.AutoSortToolStripMenuItem.Name = "AutoSortToolStripMenuItem";
-            this.AutoSortToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.AutoSortToolStripMenuItem.Size = new System.Drawing.Size(264, 26);
             this.AutoSortToolStripMenuItem.Text = "Auto Sort";
             this.AutoSortToolStripMenuItem.ToolTipText = "Automatically reorganizes the Camera List";
             this.AutoSortToolStripMenuItem.Click += new System.EventHandler(this.AutoSortToolStripMenuItem_Click);
+            // 
+            // PluginsToolStripMenuItem
+            // 
+            this.PluginsToolStripMenuItem.Enabled = false;
+            this.PluginsToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.Plugins;
+            this.PluginsToolStripMenuItem.Name = "PluginsToolStripMenuItem";
+            this.PluginsToolStripMenuItem.Size = new System.Drawing.Size(264, 26);
+            this.PluginsToolStripMenuItem.Text = "Plugins";
+            this.PluginsToolStripMenuItem.ToolTipText = "No Plugins";
             // 
             // AboutToolStripMenuItem
             // 
@@ -559,7 +574,7 @@
             "Let Me know:",
             "> Github Issues Page",
             "> Discord Servers",
-            "     -Super Hackio INC",
+            "     -Super Hackio Incorporated",
             "",
             "",
             "Inspired by: thegreatwaluigi",
@@ -1430,11 +1445,46 @@
             this.MoveDownButton.UseVisualStyleBackColor = true;
             this.MoveDownButton.Click += new System.EventHandler(this.MoveDownButton_Click);
             // 
+            // RailCamIDLabel
+            // 
+            this.RailCamIDLabel.AutoSize = true;
+            this.RailCamIDLabel.Location = new System.Drawing.Point(345, 133);
+            this.RailCamIDLabel.Name = "RailCamIDLabel";
+            this.RailCamIDLabel.Size = new System.Drawing.Size(81, 13);
+            this.RailCamIDLabel.TabIndex = 60;
+            this.RailCamIDLabel.Text = "Camera Rail ID:";
+            this.MainToolTip.SetToolTip(this.RailCamIDLabel, "Camera Rail ID\r\nThe ID of the Camera Rail to link to.\r\nPath Argument 0 on a Camer" +
+        "a Rail defines this ID.");
+            this.RailCamIDLabel.Visible = false;
+            // 
+            // RailCamIDNumericUpDown
+            // 
+            this.RailCamIDNumericUpDown.Location = new System.Drawing.Point(432, 131);
+            this.RailCamIDNumericUpDown.Maximum = new decimal(new int[] {
+            999,
+            0,
+            0,
+            0});
+            this.RailCamIDNumericUpDown.Name = "RailCamIDNumericUpDown";
+            this.RailCamIDNumericUpDown.Size = new System.Drawing.Size(51, 20);
+            this.RailCamIDNumericUpDown.TabIndex = 61;
+            this.MainToolTip.SetToolTip(this.RailCamIDNumericUpDown, "Camera Rail ID\r\nThe ID of the Camera Rail to link to.\r\nPath Argument 0 on a Camer" +
+        "a Rail defines this ID.");
+            this.RailCamIDNumericUpDown.Visible = false;
+            this.RailCamIDNumericUpDown.ValueChanged += new System.EventHandler(this.RailCamIDNumericUpDown_ValueChanged);
+            // 
+            // DiscordTimer
+            // 
+            this.DiscordTimer.Interval = 1000;
+            this.DiscordTimer.Tick += new System.EventHandler(this.DiscordTimer_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 441);
+            this.Controls.Add(this.RailCamIDNumericUpDown);
+            this.Controls.Add(this.RailCamIDLabel);
             this.Controls.Add(this.MoveDownButton);
             this.Controls.Add(this.MoveUpButton);
             this.Controls.Add(this.EventTransCheckBox);
@@ -1502,6 +1552,7 @@
             this.Name = "MainForm";
             this.Text = "Launch Cam Plus";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.MenuStrip.ResumeLayout(false);
             this.MenuStrip.PerformLayout();
@@ -1527,6 +1578,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.XNumericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.EventLengthNumericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.EventPriorityNumericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RailCamIDNumericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1638,6 +1690,10 @@
         private System.Windows.Forms.Button MoveDownButton;
         private System.Windows.Forms.ToolStripMenuItem AutoSortToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenWorldToolStripMenuItem;
+        private System.Windows.Forms.Label RailCamIDLabel;
+        private System.Windows.Forms.NumericUpDown RailCamIDNumericUpDown;
+        private System.Windows.Forms.ToolStripMenuItem PluginsToolStripMenuItem;
+        private System.Windows.Forms.Timer DiscordTimer;
     }
 }
 

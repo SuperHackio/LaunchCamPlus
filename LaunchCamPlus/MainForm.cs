@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Windows.Forms;
 using BCSV_Editor;
 using Cameras;
@@ -10,6 +11,7 @@ using LCPPManager;
 using LCPCManager;
 using RARCManagment;
 using DiscordRichPresence;
+using LCPEManager;
 
 namespace LaunchCamPlus
 {
@@ -19,33 +21,110 @@ namespace LaunchCamPlus
         {
             InitializeComponent();
             CenterToScreen();
-            this.Text = "Launch Cam Plus - " + Application.ProductVersion;
+            Text = "Launch Cam Plus - " + Application.ProductVersion;
             //---------------------------------------------------------------------------------------------
             Loading = true;
             CamTypeComboBox.DataSource = Enum.GetValues(typeof(Camera.CameraType));
             RotationAxisComboBox.SelectedIndex = 0;
             CoordinateComboBox.SelectedIndex = 0;
             Loading = false;
-            RP.Initialize();
+            RIchPresence.Initialize();
+            DiscordTimer.Start();
         }
         public MainForm(string Openwith)
         {
             InitializeComponent();
             CenterToScreen();
-            this.Text = "Launch Cam Plus - " + Application.ProductVersion;
+            Text = "Launch Cam Plus - " + Application.ProductVersion;
             //---------------------------------------------------------------------------------------------
             Loading = true;
             CamTypeComboBox.DataSource = Enum.GetValues(typeof(Camera.CameraType));
             RotationAxisComboBox.SelectedIndex = 0;
             CoordinateComboBox.SelectedIndex = 0;
             Loading = false;
-            RP.Initialize();
+            RIchPresence.Initialize();
 
             OpenWith(Openwith);
+            DiscordTimer.Start();
         }
 
+        /// <summary>
+        /// Loads the plugins
+        /// </summary>
+        public void LoadPlugins()
+        {
+            PluginLoader loader = new PluginLoader();
+            loader.LoadPlugins(@AppDomain.CurrentDomain.BaseDirectory);
 
-        DRPC RP = new DRPC();
+            foreach (ILCPE LCPE in PluginLoader.Plugins)
+            {
+                if (!CheckCompatibility(Version.Parse(Application.ProductVersion), Version.Parse(LCPE.LowestVersion)) & CheckCompatibility(Version.Parse(Application.ProductVersion), LCPE.HighestVersion))
+                {
+                    MessageBox.Show(LCPE.Name + " cannot be used in LCP " + Application.ProductVersion, "Invalid Plugin Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    continue;
+                }
+
+                if (!loader.Verify(LCPE))
+                {
+                    MessageBox.Show(LCPE.Name + " cannot be used in Public Builds of LCP." + Environment.NewLine + "If you are testing a plugin, please use a DEV LCP build", "Unsigned Plugin Alert", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    continue;
+                }
+
+                if (!ActivePlugins.Any(P => P == LCPE))
+                    ActivePlugins.Add(LCPE);
+            }
+
+            foreach (ILCPE Plug in ActivePlugins)
+            {
+                ToolStripMenuItem TSMI = new ToolStripMenuItem(Plug.Name);
+                TSMI.Click += PluginItem_Click;
+                TSMI.ToolTipText = Plug.Description;
+                TSMI.Tag = Plug;
+                TSMI.Image = Properties.Resources.PluginRun;
+                PluginsToolStripMenuItem.DropDownItems.Add(TSMI);
+                PluginsToolStripMenuItem.Enabled = true;
+                PluginsToolStripMenuItem.ToolTipText = $"Active Plugins: {ActivePlugins.Count}";
+            }
+        }
+        /// <summary>
+        /// Checks for Updates
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckForUpdates()
+        {
+            WebClient Client = new WebClient();
+            try
+            {
+                Client.DownloadFile("https://raw.githubusercontent.com/SuperHackio/LaunchCamPlus/master/LaunchCamPlus/UpdateAlert.txt", @AppDomain.CurrentDomain.BaseDirectory + "VersionCheck.txt");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Failed to retrieve update information","Connection Failure",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                //No internet lol
+            }
+            if (File.Exists(@AppDomain.CurrentDomain.BaseDirectory + "VersionCheck.txt")) {
+                Version Internet = new Version(File.ReadAllText(@AppDomain.CurrentDomain.BaseDirectory + "VersionCheck.txt"));
+                File.Delete(@AppDomain.CurrentDomain.BaseDirectory + "VersionCheck.txt");
+                Version Local = new Version(Application.ProductVersion);
+                if ( Local.CompareTo(Internet) < 0 )
+                    return true;
+                else
+                    return false;
+            }
+            else return false;
+        }
+        /// <summary>
+        /// Displays that the Update is ready
+        /// </summary>
+        public void HasUpdateReady()
+        {
+            AboutToolStripMenuItem.BackColor = Color.Red;
+            GitHubReleasesPageToolStripMenuItem.BackColor = Color.Red;
+            GitHubReleasesPageToolStripMenuItem.ToolTipText += " - NEW UPDATE IS READY!";
+        }
+
+        List<ILCPE> ActivePlugins = new List<ILCPE>();
+        DRPC RIchPresence = new DRPC();
 
         OpenFileDialog ofd = new OpenFileDialog() { Filter = "Supported Files | *.bcam; *.arc; *.rarc|Camera Files |*.bcam|Level Archive |*.rarc; *.arc" };
         SaveFileDialog sfd = new SaveFileDialog();
@@ -62,23 +141,12 @@ namespace LaunchCamPlus
         Camera CopyCamera;
         BCSV bcsv;
         RARC rar;
-        string rarcpath = "";
 
-        int EmptyBCAMProgress = 0;
-        String[] EmptyBCAM = new String[] {
-            "What are trying to pull here?",
-            "This bcam file is empty!",
-            "Why do you even try?",
-            "Didn't you listen the first time?",
-            "Why are you still here?",
-            "You can just replace the empty bcam, you know...",
-            "Are you serious?",
-            "Just give up already!",
-            "No",
-            "Stop it"
-        };
+        public bool HasUpdate = false;
+        bool OriginalFile = true;
+        int Idletimer = 0;
 
-        String[] Hashes = new String[]{
+        string[] Hashes = new string[]{
         #region General
         "14F51CD8", //Version
         "00000D1B", //ID
@@ -145,7 +213,7 @@ namespace LaunchCamPlus
         #endregion
         };
 
-        public String[] JapCameraEvents = new String[] {
+        public string[] JapCameraEvents = new string[] {
             #region Common Events [5+]
             "シナリオスターター", //- Scenario starter [!]
             "ピンクスーパースピンドライバー固有出現イベント用", //- For pink super spin driver unique occurrence event
@@ -154,6 +222,7 @@ namespace LaunchCamPlus
             "スーパースピンドライバー", //- Super spin driver [!]
             "スピンドライバ固有",//- Spin driver specific
             "スピンドライバ", //- Spin driver [!]
+            "パワースター出現ポイント固有", //- Power Star Appearence Point Specific
             "パワースター固有", //- Power Star Specific
             "土管固有出現", //- unique appearance of clay pipe
             "簡易デモ実行固有簡易デモ", //- Simple demo execution Specific simple demo
@@ -183,7 +252,7 @@ namespace LaunchCamPlus
             
         }; //Strings marked with [!] need event sub-IDs | Strings marked with [O] are for 'o:' Camera Types
 
-        public String[] EngCameraEvents = new String[] {
+        public string[] EngCameraEvents = new string[] {
             #region Common Events [5+]
             "Scenario Starter", //- シナリオスターター
             "Pink Launch Star Appearance", //- ピンクスーパースピンドライバー固有出現イベント用
@@ -192,6 +261,7 @@ namespace LaunchCamPlus
             "Launch Star", //- スーパースピンドライバー
             "Sling Star Appearance", //- スピンドライバ固有
             "Sling Star", //- スピンドライバ
+            "Power Star Appear Point",//- パワースター出現ポイント固有
             "Power Star Appearance", //- パワースター固有
             "Warp Pipe", //- 土管固有出現
             "Simple Demo Executor", //- 簡易デモ実行固有簡易デモ
@@ -280,9 +350,7 @@ namespace LaunchCamPlus
             EventPriorityNumericUpDown.Enabled = trigger;
 
             foreach (Control Con in CoordinateGroupBox.Controls)
-            {
                 Con.Enabled = trigger;
-            }
 
             DisableResetCheckBox.Enabled = trigger;
             SharpZoomCheckBox.Enabled = trigger;
@@ -300,19 +368,10 @@ namespace LaunchCamPlus
             MoveDownButton.Enabled = trigger;
         }
 
-        public float ConvertToBCSVAngle(float angle)
-        {
-            return ((Single)Math.PI / 180) * angle;
-        }
-        public float ConvertToBCSVAngle(int angle)
-        {
-            return ((Single)Math.PI / 180) * angle;
-        }
+        public float ConvertToBCSVAngle(float angle) => ((float)Math.PI / 180) * angle;
+        public float ConvertToBCSVAngle(int angle) => ((float)Math.PI / 180) * angle;
 
-        public int ConvertToAngle(decimal angle)
-        {
-            return (int)Math.Round((180/Math.PI) * (Double)angle);
-        }
+        public int ConvertToAngle(decimal angle) => (int)Math.Round((180 / Math.PI) * (double)angle);
 
         //---------------------------------------------------------------------------------------------
 
@@ -326,7 +385,7 @@ namespace LaunchCamPlus
                 try
                 {
                     CamIDTextBox.Text = CameraList[CameraListBox.SelectedIndex].Identification;
-                    Enum.TryParse<Camera.CameraType>(CameraList[CameraListBox.SelectedIndex].Type, out Camera.CameraType CT);
+                    Enum.TryParse(CameraList[CameraListBox.SelectedIndex].Type, out Camera.CameraType CT);
                     CamTypeComboBox.SelectedItem = CT;
                     //--------------------------------------------------------------------------------------------------------------------------------------
                     if (RotationDegRadioButton.Checked)
@@ -334,13 +393,13 @@ namespace LaunchCamPlus
                         switch (RotationAxisComboBox.SelectedIndex)
                         {
                             case 0:
-                                RotationValueNumericUpDown.Value = ConvertToAngle((Decimal)CameraList[CameraListBox.SelectedIndex].RefineAngle(CameraList[CameraListBox.SelectedIndex].RotationX));
+                                RotationValueNumericUpDown.Value = ConvertToAngle((decimal)CameraList[CameraListBox.SelectedIndex].RefineAngle(CameraList[CameraListBox.SelectedIndex].RotationX));
                                 break;
                             case 1:
-                                RotationValueNumericUpDown.Value = ConvertToAngle((Decimal)CameraList[CameraListBox.SelectedIndex].RefineAngle(CameraList[CameraListBox.SelectedIndex].RotationY));
+                                RotationValueNumericUpDown.Value = ConvertToAngle((decimal)CameraList[CameraListBox.SelectedIndex].RefineAngle(CameraList[CameraListBox.SelectedIndex].RotationY));
                                 break;
                             case 2:
-                                RotationValueNumericUpDown.Value = ConvertToAngle((Decimal)CameraList[CameraListBox.SelectedIndex].RefineAngle(CameraList[CameraListBox.SelectedIndex].RotationZ));
+                                RotationValueNumericUpDown.Value = ConvertToAngle((decimal)CameraList[CameraListBox.SelectedIndex].RefineAngle(CameraList[CameraListBox.SelectedIndex].RotationZ));
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException("Angle Axis");
@@ -351,13 +410,13 @@ namespace LaunchCamPlus
                         switch (RotationAxisComboBox.SelectedIndex)
                         {
                             case 0:
-                                RotationValueNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].RotationX;
+                                RotationValueNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].RotationX;
                                 break;
                             case 1:
-                                RotationValueNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].RotationY;
+                                RotationValueNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].RotationY;
                                 break;
                             case 2:
-                                RotationValueNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].RotationZ;
+                                RotationValueNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].RotationZ;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException("Angle Axis");
@@ -371,83 +430,84 @@ namespace LaunchCamPlus
                         MessageBox.Show("Failed to read the angle");
                     }
                 }
-                CamZoomNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].Zoom;
-                CamFOVNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].DPDRotation;
+                CamZoomNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].Zoom;
+                CamFOVNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].DPDRotation;
 
                 CamIntNumericUpDown.Value = CameraList[CameraListBox.SelectedIndex].TransitionSpeed;
                 CamEndIntNumericUpDown.Value = CameraList[CameraListBox.SelectedIndex].EndTransitionSpeed;
                 GndIntNumericUpDown.Value = CameraList[CameraListBox.SelectedIndex].GroundMoveSpeed;
 
+                RailCamIDNumericUpDown.Value = CameraList[CameraListBox.SelectedIndex].RailID;
                 AllowDPadRotationCheckBox.Checked = CameraList[CameraListBox.SelectedIndex].UseDPAD;
                 Num2CheckBox.Checked = CameraList[CameraListBox.SelectedIndex].UnknownNum2;
-                MaxYNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].MaxY;
-                MinYNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].MinY;
-                GroundMoveDelayNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].GroundStartMoveDelay;
-                AirMoveDelayNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].AirStartMoveDelay;
-                FrontZoomNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].FrontZoom;
-                HeightZoomNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].HeightZoom;
-                UDownNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].UnknownUDown;
+                MaxYNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].MaxY;
+                MinYNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].MinY;
+                GroundMoveDelayNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].GroundStartMoveDelay;
+                AirMoveDelayNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].AirStartMoveDelay;
+                FrontZoomNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].FrontZoom;
+                HeightZoomNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].HeightZoom;
+                UDownNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].UnknownUDown;
 
-                UpperNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].UpperBorder;
-                LowerNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].LowerBorder;
+                UpperNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].UpperBorder;
+                LowerNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].LowerBorder;
 
-                EventLengthNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].EventFrames;
-                EventPriorityNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].EventPriority;
+                EventLengthNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].EventFrames;
+                EventPriorityNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].EventPriority;
 
                 //--------------------------------------------------------------------------------------------------------------------------------------
 
                 switch (CoordinateComboBox.SelectedIndex)
                 {
                     case 0:
-                        XNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].FixpointOffsetX;
+                        XNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].FixpointOffsetX;
                         break;
                     case 1:
-                        XNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].WorldPointX;
+                        XNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].WorldPointX;
                         break;
                     case 2:
-                        XNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].PlayerOffsetX;
+                        XNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].PlayerOffsetX;
                         break;
                     case 3:
-                        XNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].UnknownUpX;
+                        XNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].UnknownUpX;
                         break;
                     case 4:
-                        XNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].VPanAxisX;
+                        XNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].VPanAxisX;
                         break;
                 }
                 switch (CoordinateComboBox.SelectedIndex)
                 {
                     case 0:
-                        YNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].FixpointOffsetY;
+                        YNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].FixpointOffsetY;
                         break;
                     case 1:
-                        YNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].WorldPointY;
+                        YNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].WorldPointY;
                         break;
                     case 2:
-                        YNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].PlayerOffsetY;
+                        YNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].PlayerOffsetY;
                         break;
                     case 3:
-                        YNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].UnknownUpY;
+                        YNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].UnknownUpY;
                         break;
                     case 4:
-                        YNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].VPanAxisY;
+                        YNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].VPanAxisY;
                         break;
                 }
                 switch (CoordinateComboBox.SelectedIndex)
                 {
                     case 0:
-                        ZNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].FixpointOffsetZ;
+                        ZNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].FixpointOffsetZ;
                         break;
                     case 1:
-                        ZNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].WorldPointZ;
+                        ZNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].WorldPointZ;
                         break;
                     case 2:
-                        ZNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].PlayerOffsetZ;
+                        ZNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].PlayerOffsetZ;
                         break;
                     case 3:
-                        ZNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].UnknownUpZ;
+                        ZNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].UnknownUpZ;
                         break;
                     case 4:
-                        ZNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].VPanAxisZ;
+                        ZNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].VPanAxisZ;
                         break;
                 }
 
@@ -521,6 +581,7 @@ namespace LaunchCamPlus
             if (!Loading)
             {
                 DoNameCheck();
+                OriginalFile = false;
             }
         }
         
@@ -529,6 +590,22 @@ namespace LaunchCamPlus
             if (!Loading)
             {
                 CameraList[CameraListBox.SelectedIndex].Type = CamTypeComboBox.SelectedItem.ToString();
+                OriginalFile = false;
+            }
+            switch (CamTypeComboBox.SelectedItem)
+            {
+                case Camera.CameraType.CAM_TYPE_RAIL_DEMO:
+                case Camera.CameraType.CAM_TYPE_RAIL_FOLLOW:
+                case Camera.CameraType.CAM_TYPE_RAIL_WATCH:
+                    AllowDPadRotationCheckBox.Visible = false;
+                    RailCamIDLabel.Visible = true;
+                    RailCamIDNumericUpDown.Visible = true;
+                    break;
+                default:
+                    AllowDPadRotationCheckBox.Visible = true;
+                    RailCamIDLabel.Visible = false;
+                    RailCamIDNumericUpDown.Visible = false;
+                    break;
             }
         }
 
@@ -540,7 +617,7 @@ namespace LaunchCamPlus
             }
             else
             {
-                RotationValueNumericUpDown.Value = (Decimal)ConvertToBCSVAngle(RotationTrackBar.Value - 180);
+                RotationValueNumericUpDown.Value = (decimal)ConvertToBCSVAngle(RotationTrackBar.Value - 180);
             }
         }
 
@@ -557,7 +634,7 @@ namespace LaunchCamPlus
         {
             if (RotationRadRadioButton.Checked)
             {
-                RotationValueNumericUpDown.Value = (Decimal)ConvertToBCSVAngle(RotationTrackBar.Value - 180);
+                RotationValueNumericUpDown.Value = (decimal)ConvertToBCSVAngle(RotationTrackBar.Value - 180);
                 RotationTrackBar.TickStyle = TickStyle.TopLeft;
             }
         }
@@ -566,13 +643,13 @@ namespace LaunchCamPlus
         {
             if (RotationRadRadioButton.Checked)
             {
-                if ((Double)RotationValueNumericUpDown.Value > 3.1415900)
+                if ((double)RotationValueNumericUpDown.Value > 3.1415900)
                 {
-                    RotationValueNumericUpDown.Value = (Decimal)3.1415900f;
+                    RotationValueNumericUpDown.Value = (decimal)3.1415900f;
                 }
-                else if ((Double)RotationValueNumericUpDown.Value < -3.1415900)
+                else if ((double)RotationValueNumericUpDown.Value < -3.1415900)
                 {
-                    RotationValueNumericUpDown.Value = (Decimal)(-3.1415900f);
+                    RotationValueNumericUpDown.Value = (decimal)(-3.1415900f);
                 }
                 RotationTrackBar.Value = ConvertToAngle(RotationValueNumericUpDown.Value) + 180;
 
@@ -592,17 +669,18 @@ namespace LaunchCamPlus
                         default:
                             throw new ArgumentOutOfRangeException("Angle Axis");
                     }
+                    OriginalFile = false;
                 }
             }
             else
             {
-                if ((Double)RotationValueNumericUpDown.Value > 180)
+                if ((double)RotationValueNumericUpDown.Value > 180)
                 {
-                    RotationValueNumericUpDown.Value = (Decimal)180;
+                    RotationValueNumericUpDown.Value = (decimal)180;
                 }
-                else if ((Double)RotationValueNumericUpDown.Value < -180)
+                else if ((double)RotationValueNumericUpDown.Value < -180)
                 {
-                    RotationValueNumericUpDown.Value = (Decimal)(-180);
+                    RotationValueNumericUpDown.Value = (decimal)(-180);
                 }
                 RotationTrackBar.Value = (int)Math.Round(RotationValueNumericUpDown.Value + 180);
 
@@ -639,13 +717,13 @@ namespace LaunchCamPlus
                     switch (RotationAxisComboBox.SelectedIndex)
                     {
                         case 0:
-                            RotationValueNumericUpDown.Value = ConvertToAngle((Decimal)CameraList[CameraListBox.SelectedIndex].RotationX);
+                            RotationValueNumericUpDown.Value = ConvertToAngle((decimal)CameraList[CameraListBox.SelectedIndex].RotationX);
                             break;
                         case 1:
-                            RotationValueNumericUpDown.Value = ConvertToAngle((Decimal)CameraList[CameraListBox.SelectedIndex].RotationY);
+                            RotationValueNumericUpDown.Value = ConvertToAngle((decimal)CameraList[CameraListBox.SelectedIndex].RotationY);
                             break;
                         case 2:
-                            RotationValueNumericUpDown.Value = ConvertToAngle((Decimal)CameraList[CameraListBox.SelectedIndex].RotationZ);
+                            RotationValueNumericUpDown.Value = ConvertToAngle((decimal)CameraList[CameraListBox.SelectedIndex].RotationZ);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException("Angle Axis");
@@ -656,13 +734,13 @@ namespace LaunchCamPlus
                     switch (RotationAxisComboBox.SelectedIndex)
                     {
                         case 0:
-                            RotationValueNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].RotationX;
+                            RotationValueNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].RotationX;
                             break;
                         case 1:
-                            RotationValueNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].RotationY;
+                            RotationValueNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].RotationY;
                             break;
                         case 2:
-                            RotationValueNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].RotationZ;
+                            RotationValueNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].RotationZ;
                             break;
                         default:
                             throw new ArgumentOutOfRangeException("Angle Axis");
@@ -680,100 +758,158 @@ namespace LaunchCamPlus
 
         private void CamZoomumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].Zoom = (float)CamZoomNumericUpDown.Value;
+            if (!Loading)
+            {
+                CameraList[CameraListBox.SelectedIndex].Zoom = (float)CamZoomNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
 
         private void FOVNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].DPDRotation = (float)CamFOVNumericUpDown.Value;
+            if (!Loading)
+            {
+                CameraList[CameraListBox.SelectedIndex].DPDRotation = (float)CamFOVNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
         
         //---------------------------------------------------------------------------------------------
 
         private void CamIntnumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].TransitionSpeed = (int)CamIntNumericUpDown.Value;
+            if (!Loading)
+            {
+                CameraList[CameraListBox.SelectedIndex].TransitionSpeed = (int)CamIntNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
 
         private void CamEndIntNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].EndTransitionSpeed = (int)CamEndIntNumericUpDown.Value;
+            if (!Loading)
+            {
+                CameraList[CameraListBox.SelectedIndex].EndTransitionSpeed = (int)CamEndIntNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
 
         private void GndIntNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].GroundMoveSpeed = (int)GndIntNumericUpDown.Value;
+            if (!Loading){
+                CameraList[CameraListBox.SelectedIndex].GroundMoveSpeed = (int)GndIntNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
 
 
         private void AllowDPadRotationCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].UseDPAD = AllowDPadRotationCheckBox.Checked;
+            if (!Loading){
+                CameraList[CameraListBox.SelectedIndex].UseDPAD = AllowDPadRotationCheckBox.Checked;
+                OriginalFile = false;
+            }
         }
 
         private void Num2CheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].UnknownNum2 = Num2CheckBox.Checked;
+            if (!Loading) {
+                CameraList[CameraListBox.SelectedIndex].UnknownNum2 = Num2CheckBox.Checked;
+                OriginalFile = false;
+            }
         }
 
 
         private void MaxYNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].MaxY = (float)MaxYNumericUpDown.Value;
+            if (!Loading){
+                CameraList[CameraListBox.SelectedIndex].MaxY = (float)MaxYNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
 
         private void MinYNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].MinY = (float)MinYNumericUpDown.Value;
+            if (!Loading){
+                CameraList[CameraListBox.SelectedIndex].MinY = (float)MinYNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
 
 
         private void GroundMoveDelayNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].GroundStartMoveDelay = (int)GroundMoveDelayNumericUpDown.Value;
+            if (!Loading){
+                CameraList[CameraListBox.SelectedIndex].GroundStartMoveDelay = (int)GroundMoveDelayNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
 
         private void AirMoveDelayNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].AirStartMoveDelay = (int)AirMoveDelayNumericUpDown.Value;
+            if (!Loading){
+                CameraList[CameraListBox.SelectedIndex].AirStartMoveDelay = (int)AirMoveDelayNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
 
 
         private void FrontZoomNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].FrontZoom = (float)FrontZoomNumericUpDown.Value;
+            if (!Loading){
+                CameraList[CameraListBox.SelectedIndex].FrontZoom = (float)FrontZoomNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
 
         private void HeightZoomNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].HeightZoom = (float)HeightZoomNumericUpDown.Value;
+            if (!Loading){
+                CameraList[CameraListBox.SelectedIndex].HeightZoom = (float)HeightZoomNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
 
         private void UDownNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].UnknownUDown = (int)UDownNumericUpDown.Value;
+            if (!Loading){
+                CameraList[CameraListBox.SelectedIndex].UnknownUDown = (int)UDownNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
 
         private void UpperNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].UpperBorder = (float)UpperNumericUpDown.Value;
+            if (!Loading) {
+                CameraList[CameraListBox.SelectedIndex].UpperBorder = (float)UpperNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
 
         private void LowerNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].LowerBorder = (float)LowerNumericUpDown.Value;
+            if (!Loading){
+                CameraList[CameraListBox.SelectedIndex].LowerBorder = (float)LowerNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
         
         //---------------------------------------------------------------------------------------------
 
         private void EventLengthNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].EventFrames = (int)EventLengthNumericUpDown.Value;
+            if (!Loading) {
+                CameraList[CameraListBox.SelectedIndex].EventFrames = (int)EventLengthNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
 
         private void EventPriorityNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].EventPriority = (int)EventPriorityNumericUpDown.Value;
+            if (!Loading){
+                CameraList[CameraListBox.SelectedIndex].EventPriority = (int)EventPriorityNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
 
         //---------------------------------------------------------------------------------------------
@@ -789,55 +925,55 @@ namespace LaunchCamPlus
                 switch (CoordinateComboBox.SelectedIndex)
                 {
                     case 0:
-                        XNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].FixpointOffsetX;
+                        XNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].FixpointOffsetX;
                         break;
                     case 1:
-                        XNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].WorldPointX;
+                        XNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].WorldPointX;
                         break;
                     case 2:
-                        XNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].PlayerOffsetX;
+                        XNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].PlayerOffsetX;
                         break;
                     case 3:
-                        XNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].UnknownUpX;
+                        XNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].UnknownUpX;
                         break;
                     case 4:
-                        XNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].VPanAxisX;
+                        XNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].VPanAxisX;
                         break;
                 }
                 switch (CoordinateComboBox.SelectedIndex)
                 {
                     case 0:
-                        YNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].FixpointOffsetY;
+                        YNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].FixpointOffsetY;
                         break;
                     case 1:
-                        YNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].WorldPointY;
+                        YNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].WorldPointY;
                         break;
                     case 2:
-                        YNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].PlayerOffsetY;
+                        YNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].PlayerOffsetY;
                         break;
                     case 3:
-                        YNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].UnknownUpY;
+                        YNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].UnknownUpY;
                         break;
                     case 4:
-                        YNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].VPanAxisY;
+                        YNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].VPanAxisY;
                         break;
                 }
                 switch (CoordinateComboBox.SelectedIndex)
                 {
                     case 0:
-                        ZNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].FixpointOffsetZ;
+                        ZNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].FixpointOffsetZ;
                         break;
                     case 1:
-                        ZNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].WorldPointZ;
+                        ZNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].WorldPointZ;
                         break;
                     case 2:
-                        ZNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].PlayerOffsetZ;
+                        ZNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].PlayerOffsetZ;
                         break;
                     case 3:
-                        ZNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].UnknownUpZ;
+                        ZNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].UnknownUpZ;
                         break;
                     case 4:
-                        ZNumericUpDown.Value = (Decimal)CameraList[CameraListBox.SelectedIndex].VPanAxisZ;
+                        ZNumericUpDown.Value = (decimal)CameraList[CameraListBox.SelectedIndex].VPanAxisZ;
                         break;
                 }
             }
@@ -870,6 +1006,7 @@ namespace LaunchCamPlus
                         CameraList[CameraListBox.SelectedIndex].VPanAxisX = (float)XNumericUpDown.Value;
                         break;
                 }
+                OriginalFile = false;
             }
         }
 
@@ -895,7 +1032,8 @@ namespace LaunchCamPlus
                         CameraList[CameraListBox.SelectedIndex].VPanAxisY = (float)YNumericUpDown.Value;
                         break;
                 }
-            }
+                OriginalFile = false;
+        }
         }
 
         private void ZNumericUpDown_ValueChanged(object sender, EventArgs e)
@@ -920,6 +1058,7 @@ namespace LaunchCamPlus
                         CameraList[CameraListBox.SelectedIndex].VPanAxisZ = (float)ZNumericUpDown.Value;
                         break;
                 }
+                OriginalFile = false;
             }
         }
 
@@ -927,57 +1066,88 @@ namespace LaunchCamPlus
 
         private void DisableResetCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].DisableReset = DisableResetCheckBox.Checked;
+            if (!Loading) {CameraList[CameraListBox.SelectedIndex].DisableReset = DisableResetCheckBox.Checked;
+                OriginalFile = false;
+            }
         }
 
         private void SharpZoomCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].SharpZoom = SharpZoomCheckBox.Checked;
+            if (!Loading) { CameraList[CameraListBox.SelectedIndex].SharpZoom = SharpZoomCheckBox.Checked;
+                OriginalFile = false;
+            }
         }
 
         private void EnableBlurCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].DisableAntiBlur = EnableBlurCheckbox.Checked;
+            if (!Loading) { CameraList[CameraListBox.SelectedIndex].DisableAntiBlur = EnableBlurCheckbox.Checked;
+                OriginalFile = false;
+            }
         }
 
         private void NoCollisionCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].DisableCollision = NoCollisionCheckBox.Checked;
+            if (!Loading) { CameraList[CameraListBox.SelectedIndex].DisableCollision = NoCollisionCheckBox.Checked;
+                OriginalFile = false;
+            }
         }
 
         private void DisableFirstPersonCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].DisableFirstPerson = DisableFirstPersonCheckBox.Checked;
+            if (!Loading) { CameraList[CameraListBox.SelectedIndex].DisableFirstPerson = DisableFirstPersonCheckBox.Checked;
+                OriginalFile = false;
+            }
         }
 
         private void VPanCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].VPanUse = VPanCheckBox.Checked;
+            if (!Loading) { CameraList[CameraListBox.SelectedIndex].VPanUse = VPanCheckBox.Checked;
+                OriginalFile = false;
+            }
         }
 
         private void EventEndTransCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].EventUseEndTransition = EventEndTransCheckBox.Checked;
+            if (!Loading) { CameraList[CameraListBox.SelectedIndex].EventUseEndTransition = EventEndTransCheckBox.Checked;
+                OriginalFile = false;
+            }
         }
 
         private void EventTransCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].EventUseTransition = EventTransCheckBox.Checked;
+            if (!Loading) { CameraList[CameraListBox.SelectedIndex].EventUseTransition = EventTransCheckBox.Checked;
+                OriginalFile = false;
+            }
         }
 
         private void GEndErpFrameCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].GFlagEndErpFrame = GEndErpFrameCheckBox.Checked;
+            if (!Loading) { CameraList[CameraListBox.SelectedIndex].GFlagEndErpFrame = GEndErpFrameCheckBox.Checked;
+                OriginalFile = false;
+            }
         }
 
         private void GThruCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].GFlagThrough = GThruCheckBox.Checked;
+            if (!Loading) { CameraList[CameraListBox.SelectedIndex].GFlagThrough = GThruCheckBox.Checked;
+                OriginalFile = false;
+            }
         }
 
         private void GEndTransCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (!Loading) /*then*/ CameraList[CameraListBox.SelectedIndex].GFlagEndTransitionSpeed = GEndTransCheckBox.Checked;
+            if (!Loading) { CameraList[CameraListBox.SelectedIndex].GFlagEndTransitionSpeed = GEndTransCheckBox.Checked;
+                OriginalFile = false;
+            }
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------
+
+        private void RailCamIDNumericUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            if (!Loading) {CameraList[CameraListBox.SelectedIndex].RailID = (int)RailCamIDNumericUpDown.Value;
+                OriginalFile = false;
+            }
         }
         #endregion
 
@@ -1108,11 +1278,16 @@ namespace LaunchCamPlus
         #region ToolStrip Items
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CameraList.Count != 0)
+            if (!OriginalFile)
             {
                 DialogResult dialogResult = MessageBox.Show("Are you sure you want to make a new file?", "Confirmation", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
+                    if (rar != null)
+                    {
+                        rar.Dispose();
+                        rar = null;
+                    }
                     CameraListBox.Refresh();
                     PasteToolStripMenuItem.BackColor = default(Color);
                     CopyCamera = null;
@@ -1132,6 +1307,7 @@ namespace LaunchCamPlus
                     PresetsToolStripMenuItem.Enabled = false;
 
                     fInfo = null;
+                    RIchPresence.Update("Super Mario Galaxy Camera Editor 1/2", "New File");
                 }
                 else if (dialogResult == DialogResult.No)
                 {
@@ -1140,6 +1316,11 @@ namespace LaunchCamPlus
             }
             else
             {
+                if (rar != null)
+                {
+                    rar.Dispose();
+                    rar = null;
+                }
                 CameraListBox.Refresh();
                 PasteToolStripMenuItem.BackColor = default(Color);
                 CopyCamera = null;
@@ -1159,6 +1340,7 @@ namespace LaunchCamPlus
                 PresetsToolStripMenuItem.Enabled = false;
 
                 fInfo = null;
+                RIchPresence.Update("Super Mario Galaxy Camera Editor 1/2", "New File");
             }
         }
         
@@ -1202,15 +1384,14 @@ namespace LaunchCamPlus
                 CameraListBox.SelectedIndex = 0;
                 if (CopyCamera != null)
                     PasteToolStripMenuItem.Enabled = true;
-                RP.Update(MessageB:"Editing Cameras");
             }
         }
 
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CameraList.Count > 0)
+            if (!OriginalFile)
             {
-                if (MessageBox.Show("Are you sure you want to open a different file?", "Confirmation", MessageBoxButtons.YesNo) == DialogResult.No)
+                if (MessageBox.Show("Are you sure you want to open a different file?", "Confirmation", MessageBoxButtons.YesNo,MessageBoxIcon.Warning) == DialogResult.No)
                     return;
             }
 
@@ -1218,18 +1399,34 @@ namespace LaunchCamPlus
             //ofd.FilterIndex = 1;
             ofd.FileName = "";
             //bool israrc = false;
-            String bcsvName = "";
+            string bcsvName = "";
             
             //BCAM only from here on out.... oh boy.
             ofd.ShowDialog();
             if (ofd.FileName != "")
             {
+                if ((rar != null && rar.OriginalPath == ofd.FileName) || (bcsv != null && bcsv.FileName == ofd.FileName))
+                {
+                    MessageBox.Show("The chosen file is already opened.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                FileInfo inuse = new FileInfo(ofd.FileName);
+                if (IsFileLocked(inuse))
+                {
+                    MessageBox.Show("The chosen file could not be accessed.","Access Denied",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    return;
+                }
+
                 bool ARC = new FileInfo(ofd.FileName).Extension == ".arc";
                 bool RARC = new FileInfo(ofd.FileName).Extension == ".rarc";
                 bool BCAM = new FileInfo(ofd.FileName).Extension == ".bcam";
 
 
-                if (rarcpath != "") { Directory.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\Stage", true); File.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\"+rar.name+"."+rar.ext); rarcpath = ""; }
+                if (rar != null) {
+                    rar.Dispose();
+                    rar = null;
+                }
                 FileInfo old = null;
                 if (fInfo != null)
                 {
@@ -1241,14 +1438,13 @@ namespace LaunchCamPlus
                 {
                     FileStream fs = new FileStream(ofd.FileName, FileMode.Open);
                     FileInfo fi = new FileInfo(ofd.FileName);
-                    rar = new RARC(fs, fi);
+                    rar = new RARC(fs, fi,"stage",fi.Name.Replace(fi.Extension,""));
                     FileInfo ffff = rar.FindFile("cameraparam.bcam");
                     if (ffff == null) {
                         fs.Close();
                         fInfo = old;
                         return;
                     }
-                    rarcpath = fi.FullName;
 
                     ofd.FileName = ffff.FullName;
                     fs.Close();
@@ -1260,23 +1456,45 @@ namespace LaunchCamPlus
                 CameraEventList.Clear();
                 CameraListBox.Items.Clear();
 
-                this.bcsv = new BCSV(bcsvName, 0);
+                bcsv = new BCSV(bcsvName);
 
-                if (this.bcsv.header.entryCount == 0)
+                if (bcsv.header.entryCount == 0)
                 {
-                    MessageBox.Show(EmptyBCAM[EmptyBCAMProgress+1], EmptyBCAM[EmptyBCAMProgress], MessageBoxButtons.OK,MessageBoxIcon.Error);
-                    if (EmptyBCAMProgress<8)
+                    if (MessageBox.Show("This BCAM is empty! Would you like to Start a new file?", "Important", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                     {
-                        EmptyBCAMProgress += 2;
+                        CameraListBox.Refresh();
+                        PasteToolStripMenuItem.BackColor = default(Color);
+                        CopyCamera = null;
+                        CopyTimer.Stop();
+                        ColR = -1;
+                        ColG = -1;
+                        ColB = -1;
+                        SetAppStatus(false, false);
+                        CameraList.Clear();
+                        CameraEventList.Clear();
+                        CameraListBox.Items.Clear();
+                        NewFileTimer.Start();
+                        EditToolStripMenuItem.Enabled = true;
+                        CopyToolStripMenuItem.Enabled = false;
+                        PasteToolStripMenuItem.Enabled = false;
+                        DeleteToolStripMenuItem.Enabled = false;
+                        PresetsToolStripMenuItem.Enabled = false;
+
+                        RIchPresence.Update("Super Mario Galaxy 1/2 Camera Editor", "New File");
+                        return;
                     }
-                    SetAppStatus(false, true);
-                    return;
+                    else
+                    {
+                        SetAppStatus(false, true);
+                        return;
+                    }
+
                 }
-                for (uint i = 0; i < this.bcsv.header.entryCount; i++)
+                for (uint i = 0; i < bcsv.header.entryCount; i++)
                 {
                     Camera addme = new Camera(CameraList.Count);
                     
-                    for (int j = 0; j < 52; j++)
+                    for (int j = 0; j < bcsv.header.fieldCount; j++)
                     {
                         //Lets find out where Everything is kept
                         for(int y = 0; y < bcsv.header.fieldCount; y++)
@@ -1286,13 +1504,13 @@ namespace LaunchCamPlus
                                 switch (j)
                                 {
                                     case 0:
-                                        addme.Version = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                        addme.Version = int.Parse(bcsv.entryList[i].data[y].ToString());
                                         break;
                                     case 1:
                                         addme.Identification = bcsv.entryList[i].data[y].ToString();
                                         break;
                                     case 2:
-                                        addme.Num = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                        addme.Num = int.Parse(bcsv.entryList[i].data[y].ToString());
                                         break;
                                     case 3:
                                         addme.Type = bcsv.entryList[i].data[y].ToString();
@@ -1313,16 +1531,19 @@ namespace LaunchCamPlus
                                         addme.DPDRotation = Convert.ToSingle(bcsv.entryList[i].data[y]);
                                         break;
                                     case 9:
-                                        addme.TransitionSpeed = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                        addme.TransitionSpeed = int.Parse(bcsv.entryList[i].data[y].ToString());
                                         break;
                                     case 10:
-                                        addme.EndTransitionSpeed = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                        addme.EndTransitionSpeed = int.Parse(bcsv.entryList[i].data[y].ToString());
                                         break;
                                     case 11:
-                                        addme.GroundMoveSpeed = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                        addme.GroundMoveSpeed = int.Parse(bcsv.entryList[i].data[y].ToString());
                                         break;
                                     case 12:
-                                        addme.UseDPAD = Convert.ToSingle(bcsv.entryList[i].data[y]) == 1 ? true: false;
+                                        if ((addme.Type == Camera.CameraType.CAM_TYPE_RAIL_WATCH.ToString())^(addme.Type == Camera.CameraType.CAM_TYPE_RAIL_FOLLOW.ToString()))
+                                            addme.RailID = Convert.ToInt32(bcsv.entryList[i].data[y]);
+                                        else
+                                            addme.UseDPAD = Convert.ToSingle(bcsv.entryList[i].data[y]) == 1 ? true : false;
                                         break;
                                     case 13:
                                         addme.UnknownNum2 = Convert.ToSingle(bcsv.entryList[i].data[y]) == 1 ? true : false;
@@ -1334,13 +1555,13 @@ namespace LaunchCamPlus
                                         addme.MinY = Convert.ToSingle(bcsv.entryList[i].data[y]);
                                         break;
                                     case 16:
-                                        addme.GroundStartMoveDelay = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                        addme.GroundStartMoveDelay = int.Parse(bcsv.entryList[i].data[y].ToString());
                                         break;
                                     case 17:
-                                        addme.AirStartMoveDelay = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                        addme.AirStartMoveDelay = int.Parse(bcsv.entryList[i].data[y].ToString());
                                         break;
                                     case 18:
-                                        addme.UnknownUDown = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                        addme.UnknownUDown = int.Parse(bcsv.entryList[i].data[y].ToString());
                                         break;
                                     case 19:
                                         addme.FrontZoom = Convert.ToSingle(bcsv.entryList[i].data[y]);
@@ -1355,10 +1576,10 @@ namespace LaunchCamPlus
                                         addme.LowerBorder = Convert.ToSingle(bcsv.entryList[i].data[y]);
                                         break;
                                     case 23:
-                                        addme.EventFrames = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                        addme.EventFrames = int.Parse(bcsv.entryList[i].data[y].ToString());
                                         break;
                                     case 24:
-                                        addme.EventPriority = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                        addme.EventPriority = int.Parse(bcsv.entryList[i].data[y].ToString());
                                         break;
                                     case 25:
                                         addme.FixpointOffsetX = Convert.ToSingle(bcsv.entryList[i].data[y]);
@@ -1464,20 +1685,32 @@ namespace LaunchCamPlus
 
                 SaveToolStripMenuItem.Enabled = true;
                 SaveAsToolStripMenuItem.Enabled = true;
-                RP.Update(MessageB: "Editing Cameras");
+                RIchPresence.Update(MessageB: "Editing " + (rar != null ? rar.Selfinfo.Name : fInfo.Name));
+                OriginalFile = true;
             }
         }
 
         private void OpenWith(string Filename)
         {
-            String bcsvName = "";
+            FileInfo inuse = new FileInfo(Filename);
+            if (IsFileLocked(inuse))
+            {
+                MessageBox.Show("The chosen file could not be accessed.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            string bcsvName = "";
 
             bool ARC = new FileInfo(Filename).Extension == ".arc";
             bool RARC = new FileInfo(Filename).Extension == ".rarc";
             bool BCAM = new FileInfo(Filename).Extension == ".bcam";
 
 
-            if (rarcpath != "") { Directory.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\Stage", true); File.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + rar.name + "." + rar.ext); rarcpath = ""; }
+            if (rar != null)
+            {
+                rar.Dispose();
+                rar = null;
+            }
             FileInfo old = null;
             if (fInfo != null)
             {
@@ -1497,7 +1730,6 @@ namespace LaunchCamPlus
                     fInfo = old;
                     return;
                 }
-                rarcpath = fi.FullName;
 
                 Filename = ffff.FullName;
                 fs.Close();
@@ -1509,23 +1741,45 @@ namespace LaunchCamPlus
             CameraEventList.Clear();
             CameraListBox.Items.Clear();
 
-            this.bcsv = new BCSV(bcsvName, 0);
+            bcsv = new BCSV(bcsvName);
 
-            if (this.bcsv.header.entryCount == 0)
+            if (bcsv.header.entryCount == 0)
             {
-                MessageBox.Show(EmptyBCAM[EmptyBCAMProgress + 1], EmptyBCAM[EmptyBCAMProgress], MessageBoxButtons.OK, MessageBoxIcon.Error);
-                if (EmptyBCAMProgress < 8)
+                if (MessageBox.Show("This BCAM is empty! Would you like to Start a new file?", "Important", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
-                    EmptyBCAMProgress += 2;
+                    CameraListBox.Refresh();
+                    PasteToolStripMenuItem.BackColor = default(Color);
+                    CopyCamera = null;
+                    CopyTimer.Stop();
+                    ColR = -1;
+                    ColG = -1;
+                    ColB = -1;
+                    SetAppStatus(false, false);
+                    CameraList.Clear();
+                    CameraEventList.Clear();
+                    CameraListBox.Items.Clear();
+                    NewFileTimer.Start();
+                    EditToolStripMenuItem.Enabled = true;
+                    CopyToolStripMenuItem.Enabled = false;
+                    PasteToolStripMenuItem.Enabled = false;
+                    DeleteToolStripMenuItem.Enabled = false;
+                    PresetsToolStripMenuItem.Enabled = false;
+                    
+                    RIchPresence.Update("Super Mario Galaxy Camera Editor 1/2", "New File");
+                    return;
                 }
-                SetAppStatus(false, true);
-                return;
+                else
+                {
+                    SetAppStatus(false, true);
+                    return;
+                }
+
             }
-            for (uint i = 0; i < this.bcsv.header.entryCount; i++)
+            for (uint i = 0; i < bcsv.header.entryCount; i++)
             {
                 Camera addme = new Camera(CameraList.Count);
 
-                for (int j = 0; j < 52; j++)
+                for (int j = 0; j < bcsv.header.fieldCount; j++)
                 {
                     //Lets find out where Everything is kept
                     for (int y = 0; y < bcsv.header.fieldCount; y++)
@@ -1535,13 +1789,13 @@ namespace LaunchCamPlus
                             switch (j)
                             {
                                 case 0:
-                                    addme.Version = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                    addme.Version = int.Parse(bcsv.entryList[i].data[y].ToString());
                                     break;
                                 case 1:
                                     addme.Identification = bcsv.entryList[i].data[y].ToString();
                                     break;
                                 case 2:
-                                    addme.Num = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                    addme.Num = int.Parse(bcsv.entryList[i].data[y].ToString());
                                     break;
                                 case 3:
                                     addme.Type = bcsv.entryList[i].data[y].ToString();
@@ -1562,16 +1816,19 @@ namespace LaunchCamPlus
                                     addme.DPDRotation = Convert.ToSingle(bcsv.entryList[i].data[y]);
                                     break;
                                 case 9:
-                                    addme.TransitionSpeed = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                    addme.TransitionSpeed = int.Parse(bcsv.entryList[i].data[y].ToString());
                                     break;
                                 case 10:
-                                    addme.EndTransitionSpeed = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                    addme.EndTransitionSpeed = int.Parse(bcsv.entryList[i].data[y].ToString());
                                     break;
                                 case 11:
-                                    addme.GroundMoveSpeed = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                    addme.GroundMoveSpeed = int.Parse(bcsv.entryList[i].data[y].ToString());
                                     break;
                                 case 12:
-                                    addme.UseDPAD = Convert.ToSingle(bcsv.entryList[i].data[y]) == 1 ? true : false;
+                                    if ((addme.Type == Camera.CameraType.CAM_TYPE_RAIL_WATCH.ToString()) ^ (addme.Type == Camera.CameraType.CAM_TYPE_RAIL_FOLLOW.ToString()))
+                                        addme.RailID = Convert.ToInt32(bcsv.entryList[i].data[y]);
+                                    else
+                                        addme.UseDPAD = Convert.ToSingle(bcsv.entryList[i].data[y]) == 1 ? true : false;
                                     break;
                                 case 13:
                                     addme.UnknownNum2 = Convert.ToSingle(bcsv.entryList[i].data[y]) == 1 ? true : false;
@@ -1583,13 +1840,13 @@ namespace LaunchCamPlus
                                     addme.MinY = Convert.ToSingle(bcsv.entryList[i].data[y]);
                                     break;
                                 case 16:
-                                    addme.GroundStartMoveDelay = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                    addme.GroundStartMoveDelay = int.Parse(bcsv.entryList[i].data[y].ToString());
                                     break;
                                 case 17:
-                                    addme.AirStartMoveDelay = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                    addme.AirStartMoveDelay = int.Parse(bcsv.entryList[i].data[y].ToString());
                                     break;
                                 case 18:
-                                    addme.UnknownUDown = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                    addme.UnknownUDown = int.Parse(bcsv.entryList[i].data[y].ToString());
                                     break;
                                 case 19:
                                     addme.FrontZoom = Convert.ToSingle(bcsv.entryList[i].data[y]);
@@ -1604,10 +1861,10 @@ namespace LaunchCamPlus
                                     addme.LowerBorder = Convert.ToSingle(bcsv.entryList[i].data[y]);
                                     break;
                                 case 23:
-                                    addme.EventFrames = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                    addme.EventFrames = int.Parse(bcsv.entryList[i].data[y].ToString());
                                     break;
                                 case 24:
-                                    addme.EventPriority = Int32.Parse(bcsv.entryList[i].data[y].ToString());
+                                    addme.EventPriority = int.Parse(bcsv.entryList[i].data[y].ToString());
                                     break;
                                 case 25:
                                     addme.FixpointOffsetX = Convert.ToSingle(bcsv.entryList[i].data[y]);
@@ -1713,7 +1970,7 @@ namespace LaunchCamPlus
 
             SaveToolStripMenuItem.Enabled = true;
             SaveAsToolStripMenuItem.Enabled = true;
-            RP.Update(MessageB: "Editing Cameras");
+            RIchPresence.Update(MessageB: "Editing Cameras");
             
         }
 
@@ -1731,27 +1988,29 @@ namespace LaunchCamPlus
                 if (sfd.FileName != "")
                 {
                     outfile = sfd.FileName;
-                    if (rarcpath != "") { Directory.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\Stage", true); File.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + rar.name + "." + rar.ext); }
-                    rarcpath = "";
+                    if (rar != null)
+                    {
+                        rar.Dispose();
+                        rar = null;
+                    }
                     rar = null;
                     fInfo = new FileInfo(sfd.FileName);
                 }
                 else
-                {
                     return;
-                }
             }
             else
-            {
                 outfile = fInfo.FullName;
-            }
+            
             SaveToBCSV(outfile);
-            if (rarcpath != "")
+            if (rar != null)
             {
                 DialogResult d = MessageBox.Show("Would you like to Yaz0 Encode your Archive?", "Yaz0", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 Ecode = d == DialogResult.Yes ? true : false; 
-                rar.Return(Ecode);
+                rar.Save(Ecode,"stage");
             }
+            OriginalFile = true;
+            RIchPresence.Update(MessageB: "Editing " + fInfo.Name);
         }
 
         private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1764,11 +2023,16 @@ namespace LaunchCamPlus
 
             if (sfd.FileName != "")
             {
-                if (rarcpath != "") { Directory.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\Stage", true); File.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + rar.name + "." + rar.ext); }
-                rarcpath = "";
+                if (rar != null)
+                {
+                    rar.Dispose();
+                    rar = null;
+                }
                 fInfo = new FileInfo(sfd.FileName);
                 outfile = sfd.FileName;
                 SaveToBCSV(outfile);
+                OriginalFile = true;
+                RIchPresence.Update(MessageB: "Editing "+fInfo.Name);
             }
         }
 
@@ -1792,11 +2056,7 @@ namespace LaunchCamPlus
                 ColR = 255; ColG = 182; ColB = 55;
             }
             CopiedBrush.Color = Color.FromArgb(150, ColR, ColG, ColB);
-            //if (CopyID < CameraList.Count && CopyCamera == CameraList[CopyID])
-            //{
-                //CameraListBox.Refresh();
-            //    GraphicsEngine.FillRectangle(CopiedBrush, CopiedIndicator);
-            //}
+
             PasteToolStripMenuItem.BackColor = Color.FromArgb(ColR, ColG, ColB);
             ColB = ColSwitch ? ColB - 5 : ColB + 5;
             if (ColB > 145)
@@ -1811,11 +2071,9 @@ namespace LaunchCamPlus
 
         private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CameraList[CameraListBox.SelectedIndex] = new Camera(CameraList.Count) { Version = CopyCamera.Version, Identification = CopyCamera.Identification, Type = CopyCamera.Type, RotationX = CopyCamera.RotationX, RotationY = CopyCamera.RotationY, RotationZ = CopyCamera.RotationZ, Zoom = CopyCamera.Zoom, DPDRotation = CopyCamera.DPDRotation, TransitionSpeed = CopyCamera.TransitionSpeed, EndTransitionSpeed = CopyCamera.EndTransitionSpeed, GroundMoveSpeed = CopyCamera.GroundMoveSpeed, UseDPAD = CopyCamera.UseDPAD, UnknownNum2 = CopyCamera.UnknownNum2, MaxY = CopyCamera.MaxY, MinY = CopyCamera.MinY, GroundStartMoveDelay = CopyCamera.GroundStartMoveDelay, AirStartMoveDelay = CopyCamera.AirStartMoveDelay, UnknownUDown = CopyCamera.UnknownUDown, FrontZoom = CopyCamera.FrontZoom, HeightZoom = CopyCamera.HeightZoom, UpperBorder = CopyCamera.UpperBorder, LowerBorder = CopyCamera.LowerBorder, EventFrames = CopyCamera.EventFrames, EventPriority = CopyCamera.EventPriority, FixpointOffsetX = CopyCamera.FixpointOffsetX, FixpointOffsetY = CopyCamera.FixpointOffsetY, FixpointOffsetZ = CopyCamera.FixpointOffsetZ, WorldPointX = CopyCamera.WorldPointX, WorldPointY = CopyCamera.WorldPointY, WorldPointZ = CopyCamera.WorldPointZ, PlayerOffsetX = CopyCamera.PlayerOffsetX, PlayerOffsetY = CopyCamera.PlayerOffsetY, PlayerOffsetZ = CopyCamera.PlayerOffsetZ, VPanAxisX = CopyCamera.VPanAxisX, VPanAxisY = CopyCamera.VPanAxisY, VPanAxisZ = CopyCamera.VPanAxisZ, UnknownUpX = CopyCamera.UnknownUpX, UnknownUpY = CopyCamera.UnknownUpY, UnknownUpZ = CopyCamera.UnknownUpZ, DisableReset = CopyCamera.DisableReset, SharpZoom = CopyCamera.SharpZoom, DisableAntiBlur = CopyCamera.DisableAntiBlur, DisableCollision = CopyCamera.DisableCollision, DisableFirstPerson = CopyCamera.DisableFirstPerson, GFlagEndErpFrame = CopyCamera.GFlagEndErpFrame, GFlagThrough = CopyCamera.GFlagThrough, GFlagEndTransitionSpeed = CopyCamera.GFlagEndTransitionSpeed, VPanUse = CopyCamera.VPanUse, EventUseEndTransition = CopyCamera.EventUseEndTransition, EventUseTransition = CopyCamera.EventUseTransition
- };
+            CameraList[CameraListBox.SelectedIndex] = new Camera(CameraList.Count) { Version = CopyCamera.Version, Identification = CopyCamera.Identification, Type = CopyCamera.Type, RotationX = CopyCamera.RotationX, RotationY = CopyCamera.RotationY, RotationZ = CopyCamera.RotationZ, Zoom = CopyCamera.Zoom, DPDRotation = CopyCamera.DPDRotation, TransitionSpeed = CopyCamera.TransitionSpeed, EndTransitionSpeed = CopyCamera.EndTransitionSpeed, GroundMoveSpeed = CopyCamera.GroundMoveSpeed, UseDPAD = CopyCamera.UseDPAD, UnknownNum2 = CopyCamera.UnknownNum2, MaxY = CopyCamera.MaxY, MinY = CopyCamera.MinY, GroundStartMoveDelay = CopyCamera.GroundStartMoveDelay, AirStartMoveDelay = CopyCamera.AirStartMoveDelay, UnknownUDown = CopyCamera.UnknownUDown, FrontZoom = CopyCamera.FrontZoom, HeightZoom = CopyCamera.HeightZoom, UpperBorder = CopyCamera.UpperBorder, LowerBorder = CopyCamera.LowerBorder, EventFrames = CopyCamera.EventFrames, EventPriority = CopyCamera.EventPriority, FixpointOffsetX = CopyCamera.FixpointOffsetX, FixpointOffsetY = CopyCamera.FixpointOffsetY, FixpointOffsetZ = CopyCamera.FixpointOffsetZ, WorldPointX = CopyCamera.WorldPointX, WorldPointY = CopyCamera.WorldPointY, WorldPointZ = CopyCamera.WorldPointZ, PlayerOffsetX = CopyCamera.PlayerOffsetX, PlayerOffsetY = CopyCamera.PlayerOffsetY, PlayerOffsetZ = CopyCamera.PlayerOffsetZ, VPanAxisX = CopyCamera.VPanAxisX, VPanAxisY = CopyCamera.VPanAxisY, VPanAxisZ = CopyCamera.VPanAxisZ, UnknownUpX = CopyCamera.UnknownUpX, UnknownUpY = CopyCamera.UnknownUpY, UnknownUpZ = CopyCamera.UnknownUpZ, DisableReset = CopyCamera.DisableReset, SharpZoom = CopyCamera.SharpZoom, DisableAntiBlur = CopyCamera.DisableAntiBlur, DisableCollision = CopyCamera.DisableCollision, DisableFirstPerson = CopyCamera.DisableFirstPerson, GFlagEndErpFrame = CopyCamera.GFlagEndErpFrame, GFlagThrough = CopyCamera.GFlagThrough, GFlagEndTransitionSpeed = CopyCamera.GFlagEndTransitionSpeed, VPanUse = CopyCamera.VPanUse, EventUseEndTransition = CopyCamera.EventUseEndTransition, EventUseTransition = CopyCamera.EventUseTransition };
             CameraListBox.Items[CameraListBox.SelectedIndex] = CopyCamera.Identification;
             DoNameCheck();
-            //PasteToolStripMenuItem.BackColor = default(Color);
         }
 
         private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1847,9 +2105,9 @@ namespace LaunchCamPlus
         private void ExportPresetToolStripMenuItem_Click(object sender, EventArgs e)
         {
             BackupList = CameraList;
-            RP.Update(MessageB: "Exporting a Preset");
+            RIchPresence.Update(MessageB: "Exporting a Preset");
             new PresetForm(CameraList).ShowDialog();
-            RP.Update(MessageB: "Editing Cameras");
+            RIchPresence.Update(MessageB: "Editing " + rar.Selfinfo.Name);
             CameraList = BackupList;
         }
 
@@ -1864,13 +2122,9 @@ namespace LaunchCamPlus
             if (pofd.FileName != "")
             {
                 if (new FileInfo(pofd.FileName).Extension == ".lcpc")
-                {
                     ImportPreset = new LCPC(new FileStream(pofd.FileName, FileMode.Open)).LCPP;
-                }
                 else
-                {
                     ImportPreset = new LCPP(pofd.FileName);
-                }
                 foreach (Entry E in ImportPreset.EntryList)
                 {
                     CameraList.Add(E.RetrieveCameraSettings(CameraList.Count));
@@ -1878,11 +2132,8 @@ namespace LaunchCamPlus
                 }
             }
         }
-        
-        private void IDAssistantToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new IdentificationAssistance(this).Show();
-        }
+
+        private void IDAssistantToolStripMenuItem_Click(object sender, EventArgs e) => new IdentificationAssistance(this).Show();
 
         #region About ToolStrip Items
 
@@ -1898,40 +2149,29 @@ namespace LaunchCamPlus
         {
             List<Camera> New = new List<Camera>();
             foreach (Camera Cam in CameraList)
-            {
                 if (Cam.Identification.StartsWith("c:"))
-                {
                     New.Add(Cam);
-                }
-            }
+
             foreach (Camera Cam in CameraList)
-            {
+                if (Cam.Identification.StartsWith("s:"))
+                    New.Add(Cam);
+
+            foreach (Camera Cam in CameraList)
                 if (Cam.Identification.StartsWith("e:"))
-                {
                     New.Add(Cam);
-                }
-            }
+
             foreach (Camera Cam in CameraList)
-            {
                 if (Cam.Identification.StartsWith("o:"))
-                {
                     New.Add(Cam);
-                }
-            }
+
             foreach (Camera Cam in CameraList)
-            {
                 if (Cam.Identification.StartsWith("g:"))
-                {
                     New.Add(Cam);
-                }
-            }
             CameraList = New;
             CameraListBox.Items.Clear();
 
             foreach (Camera Cam in CameraList)
-            {
                 DoNameCheck(Cam);
-            }
         }
 
         private void ErrorCheckSelectedCameraToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1942,7 +2182,6 @@ namespace LaunchCamPlus
             Camera Scanning = CameraList[CameraListBox.SelectedIndex];
             List<string> Errors = new List<string>();
             List<string> Warnings = new List<string>();
-            //string reason = "";
             if (Scanning.Identification.StartsWith("c:"))
             {
                 if (Scanning.Identification.Length != 6 & Scanning.Identification.Length != 0)
@@ -1980,22 +2219,16 @@ namespace LaunchCamPlus
                 Warnings.Add("Event Camera's are not yet supported");
             }
             else
-            {
                 if (Scanning.Identification.Length == 0)
                     Errors.Add("The Identification is blank.");
-            }
 
             if (Errors.Count == 0 && Warnings.Count == 0)
                 MessageBox.Show("No errors were found in Camera "+ Scanning.Identification, "Good to go", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             foreach (string message in Errors)
-            {
                 MessageBox.Show(message, "Error in: " + Scanning.Identification + " | List ID: " + CameraListBox.SelectedIndex, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             foreach (string message in Warnings)
-            {
                 MessageBox.Show(message, "Warning in: " + Scanning.Identification + " | List ID: " + CameraListBox.SelectedIndex, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
         }
 
         private void ErrorCheckAllCamerasToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2007,6 +2240,39 @@ namespace LaunchCamPlus
                 ErrorCheckSelectedCameraToolStripMenuItem_Click(ErrorCheckSelectedCameraToolStripMenuItem, EventArgs.Empty);
             }
             CameraListBox.SelectedIndex = S;
+        }
+
+        private void PluginItem_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem TMIS = (ToolStripMenuItem)sender;
+            ILCPE ActivePlugin = (ILCPE)TMIS.Tag;
+
+            List<object> Params = new List<object>();
+            for (int i = 0; i < ActivePlugin.Permissions.Length; i++)
+            {
+                switch (ActivePlugin.Permissions[i])
+                {
+                    case Permission.None:
+                        break;
+                    case Permission.CameraList:
+                        Params.Add(CameraList);
+                        break;
+                    case Permission.BCSV:
+                        Params.Add(bcsv);
+                        break;
+                    case Permission.Archive:
+                        Params.Add(rar);
+                        break;
+                    case Permission.FullAccess:
+                        Params.Add(CameraList);
+                        Params.Add(bcsv);
+                        Params.Add(rar);
+                        break;
+                }
+            }
+            object[] INPUT = new object[Params.Count];
+            Params.CopyTo(INPUT);
+            ActivePlugin.Run(INPUT);
         }
         #endregion
 
@@ -2044,9 +2310,7 @@ namespace LaunchCamPlus
                     }
                 }
                 if (caught)
-                {
                     break;
-                }
             }
             if (!caught)
             {
@@ -2155,24 +2419,20 @@ namespace LaunchCamPlus
             }
         }
         
-        private void SetBCSVEntry(int i, int count, object input) => this.bcsv.entryList[i].data[count] = input;
+        private void SetBCSVEntry(int i, int count, object input) => bcsv.entryList[i].data[count] = input;
 
         private void SaveToBCSV(string outfile)
         {
             uint lastoffset = 628;
             uint StringsOffset = 628 + (uint)(CameraList.Count * 208);
-            List<string> CameraTypes = new List<string>();
+            List<string> CameraTypes = new List<string>() { "4C4350322E332E302E30" };
             List<string> CameraIdentifications = new List<string>();
             foreach (Camera Cam in CameraList) //place the Strings in their lists for later ;)
             {
                 if (!CameraTypes.Any(C => C == Cam.Type))
-                {
                     CameraTypes.Add(Cam.Type);
-                }
                 if (!CameraIdentifications.Any(I => I == Cam.Identification))
-                {
                     CameraIdentifications.Add(Cam.Identification);
-                }
             }
             byte[] FieldTypes = new byte[] { 0x00, 0x06, 0x00, 0x06, 0x02, 0x02, 0x02, 0x02, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x02, 0x00, 0x00, 0x00, 0x02, 0x02, 0x02, 0x02, 0x00, 0x00, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
             BCSV Save = new BCSV();
@@ -2221,10 +2481,38 @@ namespace LaunchCamPlus
             Save.Write(CameraTypes, CameraIdentifications, outfile);
         }
 
+        /// <summary>
+        /// Check if a file cannot be opened.
+        /// </summary>
+        /// <param name="file">File to check for</param>
+        /// <returns>If the file is locked, returns true.</returns>
+        protected virtual bool IsFileLocked(FileInfo file)
+        {
+            FileStream stream = null;
+
+            try
+            {
+                stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None);
+            }
+            catch (IOException)
+            {
+                return true;
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Close();
+            }
+
+            //file is not locked
+            return false;
+        }
+
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            RP.Quit();
-            if (rarcpath != "") { Directory.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\Stage", true); File.Delete(@AppDomain.CurrentDomain.BaseDirectory + "External Rarc Managment\\" + rar.name + "." + rar.ext); }
+            RIchPresence.Quit();
+            if (rar != null)
+                rar.Dispose();
         }
 
         private void MoveUpButton_Click(object sender, EventArgs e)
@@ -2246,16 +2534,46 @@ namespace LaunchCamPlus
             RearrangeCameras(CameraList[CameraListBox.SelectedIndex], CameraList[CameraListBox.SelectedIndex+1], false);
             CameraListBox.SelectedIndex = i + 1;
         }
+        
+        private void MainForm_Load(object sender, EventArgs e) => Activate();
 
+        /// <summary>
+        /// Check to make sure the plugin is supported by the current LCP version
+        /// </summary>
+        /// <param name="LCPVersion">Curent LCP version</param>
+        bool CheckCompatibility(Version LCPVersion, Version Lowestversion)
+        {
+            int result = LCPVersion.CompareTo(Lowestversion);
 
-        //private void GetPreset(string filename)
-        //{
-        //    LCPP ImportPreset = new LCPP(filename);
-        //    foreach (Entry E in ImportPreset.EntryList)
-        //    {
-        //        CameraList.Add(E.RetrieveCameraSettings(CameraList.Count));
-        //        DoNameCheck(E.Properties);
-        //    }
-        //}
+            if (result >= 0)//Versions are the compatable
+                return true;
+            else//versions are not compatable
+                return false;
+        }
+        bool CheckCompatibility(Version LCPVersion, string HighestVersion)
+        {
+            if (HighestVersion == null)
+                return true;
+
+            int result = LCPVersion.CompareTo(Version.Parse(HighestVersion));
+
+            if (result >= 0)//Versions are not compatable
+                return false;
+            else//versions are compatable
+                return true;
+        }
+
+        private void DiscordTimer_Tick(object sender, EventArgs e)
+        {
+            Idletimer++;
+            if (ActiveForm == this)
+                RIchPresence.Update(RIchPresence.DisplayA, RIchPresence.DisplayB, "active", "Active", false);
+
+            if (Idletimer > 120)
+            {
+                RIchPresence.Update(RIchPresence.DisplayA, RIchPresence.DisplayB, "idle", "Idle",false);
+                Idletimer = 0;
+            }
+        }
     }
 }

@@ -95,7 +95,7 @@ namespace LaunchCamPlus.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Check_Errors {
             get {
-                object obj = ResourceManager.GetObject("Check Errors", resourceCulture);
+                object obj = ResourceManager.GetObject("Check_Errors", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -145,7 +145,7 @@ namespace LaunchCamPlus.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Export_Preset {
             get {
-                object obj = ResourceManager.GetObject("Export Preset", resourceCulture);
+                object obj = ResourceManager.GetObject("Export_Preset", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -175,7 +175,7 @@ namespace LaunchCamPlus.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap New_File {
             get {
-                object obj = ResourceManager.GetObject("New File", resourceCulture);
+                object obj = ResourceManager.GetObject("New_File", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -185,7 +185,7 @@ namespace LaunchCamPlus.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Open_File {
             get {
-                object obj = ResourceManager.GetObject("Open File", resourceCulture);
+                object obj = ResourceManager.GetObject("Open_File", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -196,6 +196,36 @@ namespace LaunchCamPlus.Properties {
         internal static System.Drawing.Bitmap Paste {
             get {
                 object obj = ResourceManager.GetObject("Paste", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PluginError {
+            get {
+                object obj = ResourceManager.GetObject("PluginError", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PluginRun {
+            get {
+                object obj = ResourceManager.GetObject("PluginRun", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Plugins {
+            get {
+                object obj = ResourceManager.GetObject("Plugins", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -253,49 +283,9 @@ namespace LaunchCamPlus.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap RMGE01_1 {
-            get {
-                object obj = ResourceManager.GetObject("RMGE01-1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap RMGE01_2 {
-            get {
-                object obj = ResourceManager.GetObject("RMGE01-2", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap RMGE01_3 {
-            get {
-                object obj = ResourceManager.GetObject("RMGE01-3", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap RMGE01_4 {
-            get {
-                object obj = ResourceManager.GetObject("RMGE01-4", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap Save_As {
             get {
-                object obj = ResourceManager.GetObject("Save As", resourceCulture);
+                object obj = ResourceManager.GetObject("Save_As", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -305,47 +295,7 @@ namespace LaunchCamPlus.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Save_File {
             get {
-                object obj = ResourceManager.GetObject("Save File", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap SB4E01_1 {
-            get {
-                object obj = ResourceManager.GetObject("SB4E01-1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap SB4E01_2 {
-            get {
-                object obj = ResourceManager.GetObject("SB4E01-2", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap SB4E01_3 {
-            get {
-                object obj = ResourceManager.GetObject("SB4E01-3", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap SB4E01_4 {
-            get {
-                object obj = ResourceManager.GetObject("SB4E01-4", resourceCulture);
+                object obj = ResourceManager.GetObject("Save_File", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

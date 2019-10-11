@@ -129,9 +129,6 @@
   <metadata name="CopyTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>250, 17</value>
   </metadata>
-  <metadata name="MainToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>361, 17</value>
-  </metadata>
   <data name="HeightZoomLabel.ToolTip" xml:space="preserve">
     <value>Height Zoom
 The Distance above or below of Mario to look at.
@@ -154,6 +151,9 @@ Player Offset - Unconfirmed
 UnknownUp - Unknown
 Panning Bounds - Defines the bounds that cause the Camera to move. Not used in CAM_TYPE_XZ_PARA</value>
   </data>
+  <metadata name="DiscordTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>481, 17</value>
+  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

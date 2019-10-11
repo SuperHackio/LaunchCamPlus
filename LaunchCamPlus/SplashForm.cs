@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace LaunchCamPlus
 {
     public partial class SplashForm : Form
     {
-        public SplashForm()
+        public SplashForm(int L)
         {
             InitializeComponent();
             CenterToScreen();
@@ -20,57 +21,43 @@ namespace LaunchCamPlus
             timer.Tick += Timer_Tick;
             timer.Interval = 1000;
             timer.Start();
-            }
+            loadtime = L;
+        }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
             time++;
-            if (time > 1)
+            if (time > loadtime)
             {
                 //time = 0;
                 //SplashForm_Paint(this, new PaintEventArgs(CreateGraphics(),new Rectangle(0,0,Width,Height)));
                 timer.Stop();
-                this.Close();
+                Close();
             }
         }
 
         Timer timer;
         
         int time = 0;
+        int loadtime = 0;
 
         private void SplashForm_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-
-            int ran = new Random().Next(0, 8);
-            Bitmap b = null;
-            switch (ran)
+            if (!Directory.Exists("Splash"))
             {
-                default:
-                    b = ResizeBitmap(new Bitmap(Properties.Resources.SB4E01_1), Width, Height);
-                    break;
-                case 0:
-                    b = ResizeBitmap(new Bitmap(Properties.Resources.RMGE01_1), Width, Height);
-                    break;
-                case 1:
-                    b = ResizeBitmap(new Bitmap(Properties.Resources.SB4E01_2), Width, Height);
-                    break;
-                case 2:
-                    b = ResizeBitmap(new Bitmap(Properties.Resources.RMGE01_2), Width, Height);
-                    break;
-                case 3:
-                    b = ResizeBitmap(new Bitmap(Properties.Resources.SB4E01_3), Width, Height);
-                    break;
-                case 4:
-                    b = ResizeBitmap(new Bitmap(Properties.Resources.RMGE01_3), Width, Height);
-                    break;
-                case 5:
-                    b = ResizeBitmap(new Bitmap(Properties.Resources.SB4E01_4), Width, Height);
-                    break;
-                case 6:
-                    b = ResizeBitmap(new Bitmap(Properties.Resources.RMGE01_4), Width, Height);
-                    break;
+                Close();
+                return;
             }
+            string[] Splashes = Directory.GetFiles("Splash","*.png",SearchOption.AllDirectories);
+            if (Splashes.Length == 0)
+            {
+                Close();
+                return;
+            }
+
+            int ran = new Random().Next(0, Splashes.Length-1);
+            Bitmap b = ResizeBitmap(new Bitmap(Splashes[ran]), Width, Height);
             g.DrawImage(b, 0, 0);
             
             g.DrawImage(ResizeBitmap(new Bitmap(Properties.Resources.LCPCanvas), Width, Height), 0, 0);
