@@ -24,7 +24,7 @@ In the event that LCP crashes on you, it will print out a Crash Log. Open a [New
 Speak another language that's not English? Don't worry, you don't need to translate the Crash Log **UNLESS** asked otherwise.
 
 # Credits
-Main Programmer: Super Hackio
+Main Programmer: Super Hackio<br>
 Research Assistant: Zyphron G.
 <br>
 Official Supporters:
