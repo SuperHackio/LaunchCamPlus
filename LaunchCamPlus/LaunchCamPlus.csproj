@@ -4,36 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6BA3300D-95D4-4506-B7E4-3F5CEA66D322}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{D89BFF84-36CF-4235-8D69-EE845AA468C7}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <RootNamespace>LaunchCamPlus</RootNamespace>
     <AssemblyName>LaunchCamPlus</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>/publish/</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>false</MapFileExtensions>
-    <TargetCulture>en-CA</TargetCulture>
-    <ProductName>Launch Cam Plus</ProductName>
-    <PublisherName>Hackio L.</PublisherName>
-    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.1.0.0</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <CreateDesktopShortcut>true</CreateDesktopShortcut>
-    <PublishWizardCompleted>true</PublishWizardCompleted>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -44,53 +22,37 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>LaunchCamPlus.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>LaunchCamPlusIcon.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup>
-    <ManifestCertificateThumbprint>6421D91576BA908D24F6D4AC0A5599572AA15062</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>LaunchCamPlus_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignManifests>true</SignManifests>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
-  </PropertyGroup>
-  <PropertyGroup>
-    <TargetZone>Custom</TargetZone>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DiscordRPC">
-      <HintPath>..\..\discord-rpc-csharp-master\DiscordRPC.Example\bin\Debug\DiscordRPC.dll</HintPath>
+    <Reference Include="Hackio.IO">
+      <HintPath>..\..\Hackio.IO\Hackio.IO\bin\Debug\Hackio.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="Hackio.IO.RARC">
+      <HintPath>..\..\Hackio.IO\Hackio.IO.RARC\bin\Debug\Hackio.IO.RARC.dll</HintPath>
+    </Reference>
+    <Reference Include="Hackio.IO.YAZ0">
+      <HintPath>..\..\Hackio.IO\Hackio.IO.YAZ0\bin\Debug\Hackio.IO.YAZ0.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
@@ -101,74 +63,128 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BCSV.cs" />
-    <Compile Include="Camera.cs" />
-    <Compile Include="CANM.cs" />
-    <Compile Include="DRPC.cs" />
-    <Compile Include="FileStreamEx.cs" />
-    <Compile Include="IdentificationAssistance.cs">
+    <Compile Include="CameraPanels\XZParaCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CameraPanels\XZParaCameraPanel.Designer.cs">
+      <DependentUpon>XZParaCameraPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Extra Controls\PresetCreatorPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Extra Controls\PresetCreatorPanel.Designer.cs">
+      <DependentUpon>PresetCreatorPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Formats\BCAM.cs" />
+    <Compile Include="CameraEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="IdentificationAssistance.Designer.cs">
-      <DependentUpon>IdentificationAssistance.cs</DependentUpon>
+    <Compile Include="CameraEditorForm.Designer.cs">
+      <DependentUpon>CameraEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="IntroForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="CameraPanels\CameraPanelBase.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="IntroForm.Designer.cs">
-      <DependentUpon>IntroForm.cs</DependentUpon>
+    <Compile Include="CameraPanels\CameraPanelBase.Designer.cs">
+      <DependentUpon>CameraPanelBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="LCPC.cs" />
-    <Compile Include="LCPE.cs" />
-    <Compile Include="LCPP.cs" />
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="CameraPanels\DefaultCameraPanel.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="CameraPanels\DefaultCameraPanel.Designer.cs">
+      <DependentUpon>DefaultCameraPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+    <Compile Include="CameraPanels\ICameraPanel.cs" />
+    <Compile Include="Extra Controls\ColourComboBox.cs">
+      <SubType>Component</SubType>
     </Compile>
-    <Compile Include="RARC.cs" />
+    <Compile Include="Extra Controls\ColourTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Extra Controls\IdentificationAssistant.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Extra Controls\IdentificationAssistant.Designer.cs">
+      <DependentUpon>IdentificationAssistant.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Extra Controls\AboutPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Extra Controls\AboutPanel.Designer.cs">
+      <DependentUpon>AboutPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Extra Controls\PresetSelectorPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Extra Controls\PresetSelectorPanel.Designer.cs">
+      <DependentUpon>PresetSelectorPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Extra Controls\Vector3NumericUpDown.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Extra Controls\Vector3NumericUpDown.Designer.cs">
+      <DependentUpon>Vector3NumericUpDown.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Formats\LCPP.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Extra Controls\SettingsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Extra Controls\SettingsPanel.Designer.cs">
+      <DependentUpon>SettingsPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="SplashForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SplashForm.Designer.cs">
       <DependentUpon>SplashForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="SplashForm.resx">
-      <DependentUpon>SplashForm.cs</DependentUpon>
+    <Compile Include="Vector3.cs" />
+    <EmbeddedResource Include="CameraEditorForm.resx">
+      <DependentUpon>CameraEditorForm.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="Presets.cs" />
-    <Compile Include="PresetForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PresetForm.Designer.cs">
-      <DependentUpon>PresetForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="IdentificationAssistance.resx">
-      <DependentUpon>IdentificationAssistance.cs</DependentUpon>
+    <EmbeddedResource Include="CameraPanels\CameraPanelBase.resx">
+      <DependentUpon>CameraPanelBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="IntroForm.resx">
-      <DependentUpon>IntroForm.cs</DependentUpon>
+    <EmbeddedResource Include="CameraPanels\DefaultCameraPanel.resx">
+      <DependentUpon>DefaultCameraPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <EmbeddedResource Include="CameraPanels\XZParaCameraPanel.resx">
+      <DependentUpon>XZParaCameraPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PresetForm.resx">
-      <DependentUpon>PresetForm.cs</DependentUpon>
+    <EmbeddedResource Include="Extra Controls\IdentificationAssistant.resx">
+      <DependentUpon>IdentificationAssistant.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Extra Controls\AboutPanel.resx">
+      <DependentUpon>AboutPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Extra Controls\PresetCreatorPanel.resx">
+      <DependentUpon>PresetCreatorPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Extra Controls\PresetSelectorPanel.resx">
+      <DependentUpon>PresetSelectorPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Extra Controls\Vector3NumericUpDown.resx">
+      <DependentUpon>Vector3NumericUpDown.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="Properties\app.manifest" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Extra Controls\SettingsPanel.resx">
+      <DependentUpon>SettingsPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SplashForm.resx">
+      <DependentUpon>SplashForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -183,70 +199,35 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\CheveronArrowR.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\CheveronArrowL.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Preset Bank\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Add.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Remove.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="External Rarc Managment\Yaz0Dec.exe" />
-    <Content Include="External Rarc Managment\Yaz0Enc.exe" />
     <Content Include="LaunchCamPlusIcon.ico" />
-    <Content Include="External Rarc Managment\ArcPack.exe" />
-    <Content Include="External Rarc Managment\RarcDump.exe" />
     <Content Include="UpdateAlert.txt" />
-    <None Include="Resources\Plugins.png" />
-    <None Include="Resources\PluginRun.png" />
-    <None Include="Resources\PluginError.png" />
-    <None Include="Resources\LCPCanvas.png" />
-    <None Include="Resources\LCP.png" />
-    <None Include="Resources\LCPLogo.png" />
-    <None Include="Resources\Reoganize.png" />
-    <None Include="Resources\WikiPage.png" />
+    <None Include="Resources\PresetBankRoot.png" />
+    <None Include="Resources\Icon_Open.png" />
+    <None Include="Resources\CheveronArrowR.png" />
+    <None Include="Resources\CheveronArrowL.png" />
+    <None Include="Resources\Export Preset.png" />
+    <None Include="Resources\ReleasesPageLight.png" />
     <None Include="Resources\ReleasesPage.png" />
+    <None Include="Resources\WikiPageLight.png" />
+    <None Include="Resources\ReorganizeLight.png" />
+    <None Include="Resources\IssuePageLight.png" />
+    <None Include="Resources\AssistantLight.png" />
+    <None Include="Resources\Icon_Settings.png" />
+    <None Include="Resources\WikiPage.png" />
     <None Include="Resources\IssuePage.png" />
+    <None Include="Resources\Assistant.png" />
+    <None Include="Resources\MoveCameraUp.png" />
+    <None Include="Resources\MoveCameraTop.png" />
+    <None Include="Resources\MoveCameraDown.png" />
+    <None Include="Resources\MoveCameraBottom.png" />
+    <None Include="Resources\Reoganize.png" />
     <None Include="Resources\Save File.png" />
     <None Include="Resources\Save As.png" />
-    <None Include="Resources\Preview.png" />
-    <None Include="Resources\Presets.png" />
-    <None Include="Resources\Paste.png" />
-    <None Include="Resources\Open File.png" />
-    <None Include="Resources\New File.png" />
-    <None Include="Resources\Export Preset.png" />
     <None Include="Resources\Delete.png" />
-    <None Include="Resources\Copy.png" />
-    <None Include="Resources\Check Errors.png" />
-    <None Include="Resources\Assistant.png" />
     <None Include="Resources\AddCamera.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <FileAssociation Include=".lcpp">
-      <Visible>False</Visible>
-      <Description>Launch Cam Plus Camera Preset</Description>
-      <Progid>LaunchCamPlusLCPP</Progid>
-      <DefaultIcon>LaunchCamPlusIcon.ico</DefaultIcon>
-    </FileAssociation>
+    <None Include="Resources\LCPLogo.png" />
+    <None Include="Resources\DefaultSplash.png" />
+    <None Include="Resources\LCPCanvas.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

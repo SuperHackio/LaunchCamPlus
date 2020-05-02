@@ -1,8 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System;
+using System.Configuration;
+using System.IO;
+using System.Drawing;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using LaunchCamPlus.Properties;
 
 namespace LaunchCamPlus
 {
@@ -14,120 +17,129 @@ namespace LaunchCamPlus
         [STAThread]
         static void Main(string[] args)
         {
-            //const string appName = "LaunchCamPlus";
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Thread Splashthread = new Thread(() =>
+
+            Console.Title = Application.ProductName + " " + Application.ProductVersion + " - Console";
+            if (Settings.Default.IsFirstLaunch)
             {
-                Thread.CurrentThread.IsBackground = true;
-                // Activate the Splash screen to display while loading the main form
-                SplashForm Splash = new SplashForm(1);
-                Splash.ShowDialog();
+                string FullfilePath = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
+                string VersionDirectoryfilePath = Path.GetFullPath(Path.Combine(FullfilePath, @"..\..\" + Application.ProductVersion));
+                string BasePath = Path.GetFullPath(Path.Combine(FullfilePath, @"..\..\"));
+                Settings.Default.Upgrade();
+                if (Directory.Exists(BasePath) && !Settings.Default.IsFirstLaunch)
+                {
+                    Console.WriteLine("Updating User Settings...");
+                    DirectoryInfo DirInfo = new DirectoryInfo(BasePath);
+                    DirectoryInfo[] Dirs = DirInfo.GetDirectories();
+                    for (int i = 0; i < Dirs.Length; i++)
+                        if (!Dirs[i].FullName.Equals(VersionDirectoryfilePath))
+                            Directory.Delete(Dirs[i].FullName, true);
+                }
+                else
+                {
+                    Console.WriteLine("First time launch: Initilizing User Settings...");
+                    Settings.Default.IsFirstLaunch = false;
+                    Settings.Default.Save();
+                }
+            }
+
+            Console.WriteLine("Initilizing...");
+            Console.WriteLine();
+            Console.WriteLine("Preparing the Splash...");
+            Task SplashTask = Task.Run(() =>
+            {
+                SplashForm SF = new SplashForm(3);
+                Console.WriteLine("Running Splash Screen:");
+                SF.ShowDialog();
+                SF.Dispose();
             });
-            Splashthread.Start();//Now the splash actually hides the load times lol
-            MainForm M = null;
-
-            bool LoadedMainForm = false;
-            bool LoadedPlugins = false;
-            bool CheckedUpdates = false;
-            while (!LoadedMainForm | !LoadedPlugins | !CheckedUpdates)
+            Thread.Sleep(1000);
+            Console.WriteLine();
+            Console.WriteLine("Checking for Updates...");
+            if (IsUpdateReady)
             {
-                if (!LoadedMainForm)
-                {
-                    M = new MainForm();
-                    LoadedMainForm = true;
-                }
-
-                if (!LoadedPlugins)
-                {
-                    M.LoadPlugins();
-                    LoadedPlugins = true;
-                }
-
-                if (!CheckedUpdates)
-                {
-                    if (M.CheckForUpdates())
-                        M.HasUpdateReady();
-                    CheckedUpdates = true;
-                }
+                Console.WriteLine("An update is availible!");
+                Console.WriteLine("Please visit https://github.com/SuperHackio/LaunchCamPlus/releases to pick it up");
+                Console.WriteLine("Or click the \"Help\" button at the top of the Editor and click \"Github Releases\".");
+                ShowNeedsUpdate = true;
             }
-            while (Splashthread.IsAlive)
-            {
-                //Wait for the splash thread to finish
-            }
+            else
+                Console.WriteLine("No update is availible");
+            Console.WriteLine();
+            Console.WriteLine("Preparing the Editor...");
+            CameraEditorForm Editor = new CameraEditorForm(args);
+            Thread.Sleep(500);
+            Console.WriteLine("Editor successfully prepared!");
+            Thread.Sleep(500);
+            Console.WriteLine("Please Wait...");
+            IsProgramReady = true;
 
-            if (M == null)
-                throw new Exception("Main form failed to initilize");
-            
-            AppDomain.CurrentDomain.FirstChanceException += (sender, eventArgs) =>
-            {
-                if (eventArgs.Exception.InnerException is EntryPointNotFoundException)
-                {
-                    MessageBox.Show(eventArgs.Exception.Message, "Loading...");
-                    System.Diagnostics.Process.Start(Application.ExecutablePath);
-                    Environment.FailFast("Exited the Intro Camera Editor");
-                }
-                else if (eventArgs.Exception is System.IO.IOException)
-                {
-                    System.IO.File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "Crash.txt", "Report this error to Super Hackio --> https://github.com/SuperHackio/LaunchCamPlus/issues <--" + Environment.NewLine + "The Error is: " + eventArgs.Exception.Message + Environment.NewLine + "The error was made in: " + eventArgs.Exception.Source + Environment.NewLine + "The Stack Trace is:" + Environment.NewLine + eventArgs.Exception.StackTrace);
-                    return;
-                }
-                else
-                {
-                    MessageBox.Show("Launch Cam Plus has encountered an error \rPlease read\r\"Crash.txt\"\rfor more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    System.IO.File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "Crash.txt", "Report this error to Super Hackio --> https://github.com/SuperHackio/LaunchCamPlus/issues <--" + Environment.NewLine + "The Error is: " + eventArgs.Exception.Message + Environment.NewLine + "The error was made in: " + eventArgs.Exception.Source + Environment.NewLine + "The Stack Trace is:" + Environment.NewLine + eventArgs.Exception.StackTrace);
-                    Environment.FailFast("Read \"Crash.txt\" for more info");
-                }
-            };
-
-            bool OpenARCWith = false;
-            bool OpenBCAMWith = false;
-            bool OpenLCPPWith = false;
-            bool OpenLCPCWith = false;
-            bool OpenCANMWith = false;
-
-            if (args.Length > 0)
-            {
-                OpenARCWith = new System.IO.FileInfo(args[0]).Extension == ".arc";
-                OpenBCAMWith = new System.IO.FileInfo(args[0]).Extension == ".bcam";
-                OpenLCPPWith = new System.IO.FileInfo(args[0]).Extension == ".lcpp";
-                OpenLCPCWith = new System.IO.FileInfo(args[0]).Extension == ".lcpc";
-                OpenCANMWith = new System.IO.FileInfo(args[0]).Extension == ".canm";
-            }
-            try
-            {
-                if (OpenLCPPWith && MessageBox.Show("Compress this LCPP?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    LCPCManager.LCPC LCPC = new LCPCManager.LCPC(args[0]);
-                    return;
-                }
-                if (OpenLCPCWith && MessageBox.Show("Decompress this LCPC?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    LCPCManager.LCPC LCPC = new LCPCManager.LCPC(new System.IO.FileStream(args[0],System.IO.FileMode.Open));
-                    LCPPManager.LCPP Export = new LCPPManager.LCPP(args[0].Replace(".lcpc", ".lcpp"),LCPC.LCPP.PresetList,LCPC.LCPP.Name,LCPC.LCPP.Creator);
-                    return;
-                }
-                if (args.Length > 0 && (args[0] == "-secret" || OpenCANMWith))
-                {
-                    if (OpenCANMWith)
-                        Application.Run(new IntroForm(args[0]));
-                    else
-                        Application.Run(new IntroForm());
-                }
-                else
-                {
-                    if (OpenBCAMWith || OpenARCWith)
-                        Application.Run(new MainForm(args[0]));
-                    else
-                        Application.Run(M);
-                }
-            }
-            catch (Exception)
-            {
-                
-            }
-
+            SplashTask.Wait();
+            Console.WriteLine("Running the Editor:");
+            Console.WriteLine(ConsoleSplitter);
+            Application.Run(Editor);
+            Console.WriteLine(ConsoleSplitter);
+            Console.WriteLine("Editor Finished!");
+            Console.WriteLine("Thank you for using Super Hackio's Launch Cam Plus!");
+            Thread.Sleep(1000);
         }
+
+        public static bool IsProgramReady { get; set; } = false;
+        public static string GetFromAppPath(string Target) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Target);
+        public static string PresetPath
+        {
+            get
+            {
+                if (_presetpath == null)
+                    _presetpath = GetFromAppPath("Presets");
+                return _presetpath;
+            }
+        }
+        private static string _presetpath = null;
+        public static string ConsoleSplitter => "=====================================================";
+        public static string ConsoleHalfSplitter => "----------------------------------";
+        public static bool IsUnsavedChanges { get; set; }
+        public static bool IsUpdateReady
+        {
+            get
+            {
+                try
+                {
+                    new System.Net.WebClient().DownloadFile("https://raw.githubusercontent.com/SuperHackio/LaunchCamPlus/master/LaunchCamPlus/UpdateAlert.txt", @AppDomain.CurrentDomain.BaseDirectory + "VersionCheck.txt");
+
+                    Version Internet = new Version(File.ReadAllText(@AppDomain.CurrentDomain.BaseDirectory + "VersionCheck.txt"));
+                    File.Delete(@AppDomain.CurrentDomain.BaseDirectory + "VersionCheck.txt");
+                    Version Local = new Version(Application.ProductVersion);
+                    return Local.CompareTo(Internet) < 0;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Failed to retireive update information:\n" + e.Message);
+                    //Imagine not having internet lol
+                    return false;
+                }
+            }
+            
+        }
+        public static bool ShowNeedsUpdate { get; set; } = false;
+
+        public static System.Text.Encoding StringEncoder { get; } = System.Text.Encoding.GetEncoding(932);
+        public static bool PresetSelectorNeedsReload { get; set; }
+        public static bool PresetCreatorNeedsReload { get; set; }
+
+
+        public static readonly string WaitSfx = GetFromAppPath("sfx/Wait.wav");
+        public static readonly string SuccessSfx = GetFromAppPath("sfx/Success.wav");
+        public static readonly string FailureSfx = GetFromAppPath("sfx/Failure.wav");
+        public static bool CanPlaySfx(string file) => Settings.Default.EnableSFX && File.Exists(file);
+    }
+
+    public static class ProgramColours
+    {
+        public static Color ControlBackColor => Settings.Default.IsDarkMode ? Color.FromArgb(62, 62, 66) : Color.FromArgb(240,240,240);
+        public static Color WindowColour => Settings.Default.IsDarkMode ? Color.FromArgb(37, 37, 38) : Color.FromArgb(255, 255, 255);
+        public static Color TextColour => Settings.Default.IsDarkMode ? Color.FromArgb(241, 241, 241) : Color.FromArgb(0, 0, 0);
+        public static Color BorderColour => Settings.Default.IsDarkMode ? Color.FromArgb(50, 50, 50) : Color.Gray;
     }
 }
