@@ -113,10 +113,10 @@ namespace LaunchCamPlus
             switch (CategoryComboBox.SelectedIndex)
             {
                 case 0:
-                    final += "c:" + ((int)CamIDNumericUpDown.Value).ToString("X4");
+                    final += "c:" + ((int)CamIDNumericUpDown.Value).ToString("x4");
                     break;
                 case 1:
-                    final += "s:" + ((int)CamIDNumericUpDown.Value).ToString("X4");
+                    final += "s:" + ((int)CamIDNumericUpDown.Value).ToString("x4");
                     break;
                 case 2:
                     final += "e:"+EventComboBox.SelectedValue.ToString();

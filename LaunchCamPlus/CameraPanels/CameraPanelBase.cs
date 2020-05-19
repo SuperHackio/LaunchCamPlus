@@ -39,6 +39,7 @@ namespace LaunchCamPlus.CameraPanels
                     TypeComboBox.SelectionLength = 0;
                 }));
             };
+            TypeComboBox.MouseWheel += TypeComboBox_MouseWheel;
             Loading = false;
         }
 
@@ -107,7 +108,13 @@ namespace LaunchCamPlus.CameraPanels
             if (Loading || Settings.Default.IsUseDefaultOnly)
                 return;
 
-            ((CameraEditorForm)ParentForm).ReloadEditor(true);
+            ((CameraEditorForm)ParentForm)?.ReloadEditor(true);
+        }
+
+        void TypeComboBox_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (sender is ComboBox cb && !cb.DroppedDown)
+                ((HandledMouseEventArgs)e).Handled = true;
         }
     }
 

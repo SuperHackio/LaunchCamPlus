@@ -13,6 +13,7 @@ using LaunchCamPlus.CameraPanels;
 using LaunchCamPlus.Properties;
 using System.Media;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace LaunchCamPlus
 {
@@ -41,7 +42,8 @@ namespace LaunchCamPlus
             PreBufferedPanels = new Dictionary<string, CameraPanelBase>
             {
                 { "DEFAULT", new DefaultCameraPanel() { Dock = DockStyle.Fill } },
-                { "CAM_TYPE_XZ_PARA", new XZParaCameraPanel() { Dock = DockStyle.Fill } }
+                { "CAM_TYPE_XZ_PARA", new XZParaCameraPanel() { Dock = DockStyle.Fill } },
+                { "CAM_TYPE_EYEPOS_FIX_THERE", new EyeposFixThereCameraPanel() { Dock = DockStyle.Fill } }
             };
 
             ReloadTheme();
@@ -139,7 +141,7 @@ namespace LaunchCamPlus
             if (Cameras == null)
                 return;
             BCAMEntry newcamera = CameraDefaults.Defaults["CAM_TYPE_XZ_PARA"];
-            newcamera.Identification = "c:" + BCAMEx.CalculateNextCameraArea(Cameras).ToString("X4");
+            newcamera.Identification = "c:" + BCAMEx.CalculateNextCameraArea(Cameras).ToString("x4");
             newcamera.Type = "CAM_TYPE_XZ_PARA";
             AddCamera(newcamera);
             Console.WriteLine("Added the Default Camera to the end of the Camera List");

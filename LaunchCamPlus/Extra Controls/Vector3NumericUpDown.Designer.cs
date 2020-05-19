@@ -119,7 +119,7 @@
             this.Controls.Add(this.ZValueNumericUpDown);
             this.Controls.Add(this.YValueNumericUpDown);
             this.Controls.Add(this.XValueNumericUpDown);
-            this.MinimumSize = new System.Drawing.Size(100, 90);
+            this.MinimumSize = new System.Drawing.Size(50, 90);
             this.Name = "Vector3NumericUpDown";
             this.Size = new System.Drawing.Size(100, 90);
             ((System.ComponentModel.ISupportInitialize)(this.ZValueNumericUpDown)).EndInit();

@@ -137,9 +137,8 @@
             // 
             // ZoomLabel
             // 
-            this.ZoomLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ZoomLabel.AutoSize = true;
-            this.ZoomLabel.Location = new System.Drawing.Point(146, 58);
+            this.ZoomLabel.Location = new System.Drawing.Point(3, 136);
             this.ZoomLabel.Name = "ZoomLabel";
             this.ZoomLabel.Size = new System.Drawing.Size(34, 13);
             this.ZoomLabel.TabIndex = 16;
@@ -147,9 +146,8 @@
             // 
             // Num1Label
             // 
-            this.Num1Label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Num1Label.AutoSize = true;
-            this.Num1Label.Location = new System.Drawing.Point(305, 58);
+            this.Num1Label.Location = new System.Drawing.Point(3, 292);
             this.Num1Label.Name = "Num1Label";
             this.Num1Label.Size = new System.Drawing.Size(38, 13);
             this.Num1Label.TabIndex = 10;
@@ -157,9 +155,8 @@
             // 
             // Num2Label
             // 
-            this.Num2Label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Num2Label.AutoSize = true;
-            this.Num2Label.Location = new System.Drawing.Point(305, 84);
+            this.Num2Label.Location = new System.Drawing.Point(3, 318);
             this.Num2Label.Name = "Num2Label";
             this.Num2Label.Size = new System.Drawing.Size(38, 13);
             this.Num2Label.TabIndex = 12;
@@ -167,28 +164,26 @@
             // 
             // FieldOfViewLabel
             // 
-            this.FieldOfViewLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.FieldOfViewLabel.AutoSize = true;
-            this.FieldOfViewLabel.Location = new System.Drawing.Point(146, 84);
+            this.FieldOfViewLabel.Location = new System.Drawing.Point(3, 162);
             this.FieldOfViewLabel.Name = "FieldOfViewLabel";
-            this.FieldOfViewLabel.Size = new System.Drawing.Size(67, 13);
+            this.FieldOfViewLabel.Size = new System.Drawing.Size(29, 13);
             this.FieldOfViewLabel.TabIndex = 18;
-            this.FieldOfViewLabel.Text = "Field of View";
+            this.FieldOfViewLabel.Text = "FoV:";
             // 
             // CamIntLabel
             // 
             this.CamIntLabel.AutoSize = true;
-            this.CamIntLabel.Location = new System.Drawing.Point(3, 136);
+            this.CamIntLabel.Location = new System.Drawing.Point(3, 396);
             this.CamIntLabel.Name = "CamIntLabel";
-            this.CamIntLabel.Size = new System.Drawing.Size(79, 13);
+            this.CamIntLabel.Size = new System.Drawing.Size(58, 13);
             this.CamIntLabel.TabIndex = 20;
-            this.CamIntLabel.Text = "Transition Time";
+            this.CamIntLabel.Text = "Enter Time";
             // 
             // CamEndIntLabel
             // 
-            this.CamEndIntLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.CamEndIntLabel.AutoSize = true;
-            this.CamEndIntLabel.Location = new System.Drawing.Point(146, 136);
+            this.CamEndIntLabel.Location = new System.Drawing.Point(3, 422);
             this.CamEndIntLabel.Name = "CamEndIntLabel";
             this.CamEndIntLabel.Size = new System.Drawing.Size(50, 13);
             this.CamEndIntLabel.TabIndex = 22;
@@ -196,21 +191,18 @@
             // 
             // FieldOfViewCheckBox
             // 
-            this.FieldOfViewCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.FieldOfViewCheckBox.AutoSize = true;
-            this.FieldOfViewCheckBox.Location = new System.Drawing.Point(162, 109);
+            this.FieldOfViewCheckBox.Location = new System.Drawing.Point(49, 163);
             this.FieldOfViewCheckBox.Name = "FieldOfViewCheckBox";
-            this.FieldOfViewCheckBox.Size = new System.Drawing.Size(122, 17);
+            this.FieldOfViewCheckBox.Size = new System.Drawing.Size(15, 14);
             this.FieldOfViewCheckBox.TabIndex = 24;
-            this.FieldOfViewCheckBox.Text = "Enable Field of View";
             this.FieldOfViewCheckBox.UseVisualStyleBackColor = true;
             this.FieldOfViewCheckBox.CheckedChanged += new System.EventHandler(this.FieldOfViewCheckBox_CheckedChanged);
             // 
             // MaxYLabel
             // 
-            this.MaxYLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.MaxYLabel.AutoSize = true;
-            this.MaxYLabel.Location = new System.Drawing.Point(305, 110);
+            this.MaxYLabel.Location = new System.Drawing.Point(3, 240);
             this.MaxYLabel.Name = "MaxYLabel";
             this.MaxYLabel.Size = new System.Drawing.Size(37, 13);
             this.MaxYLabel.TabIndex = 25;
@@ -218,9 +210,8 @@
             // 
             // MinYLabel
             // 
-            this.MinYLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.MinYLabel.AutoSize = true;
-            this.MinYLabel.Location = new System.Drawing.Point(305, 136);
+            this.MinYLabel.Location = new System.Drawing.Point(3, 266);
             this.MinYLabel.Name = "MinYLabel";
             this.MinYLabel.Size = new System.Drawing.Size(34, 13);
             this.MinYLabel.TabIndex = 27;
@@ -229,39 +220,36 @@
             // FrontOffsetLabel
             // 
             this.FrontOffsetLabel.AutoSize = true;
-            this.FrontOffsetLabel.Location = new System.Drawing.Point(3, 164);
+            this.FrontOffsetLabel.Location = new System.Drawing.Point(3, 189);
             this.FrontOffsetLabel.Name = "FrontOffsetLabel";
-            this.FrontOffsetLabel.Size = new System.Drawing.Size(74, 13);
+            this.FrontOffsetLabel.Size = new System.Drawing.Size(55, 13);
             this.FrontOffsetLabel.TabIndex = 29;
-            this.FrontOffsetLabel.Text = "Front distance";
+            this.FrontOffsetLabel.Text = "Front Dist.";
             // 
             // HeightOffsetLabel
             // 
-            this.HeightOffsetLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.HeightOffsetLabel.AutoSize = true;
-            this.HeightOffsetLabel.Location = new System.Drawing.Point(159, 162);
+            this.HeightOffsetLabel.Location = new System.Drawing.Point(3, 214);
             this.HeightOffsetLabel.Name = "HeightOffsetLabel";
-            this.HeightOffsetLabel.Size = new System.Drawing.Size(62, 13);
+            this.HeightOffsetLabel.Size = new System.Drawing.Size(43, 13);
             this.HeightOffsetLabel.TabIndex = 31;
-            this.HeightOffsetLabel.Text = "Air distance";
+            this.HeightOffsetLabel.Text = "Air Dist.";
             // 
             // SharpZoomCheckBox
             // 
-            this.SharpZoomCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SharpZoomCheckBox.AutoSize = true;
-            this.SharpZoomCheckBox.Location = new System.Drawing.Point(109, 382);
+            this.SharpZoomCheckBox.Location = new System.Drawing.Point(261, 279);
             this.SharpZoomCheckBox.Name = "SharpZoomCheckBox";
-            this.SharpZoomCheckBox.Size = new System.Drawing.Size(94, 17);
+            this.SharpZoomCheckBox.Size = new System.Drawing.Size(108, 17);
             this.SharpZoomCheckBox.TabIndex = 33;
-            this.SharpZoomCheckBox.Text = "Disable Interp.";
+            this.SharpZoomCheckBox.Text = "Dist. Interpolation";
             this.SharpZoomCheckBox.UseVisualStyleBackColor = true;
             // 
             // HeightOffsetNumericUpDown
             // 
-            this.HeightOffsetNumericUpDown.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.HeightOffsetNumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
             this.HeightOffsetNumericUpDown.DecimalPlaces = 3;
-            this.HeightOffsetNumericUpDown.Location = new System.Drawing.Point(227, 162);
+            this.HeightOffsetNumericUpDown.Location = new System.Drawing.Point(66, 212);
             this.HeightOffsetNumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -273,14 +261,19 @@
             0,
             -2147483648});
             this.HeightOffsetNumericUpDown.Name = "HeightOffsetNumericUpDown";
-            this.HeightOffsetNumericUpDown.Size = new System.Drawing.Size(72, 20);
+            this.HeightOffsetNumericUpDown.Size = new System.Drawing.Size(74, 20);
             this.HeightOffsetNumericUpDown.TabIndex = 32;
+            this.HeightOffsetNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            196608});
             // 
             // FrontOffsetNumericUpDown
             // 
             this.FrontOffsetNumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
             this.FrontOffsetNumericUpDown.DecimalPlaces = 3;
-            this.FrontOffsetNumericUpDown.Location = new System.Drawing.Point(83, 162);
+            this.FrontOffsetNumericUpDown.Location = new System.Drawing.Point(66, 186);
             this.FrontOffsetNumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -292,15 +285,19 @@
             0,
             -2147483648});
             this.FrontOffsetNumericUpDown.Name = "FrontOffsetNumericUpDown";
-            this.FrontOffsetNumericUpDown.Size = new System.Drawing.Size(70, 20);
+            this.FrontOffsetNumericUpDown.Size = new System.Drawing.Size(74, 20);
             this.FrontOffsetNumericUpDown.TabIndex = 30;
+            this.FrontOffsetNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            196608});
             // 
             // JumpingYNumericUpDown
             // 
-            this.JumpingYNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.JumpingYNumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
             this.JumpingYNumericUpDown.DecimalPlaces = 3;
-            this.JumpingYNumericUpDown.Location = new System.Drawing.Point(349, 108);
+            this.JumpingYNumericUpDown.Location = new System.Drawing.Point(66, 238);
             this.JumpingYNumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -312,15 +309,19 @@
             0,
             -2147483648});
             this.JumpingYNumericUpDown.Name = "JumpingYNumericUpDown";
-            this.JumpingYNumericUpDown.Size = new System.Drawing.Size(89, 20);
+            this.JumpingYNumericUpDown.Size = new System.Drawing.Size(74, 20);
             this.JumpingYNumericUpDown.TabIndex = 26;
+            this.JumpingYNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            196608});
             // 
             // FallingYNumericUpDown
             // 
-            this.FallingYNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.FallingYNumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
             this.FallingYNumericUpDown.DecimalPlaces = 3;
-            this.FallingYNumericUpDown.Location = new System.Drawing.Point(349, 134);
+            this.FallingYNumericUpDown.Location = new System.Drawing.Point(66, 264);
             this.FallingYNumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -332,14 +333,18 @@
             0,
             -2147483648});
             this.FallingYNumericUpDown.Name = "FallingYNumericUpDown";
-            this.FallingYNumericUpDown.Size = new System.Drawing.Size(89, 20);
+            this.FallingYNumericUpDown.Size = new System.Drawing.Size(74, 20);
             this.FallingYNumericUpDown.TabIndex = 28;
+            this.FallingYNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            196608});
             // 
             // CamEndIntNumericUpDown
             // 
-            this.CamEndIntNumericUpDown.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.CamEndIntNumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            this.CamEndIntNumericUpDown.Location = new System.Drawing.Point(202, 134);
+            this.CamEndIntNumericUpDown.Location = new System.Drawing.Point(66, 420);
             this.CamEndIntNumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -351,13 +356,18 @@
             0,
             -2147483648});
             this.CamEndIntNumericUpDown.Name = "CamEndIntNumericUpDown";
-            this.CamEndIntNumericUpDown.Size = new System.Drawing.Size(97, 20);
+            this.CamEndIntNumericUpDown.Size = new System.Drawing.Size(74, 20);
             this.CamEndIntNumericUpDown.TabIndex = 23;
+            this.CamEndIntNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // CamIntNumericUpDown
             // 
             this.CamIntNumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            this.CamIntNumericUpDown.Location = new System.Drawing.Point(88, 134);
+            this.CamIntNumericUpDown.Location = new System.Drawing.Point(66, 394);
             this.CamIntNumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -369,16 +379,20 @@
             0,
             -2147483648});
             this.CamIntNumericUpDown.Name = "CamIntNumericUpDown";
-            this.CamIntNumericUpDown.Size = new System.Drawing.Size(52, 20);
+            this.CamIntNumericUpDown.Size = new System.Drawing.Size(74, 20);
             this.CamIntNumericUpDown.TabIndex = 21;
+            this.CamIntNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // FieldOfViewNumericUpDown
             // 
-            this.FieldOfViewNumericUpDown.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.FieldOfViewNumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
             this.FieldOfViewNumericUpDown.DecimalPlaces = 3;
             this.FieldOfViewNumericUpDown.Enabled = false;
-            this.FieldOfViewNumericUpDown.Location = new System.Drawing.Point(219, 82);
+            this.FieldOfViewNumericUpDown.Location = new System.Drawing.Point(66, 160);
             this.FieldOfViewNumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -390,8 +404,13 @@
             0,
             -2147483648});
             this.FieldOfViewNumericUpDown.Name = "FieldOfViewNumericUpDown";
-            this.FieldOfViewNumericUpDown.Size = new System.Drawing.Size(80, 20);
+            this.FieldOfViewNumericUpDown.Size = new System.Drawing.Size(74, 20);
             this.FieldOfViewNumericUpDown.TabIndex = 19;
+            this.FieldOfViewNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            196608});
             // 
             // RotationXNumericUpDown
             // 
@@ -411,12 +430,16 @@
             this.RotationXNumericUpDown.Name = "RotationXNumericUpDown";
             this.RotationXNumericUpDown.Size = new System.Drawing.Size(74, 20);
             this.RotationXNumericUpDown.TabIndex = 5;
+            this.RotationXNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            196608});
             // 
             // Num2NumericUpDown
             // 
-            this.Num2NumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Num2NumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            this.Num2NumericUpDown.Location = new System.Drawing.Point(349, 82);
+            this.Num2NumericUpDown.Location = new System.Drawing.Point(66, 316);
             this.Num2NumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -428,15 +451,19 @@
             0,
             -2147483648});
             this.Num2NumericUpDown.Name = "Num2NumericUpDown";
-            this.Num2NumericUpDown.Size = new System.Drawing.Size(89, 20);
+            this.Num2NumericUpDown.Size = new System.Drawing.Size(74, 20);
             this.Num2NumericUpDown.TabIndex = 13;
+            this.Num2NumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // ZoomNumericUpDown
             // 
-            this.ZoomNumericUpDown.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ZoomNumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
             this.ZoomNumericUpDown.DecimalPlaces = 3;
-            this.ZoomNumericUpDown.Location = new System.Drawing.Point(186, 56);
+            this.ZoomNumericUpDown.Location = new System.Drawing.Point(66, 134);
             this.ZoomNumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -448,8 +475,13 @@
             0,
             -2147483648});
             this.ZoomNumericUpDown.Name = "ZoomNumericUpDown";
-            this.ZoomNumericUpDown.Size = new System.Drawing.Size(113, 20);
+            this.ZoomNumericUpDown.Size = new System.Drawing.Size(74, 20);
             this.ZoomNumericUpDown.TabIndex = 17;
+            this.ZoomNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            196608});
             // 
             // RotationZNumericUpDown
             // 
@@ -469,12 +501,16 @@
             this.RotationZNumericUpDown.Name = "RotationZNumericUpDown";
             this.RotationZNumericUpDown.Size = new System.Drawing.Size(74, 20);
             this.RotationZNumericUpDown.TabIndex = 9;
+            this.RotationZNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            196608});
             // 
             // Num1NumericUpDown
             // 
-            this.Num1NumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Num1NumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            this.Num1NumericUpDown.Location = new System.Drawing.Point(349, 56);
+            this.Num1NumericUpDown.Location = new System.Drawing.Point(66, 290);
             this.Num1NumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -486,8 +522,13 @@
             0,
             -2147483648});
             this.Num1NumericUpDown.Name = "Num1NumericUpDown";
-            this.Num1NumericUpDown.Size = new System.Drawing.Size(89, 20);
+            this.Num1NumericUpDown.Size = new System.Drawing.Size(74, 20);
             this.Num1NumericUpDown.TabIndex = 11;
+            this.Num1NumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // RotationYNumericUpDown
             // 
@@ -507,11 +548,16 @@
             this.RotationYNumericUpDown.Name = "RotationYNumericUpDown";
             this.RotationYNumericUpDown.Size = new System.Drawing.Size(74, 20);
             this.RotationYNumericUpDown.TabIndex = 7;
+            this.RotationYNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            196608});
             // 
             // GroundDelayLabel
             // 
             this.GroundDelayLabel.AutoSize = true;
-            this.GroundDelayLabel.Location = new System.Drawing.Point(3, 189);
+            this.GroundDelayLabel.Location = new System.Drawing.Point(261, 58);
             this.GroundDelayLabel.Name = "GroundDelayLabel";
             this.GroundDelayLabel.Size = new System.Drawing.Size(72, 13);
             this.GroundDelayLabel.TabIndex = 34;
@@ -520,7 +566,7 @@
             // GroundDelayNumericUpDown
             // 
             this.GroundDelayNumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            this.GroundDelayNumericUpDown.Location = new System.Drawing.Point(83, 187);
+            this.GroundDelayNumericUpDown.Location = new System.Drawing.Point(339, 56);
             this.GroundDelayNumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -532,13 +578,18 @@
             0,
             -2147483648});
             this.GroundDelayNumericUpDown.Name = "GroundDelayNumericUpDown";
-            this.GroundDelayNumericUpDown.Size = new System.Drawing.Size(70, 20);
+            this.GroundDelayNumericUpDown.Size = new System.Drawing.Size(99, 20);
             this.GroundDelayNumericUpDown.TabIndex = 35;
+            this.GroundDelayNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // AirDelayLabel
             // 
             this.AirDelayLabel.AutoSize = true;
-            this.AirDelayLabel.Location = new System.Drawing.Point(3, 214);
+            this.AirDelayLabel.Location = new System.Drawing.Point(261, 82);
             this.AirDelayLabel.Name = "AirDelayLabel";
             this.AirDelayLabel.Size = new System.Drawing.Size(49, 13);
             this.AirDelayLabel.TabIndex = 36;
@@ -547,7 +598,7 @@
             // AirDelayNumericUpDown
             // 
             this.AirDelayNumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            this.AirDelayNumericUpDown.Location = new System.Drawing.Point(83, 212);
+            this.AirDelayNumericUpDown.Location = new System.Drawing.Point(339, 82);
             this.AirDelayNumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -559,35 +610,37 @@
             0,
             -2147483648});
             this.AirDelayNumericUpDown.Name = "AirDelayNumericUpDown";
-            this.AirDelayNumericUpDown.Size = new System.Drawing.Size(70, 20);
+            this.AirDelayNumericUpDown.Size = new System.Drawing.Size(99, 20);
             this.AirDelayNumericUpDown.TabIndex = 37;
+            this.AirDelayNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // DisableCollisionCheckBox
             // 
-            this.DisableCollisionCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.DisableCollisionCheckBox.AutoSize = true;
-            this.DisableCollisionCheckBox.Location = new System.Drawing.Point(109, 407);
+            this.DisableCollisionCheckBox.Location = new System.Drawing.Point(374, 210);
             this.DisableCollisionCheckBox.Name = "DisableCollisionCheckBox";
-            this.DisableCollisionCheckBox.Size = new System.Drawing.Size(102, 17);
+            this.DisableCollisionCheckBox.Size = new System.Drawing.Size(64, 17);
             this.DisableCollisionCheckBox.TabIndex = 38;
-            this.DisableCollisionCheckBox.Text = "Disable Collision";
+            this.DisableCollisionCheckBox.Text = "Collision";
             this.DisableCollisionCheckBox.UseVisualStyleBackColor = true;
             // 
             // EventFrameLabel
             // 
-            this.EventFrameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.EventFrameLabel.AutoSize = true;
-            this.EventFrameLabel.Location = new System.Drawing.Point(305, 189);
+            this.EventFrameLabel.Location = new System.Drawing.Point(261, 134);
             this.EventFrameLabel.Name = "EventFrameLabel";
-            this.EventFrameLabel.Size = new System.Drawing.Size(61, 13);
+            this.EventFrameLabel.Size = new System.Drawing.Size(71, 13);
             this.EventFrameLabel.TabIndex = 39;
-            this.EventFrameLabel.Text = "Event Time";
+            this.EventFrameLabel.Text = "Event Length";
             // 
             // EventFrameNumericUpDown
             // 
-            this.EventFrameNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.EventFrameNumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            this.EventFrameNumericUpDown.Location = new System.Drawing.Point(380, 187);
+            this.EventFrameNumericUpDown.Location = new System.Drawing.Point(339, 134);
             this.EventFrameNumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -599,15 +652,19 @@
             0,
             -2147483648});
             this.EventFrameNumericUpDown.Name = "EventFrameNumericUpDown";
-            this.EventFrameNumericUpDown.Size = new System.Drawing.Size(58, 20);
+            this.EventFrameNumericUpDown.Size = new System.Drawing.Size(99, 20);
             this.EventFrameNumericUpDown.TabIndex = 40;
+            this.EventFrameNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // UpperBorderNumericUpDown
             // 
-            this.UpperBorderNumericUpDown.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.UpperBorderNumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
             this.UpperBorderNumericUpDown.DecimalPlaces = 3;
-            this.UpperBorderNumericUpDown.Location = new System.Drawing.Point(235, 187);
+            this.UpperBorderNumericUpDown.Location = new System.Drawing.Point(66, 342);
             this.UpperBorderNumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -619,25 +676,28 @@
             0,
             -2147483648});
             this.UpperBorderNumericUpDown.Name = "UpperBorderNumericUpDown";
-            this.UpperBorderNumericUpDown.Size = new System.Drawing.Size(64, 20);
+            this.UpperBorderNumericUpDown.Size = new System.Drawing.Size(74, 20);
             this.UpperBorderNumericUpDown.TabIndex = 44;
+            this.UpperBorderNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            196608});
             // 
             // UpperBorderLabel
             // 
-            this.UpperBorderLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.UpperBorderLabel.AutoSize = true;
-            this.UpperBorderLabel.Location = new System.Drawing.Point(159, 189);
+            this.UpperBorderLabel.Location = new System.Drawing.Point(3, 344);
             this.UpperBorderLabel.Name = "UpperBorderLabel";
-            this.UpperBorderLabel.Size = new System.Drawing.Size(70, 13);
+            this.UpperBorderLabel.Size = new System.Drawing.Size(36, 13);
             this.UpperBorderLabel.TabIndex = 43;
-            this.UpperBorderLabel.Text = "Upper Border";
+            this.UpperBorderLabel.Text = "Upper";
             // 
             // LowerBorderNumericUpDown
             // 
-            this.LowerBorderNumericUpDown.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.LowerBorderNumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
             this.LowerBorderNumericUpDown.DecimalPlaces = 3;
-            this.LowerBorderNumericUpDown.Location = new System.Drawing.Point(235, 212);
+            this.LowerBorderNumericUpDown.Location = new System.Drawing.Point(66, 368);
             this.LowerBorderNumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -649,104 +709,103 @@
             0,
             -2147483648});
             this.LowerBorderNumericUpDown.Name = "LowerBorderNumericUpDown";
-            this.LowerBorderNumericUpDown.Size = new System.Drawing.Size(64, 20);
+            this.LowerBorderNumericUpDown.Size = new System.Drawing.Size(74, 20);
             this.LowerBorderNumericUpDown.TabIndex = 46;
+            this.LowerBorderNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            196608});
             // 
             // LowerBorderLabel
             // 
-            this.LowerBorderLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.LowerBorderLabel.AutoSize = true;
-            this.LowerBorderLabel.Location = new System.Drawing.Point(159, 214);
+            this.LowerBorderLabel.Location = new System.Drawing.Point(3, 370);
             this.LowerBorderLabel.Name = "LowerBorderLabel";
-            this.LowerBorderLabel.Size = new System.Drawing.Size(70, 13);
+            this.LowerBorderLabel.Size = new System.Drawing.Size(36, 13);
             this.LowerBorderLabel.TabIndex = 45;
-            this.LowerBorderLabel.Text = "Lower Border";
+            this.LowerBorderLabel.Text = "Lower";
             // 
             // FixpointVector3NumericUpDown
             // 
-            this.FixpointVector3NumericUpDown.Location = new System.Drawing.Point(3, 238);
-            this.FixpointVector3NumericUpDown.MinimumSize = new System.Drawing.Size(100, 90);
+            this.FixpointVector3NumericUpDown.Location = new System.Drawing.Point(146, 56);
+            this.FixpointVector3NumericUpDown.MinimumSize = new System.Drawing.Size(70, 90);
             this.FixpointVector3NumericUpDown.Name = "FixpointVector3NumericUpDown";
-            this.FixpointVector3NumericUpDown.Size = new System.Drawing.Size(100, 92);
+            this.FixpointVector3NumericUpDown.Size = new System.Drawing.Size(109, 90);
             this.FixpointVector3NumericUpDown.TabIndex = 47;
             this.FixpointVector3NumericUpDown.Text = "Fixpoint Offset";
             // 
             // WorldOffsetVector3NumericUpDown
             // 
-            this.WorldOffsetVector3NumericUpDown.Location = new System.Drawing.Point(113, 238);
-            this.WorldOffsetVector3NumericUpDown.MinimumSize = new System.Drawing.Size(100, 90);
+            this.WorldOffsetVector3NumericUpDown.Location = new System.Drawing.Point(146, 153);
+            this.WorldOffsetVector3NumericUpDown.MinimumSize = new System.Drawing.Size(70, 90);
             this.WorldOffsetVector3NumericUpDown.Name = "WorldOffsetVector3NumericUpDown";
-            this.WorldOffsetVector3NumericUpDown.Size = new System.Drawing.Size(100, 92);
+            this.WorldOffsetVector3NumericUpDown.Size = new System.Drawing.Size(109, 90);
             this.WorldOffsetVector3NumericUpDown.TabIndex = 48;
             this.WorldOffsetVector3NumericUpDown.Text = "World Offset";
             // 
             // VerticalPanAxisVector3NumericUpDown
             // 
-            this.VerticalPanAxisVector3NumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.VerticalPanAxisVector3NumericUpDown.Location = new System.Drawing.Point(338, 238);
-            this.VerticalPanAxisVector3NumericUpDown.MinimumSize = new System.Drawing.Size(100, 90);
+            this.VerticalPanAxisVector3NumericUpDown.Enabled = false;
+            this.VerticalPanAxisVector3NumericUpDown.Location = new System.Drawing.Point(146, 348);
+            this.VerticalPanAxisVector3NumericUpDown.MinimumSize = new System.Drawing.Size(70, 90);
             this.VerticalPanAxisVector3NumericUpDown.Name = "VerticalPanAxisVector3NumericUpDown";
-            this.VerticalPanAxisVector3NumericUpDown.Size = new System.Drawing.Size(100, 92);
+            this.VerticalPanAxisVector3NumericUpDown.Size = new System.Drawing.Size(109, 90);
             this.VerticalPanAxisVector3NumericUpDown.TabIndex = 49;
             this.VerticalPanAxisVector3NumericUpDown.Text = "Vertical Axis";
             // 
             // UpAxisVector3NumericUpDown
             // 
-            this.UpAxisVector3NumericUpDown.Location = new System.Drawing.Point(3, 331);
-            this.UpAxisVector3NumericUpDown.MinimumSize = new System.Drawing.Size(100, 90);
+            this.UpAxisVector3NumericUpDown.Location = new System.Drawing.Point(261, 348);
+            this.UpAxisVector3NumericUpDown.MinimumSize = new System.Drawing.Size(70, 90);
             this.UpAxisVector3NumericUpDown.Name = "UpAxisVector3NumericUpDown";
-            this.UpAxisVector3NumericUpDown.Size = new System.Drawing.Size(100, 92);
+            this.UpAxisVector3NumericUpDown.Size = new System.Drawing.Size(177, 90);
             this.UpAxisVector3NumericUpDown.TabIndex = 50;
             this.UpAxisVector3NumericUpDown.Text = "Up Axis";
             // 
             // UseVerticalPanAxisCheckBox
             // 
-            this.UseVerticalPanAxisCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.UseVerticalPanAxisCheckBox.AutoSize = true;
-            this.UseVerticalPanAxisCheckBox.Location = new System.Drawing.Point(314, 359);
+            this.UseVerticalPanAxisCheckBox.Location = new System.Drawing.Point(237, 349);
             this.UseVerticalPanAxisCheckBox.Name = "UseVerticalPanAxisCheckBox";
-            this.UseVerticalPanAxisCheckBox.Size = new System.Drawing.Size(119, 17);
+            this.UseVerticalPanAxisCheckBox.Size = new System.Drawing.Size(15, 14);
             this.UseVerticalPanAxisCheckBox.TabIndex = 51;
-            this.UseVerticalPanAxisCheckBox.Text = "Enable Vertical Axis";
             this.UseVerticalPanAxisCheckBox.UseVisualStyleBackColor = true;
+            this.UseVerticalPanAxisCheckBox.CheckedChanged += new System.EventHandler(this.UseVerticalPanAxisCheckBox_CheckedChanged);
             // 
             // PlayerOffsetVector3NumericUpDown
             // 
-            this.PlayerOffsetVector3NumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.PlayerOffsetVector3NumericUpDown.Location = new System.Drawing.Point(227, 238);
-            this.PlayerOffsetVector3NumericUpDown.MinimumSize = new System.Drawing.Size(100, 90);
+            this.PlayerOffsetVector3NumericUpDown.Location = new System.Drawing.Point(146, 250);
+            this.PlayerOffsetVector3NumericUpDown.MinimumSize = new System.Drawing.Size(50, 45);
             this.PlayerOffsetVector3NumericUpDown.Name = "PlayerOffsetVector3NumericUpDown";
-            this.PlayerOffsetVector3NumericUpDown.Size = new System.Drawing.Size(100, 92);
+            this.PlayerOffsetVector3NumericUpDown.Size = new System.Drawing.Size(109, 90);
             this.PlayerOffsetVector3NumericUpDown.TabIndex = 52;
             this.PlayerOffsetVector3NumericUpDown.Text = "Player Offset";
             // 
             // DisableAntiBlurCheckBox
             // 
-            this.DisableAntiBlurCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.DisableAntiBlurCheckBox.AutoSize = true;
-            this.DisableAntiBlurCheckBox.Location = new System.Drawing.Point(233, 359);
+            this.DisableAntiBlurCheckBox.Location = new System.Drawing.Point(374, 233);
             this.DisableAntiBlurCheckBox.Name = "DisableAntiBlurCheckBox";
-            this.DisableAntiBlurCheckBox.Size = new System.Drawing.Size(80, 17);
+            this.DisableAntiBlurCheckBox.Size = new System.Drawing.Size(44, 17);
             this.DisableAntiBlurCheckBox.TabIndex = 53;
-            this.DisableAntiBlurCheckBox.Text = "Enable Blur";
+            this.DisableAntiBlurCheckBox.Text = "Blur";
             this.DisableAntiBlurCheckBox.UseVisualStyleBackColor = true;
             // 
             // DisableFirstPersonCheckBox
             // 
-            this.DisableFirstPersonCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.DisableFirstPersonCheckBox.AutoSize = true;
-            this.DisableFirstPersonCheckBox.Location = new System.Drawing.Point(109, 359);
+            this.DisableFirstPersonCheckBox.Location = new System.Drawing.Point(261, 256);
             this.DisableFirstPersonCheckBox.Name = "DisableFirstPersonCheckBox";
-            this.DisableFirstPersonCheckBox.Size = new System.Drawing.Size(119, 17);
+            this.DisableFirstPersonCheckBox.Size = new System.Drawing.Size(81, 17);
             this.DisableFirstPersonCheckBox.TabIndex = 54;
-            this.DisableFirstPersonCheckBox.Text = "Disable First Person";
+            this.DisableFirstPersonCheckBox.Text = "First Person";
             this.DisableFirstPersonCheckBox.UseVisualStyleBackColor = true;
             // 
             // GFlagEndErpFrameCheckBox
             // 
-            this.GFlagEndErpFrameCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GFlagEndErpFrameCheckBox.AutoSize = true;
-            this.GFlagEndErpFrameCheckBox.Location = new System.Drawing.Point(314, 382);
+            this.GFlagEndErpFrameCheckBox.Location = new System.Drawing.Point(261, 302);
             this.GFlagEndErpFrameCheckBox.Name = "GFlagEndErpFrameCheckBox";
             this.GFlagEndErpFrameCheckBox.Size = new System.Drawing.Size(118, 17);
             this.GFlagEndErpFrameCheckBox.TabIndex = 55;
@@ -755,9 +814,8 @@
             // 
             // GFlagThroughCheckBox
             // 
-            this.GFlagThroughCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.GFlagThroughCheckBox.AutoSize = true;
-            this.GFlagThroughCheckBox.Location = new System.Drawing.Point(217, 382);
+            this.GFlagThroughCheckBox.Location = new System.Drawing.Point(261, 325);
             this.GFlagThroughCheckBox.Name = "GFlagThroughCheckBox";
             this.GFlagThroughCheckBox.Size = new System.Drawing.Size(94, 17);
             this.GFlagThroughCheckBox.TabIndex = 56;
@@ -767,28 +825,27 @@
             // EventUseTimeCheckBox
             // 
             this.EventUseTimeCheckBox.AutoSize = true;
-            this.EventUseTimeCheckBox.Location = new System.Drawing.Point(109, 336);
+            this.EventUseTimeCheckBox.Location = new System.Drawing.Point(261, 210);
             this.EventUseTimeCheckBox.Name = "EventUseTimeCheckBox";
-            this.EventUseTimeCheckBox.Size = new System.Drawing.Size(159, 17);
+            this.EventUseTimeCheckBox.Size = new System.Drawing.Size(108, 17);
             this.EventUseTimeCheckBox.TabIndex = 58;
-            this.EventUseTimeCheckBox.Text = "Events: Use Transition Time";
+            this.EventUseTimeCheckBox.Text = "Event Enter Time";
             this.EventUseTimeCheckBox.UseVisualStyleBackColor = true;
             // 
             // EventUseEndTimeCheckBox
             // 
-            this.EventUseEndTimeCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.EventUseEndTimeCheckBox.AutoSize = true;
-            this.EventUseEndTimeCheckBox.Location = new System.Drawing.Point(314, 407);
+            this.EventUseEndTimeCheckBox.Location = new System.Drawing.Point(261, 233);
             this.EventUseEndTimeCheckBox.Name = "EventUseEndTimeCheckBox";
-            this.EventUseEndTimeCheckBox.Size = new System.Drawing.Size(130, 17);
+            this.EventUseEndTimeCheckBox.Size = new System.Drawing.Size(100, 17);
             this.EventUseEndTimeCheckBox.TabIndex = 59;
-            this.EventUseEndTimeCheckBox.Text = "Events: Use Exit Time";
+            this.EventUseEndTimeCheckBox.Text = "Event Exit Time";
             this.EventUseEndTimeCheckBox.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(274, 337);
+            this.label1.Location = new System.Drawing.Point(261, 186);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(34, 13);
             this.label1.TabIndex = 60;
@@ -796,29 +853,25 @@
             // 
             // StringTextBox
             // 
-            this.StringTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.StringTextBox.Location = new System.Drawing.Point(314, 334);
+            this.StringTextBox.Location = new System.Drawing.Point(301, 185);
             this.StringTextBox.Name = "StringTextBox";
-            this.StringTextBox.Size = new System.Drawing.Size(124, 20);
+            this.StringTextBox.Size = new System.Drawing.Size(137, 20);
             this.StringTextBox.TabIndex = 61;
             // 
             // DisableResetCheckBox
             // 
-            this.DisableResetCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.DisableResetCheckBox.AutoSize = true;
-            this.DisableResetCheckBox.Location = new System.Drawing.Point(217, 407);
+            this.DisableResetCheckBox.Location = new System.Drawing.Point(374, 256);
             this.DisableResetCheckBox.Name = "DisableResetCheckBox";
-            this.DisableResetCheckBox.Size = new System.Drawing.Size(92, 17);
+            this.DisableResetCheckBox.Size = new System.Drawing.Size(54, 17);
             this.DisableResetCheckBox.TabIndex = 62;
-            this.DisableResetCheckBox.Text = "Disable Reset";
+            this.DisableResetCheckBox.Text = "Reset";
             this.DisableResetCheckBox.UseVisualStyleBackColor = true;
             // 
             // EventPriorityLabel
             // 
-            this.EventPriorityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.EventPriorityLabel.AutoSize = true;
-            this.EventPriorityLabel.Location = new System.Drawing.Point(305, 214);
+            this.EventPriorityLabel.Location = new System.Drawing.Point(261, 159);
             this.EventPriorityLabel.Name = "EventPriorityLabel";
             this.EventPriorityLabel.Size = new System.Drawing.Size(69, 13);
             this.EventPriorityLabel.TabIndex = 41;
@@ -826,9 +879,8 @@
             // 
             // EventPriorityNumericUpDown
             // 
-            this.EventPriorityNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.EventPriorityNumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            this.EventPriorityNumericUpDown.Location = new System.Drawing.Point(380, 212);
+            this.EventPriorityNumericUpDown.Location = new System.Drawing.Point(339, 159);
             this.EventPriorityNumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -840,14 +892,18 @@
             0,
             -2147483648});
             this.EventPriorityNumericUpDown.Name = "EventPriorityNumericUpDown";
-            this.EventPriorityNumericUpDown.Size = new System.Drawing.Size(58, 20);
+            this.EventPriorityNumericUpDown.Size = new System.Drawing.Size(99, 20);
             this.EventPriorityNumericUpDown.TabIndex = 42;
+            this.EventPriorityNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // GFlagEndTimeLabel
             // 
-            this.GFlagEndTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GFlagEndTimeLabel.AutoSize = true;
-            this.GFlagEndTimeLabel.Location = new System.Drawing.Point(305, 162);
+            this.GFlagEndTimeLabel.Location = new System.Drawing.Point(261, 108);
             this.GFlagEndTimeLabel.Name = "GFlagEndTimeLabel";
             this.GFlagEndTimeLabel.Size = new System.Drawing.Size(34, 13);
             this.GFlagEndTimeLabel.TabIndex = 63;
@@ -855,9 +911,8 @@
             // 
             // GFlagEndTimeNumericUpDown
             // 
-            this.GFlagEndTimeNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GFlagEndTimeNumericUpDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            this.GFlagEndTimeNumericUpDown.Location = new System.Drawing.Point(349, 160);
+            this.GFlagEndTimeNumericUpDown.Location = new System.Drawing.Point(339, 108);
             this.GFlagEndTimeNumericUpDown.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -869,8 +924,13 @@
             0,
             -2147483648});
             this.GFlagEndTimeNumericUpDown.Name = "GFlagEndTimeNumericUpDown";
-            this.GFlagEndTimeNumericUpDown.Size = new System.Drawing.Size(89, 20);
+            this.GFlagEndTimeNumericUpDown.Size = new System.Drawing.Size(99, 20);
             this.GFlagEndTimeNumericUpDown.TabIndex = 64;
+            this.GFlagEndTimeNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // DefaultCameraPanel
             // 

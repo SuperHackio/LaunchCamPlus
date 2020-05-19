@@ -60,14 +60,23 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CameraPanels\EyeposFixThereCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CameraPanels\EyeposFixThereCameraPanel.Designer.cs">
+      <DependentUpon>EyeposFixThereCameraPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="CameraPanels\XZParaCameraPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="CameraPanels\XZParaCameraPanel.Designer.cs">
       <DependentUpon>XZParaCameraPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Extra Controls\ColourNumericUpDown.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Extra Controls\PresetCreatorPanel.cs">
       <SubType>UserControl</SubType>
@@ -150,6 +159,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CameraPanels\DefaultCameraPanel.resx">
       <DependentUpon>DefaultCameraPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CameraPanels\EyeposFixThereCameraPanel.resx">
+      <DependentUpon>EyeposFixThereCameraPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CameraPanels\XZParaCameraPanel.resx">
       <DependentUpon>XZParaCameraPanel.cs</DependentUpon>

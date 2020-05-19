@@ -117,12 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="NoticeLabel.Text" xml:space="preserve">
-    <value>!!NOTICE!!
-This is a Pre-release version of Launch Cam Plus.
-If your cameras are not working as expected, try disabling Advanced Saving.
-
-Be careful with Unique Editors! Switching from 1 unique editor to another
-may erase data useless to the camera you're switching from.</value>
-  </data>
 </root>

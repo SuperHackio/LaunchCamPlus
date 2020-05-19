@@ -104,12 +104,12 @@ namespace LaunchCamPlus.CameraPanels
             VerticalPanAxisVector3NumericUpDown.LoadVector3(Entry.VerticalPanAxis);
             UpAxisVector3NumericUpDown.LoadVector3(Entry.UpAxis);
 
-            DisableResetCheckBox.Checked = Entry.DisableReset;
+            DisableResetCheckBox.Checked = !Entry.DisableReset;
             FieldOfViewCheckBox.Checked = Entry.EnableFoV;
-            SharpZoomCheckBox.Checked = Entry.SharpZoom;
+            SharpZoomCheckBox.Checked = !Entry.SharpZoom;
             DisableAntiBlurCheckBox.Checked = Entry.DisableAntiBlur;
-            DisableCollisionCheckBox.Checked = Entry.DisableCollision;
-            DisableFirstPersonCheckBox.Checked = Entry.DisableFirstPerson;
+            DisableCollisionCheckBox.Checked = !Entry.DisableCollision;
+            DisableFirstPersonCheckBox.Checked = !Entry.DisableFirstPerson;
             GFlagEndErpFrameCheckBox.Checked = Entry.GFlagEndErpFrame;
             GFlagThroughCheckBox.Checked = Entry.GFlagThrough;
             GFlagEndTimeNumericUpDown.Value = (decimal)Entry.GFlagEndTime;
@@ -146,12 +146,12 @@ namespace LaunchCamPlus.CameraPanels
             Entry.PlayerOffset = PlayerOffsetVector3NumericUpDown.GetVector3();
             Entry.VerticalPanAxis = VerticalPanAxisVector3NumericUpDown.GetVector3();
             Entry.UpAxis = UpAxisVector3NumericUpDown.GetVector3();
-            Entry.DisableReset = DisableResetCheckBox.Checked;
+            Entry.DisableReset = !DisableResetCheckBox.Checked;
             Entry.EnableFoV = FieldOfViewCheckBox.Checked;
-            Entry.SharpZoom = SharpZoomCheckBox.Checked;
+            Entry.SharpZoom = !SharpZoomCheckBox.Checked;
             Entry.DisableAntiBlur = DisableAntiBlurCheckBox.Checked;
-            Entry.DisableCollision = DisableCollisionCheckBox.Checked;
-            Entry.DisableFirstPerson = DisableFirstPersonCheckBox.Checked;
+            Entry.DisableCollision = !DisableCollisionCheckBox.Checked;
+            Entry.DisableFirstPerson = !DisableFirstPersonCheckBox.Checked;
             Entry.GFlagEndErpFrame = GFlagEndErpFrameCheckBox.Checked;
             Entry.GFlagThrough = GFlagThroughCheckBox.Checked;
             Entry.GFlagEndTime = (int)GFlagEndTimeNumericUpDown.Value;
@@ -166,6 +166,11 @@ namespace LaunchCamPlus.CameraPanels
         private void FieldOfViewCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             FieldOfViewNumericUpDown.Enabled = FieldOfViewCheckBox.Checked;
+        }
+
+        private void UseVerticalPanAxisCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            VerticalPanAxisVector3NumericUpDown.Enabled = UseVerticalPanAxisCheckBox.Checked;
         }
     }
 }

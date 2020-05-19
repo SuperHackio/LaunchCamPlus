@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace LaunchCamPlus
 {
-    public class ColourComboBox : ComboBox
+    public class ColourNumericUpDown : NumericUpDown
     {
         private const int WM_PAINT = 0xF;
         private readonly int buttonWidth = SystemInformation.HorizontalScrollBarArrowWidth;
@@ -33,27 +33,45 @@ namespace LaunchCamPlus
                     {
                         g.DrawRectangle(p, 0, 0, Width - buttonWidth - 1, Height - 1);
                     }
-                    if (!Enabled)
-                    {
-                        using (var p = new Pen(this.BorderColor, 2))
-                        {
-                            g.DrawRectangle(p, 2, 2, Width - buttonWidth - 4, Height - 4);
-                        }
-                    }
                 }
             }
         }
 
-        public ColourComboBox()
+        public ColourNumericUpDown()
         {
             BorderColor = Color.FromArgb(200, 200, 200);
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            Resize += (object sender, EventArgs e) => { Refresh(); };
+            //Resize += (object sender, EventArgs e) => { Refresh(); };
         }
 
         [Browsable(true)]
         [Category("Appearance")]
         [DefaultValue(typeof(Color), "Gray")]
         public Color BorderColor { get; set; }
+        
+        private decimal _textval;
+        public decimal TextValue
+        {
+            get
+            {
+                return _textval;
+            }
+            set
+            {
+                _textval = Math.Min(Math.Max(Minimum, value), Maximum);
+            }
+        }
+
+        protected override void OnValueChanged(EventArgs e)
+        {
+            _textval = Value;
+        }
+        protected override void OnTextChanged(EventArgs e)
+        {
+            if (decimal.TryParse(string.IsNullOrWhiteSpace(Text) ? "0.0" : Text, out decimal result))
+            {
+                _textval = result;
+            }
+        }
     }
 }

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsPanel));
             this.LogoPictureBox = new System.Windows.Forms.PictureBox();
             this.AboutLabel = new System.Windows.Forms.Label();
             this.VisualSettingsGroupBox = new System.Windows.Forms.GroupBox();
@@ -91,7 +92,7 @@
             this.VisualSettingsGroupBox.Size = new System.Drawing.Size(435, 118);
             this.VisualSettingsGroupBox.TabIndex = 2;
             this.VisualSettingsGroupBox.TabStop = false;
-            this.VisualSettingsGroupBox.Text = "Visuals";
+            this.VisualSettingsGroupBox.Text = "Visuals and Audio";
             // 
             // SfxCheckBox
             // 
@@ -121,7 +122,6 @@
             // UniqueEditorsCheckbox
             // 
             this.UniqueEditorsCheckbox.AutoSize = true;
-            this.UniqueEditorsCheckbox.Enabled = false;
             this.UniqueEditorsCheckbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.UniqueEditorsCheckbox.Location = new System.Drawing.Point(6, 52);
             this.UniqueEditorsCheckbox.Name = "UniqueEditorsCheckbox";
@@ -263,13 +263,11 @@
             // NoticeLabel
             // 
             this.NoticeLabel.AutoSize = true;
-            this.NoticeLabel.Location = new System.Drawing.Point(3, 256);
+            this.NoticeLabel.Location = new System.Drawing.Point(22, 257);
             this.NoticeLabel.Name = "NoticeLabel";
-            this.NoticeLabel.Size = new System.Drawing.Size(368, 65);
+            this.NoticeLabel.Size = new System.Drawing.Size(368, 78);
             this.NoticeLabel.TabIndex = 5;
-            this.NoticeLabel.Text = "!!NOTICE!!\r\nThis is a Pre-release version of Launch Cam Plus.\r\nIf your cameras ar" +
-    "e not working as expected, try disabling Advanced Saving.\r\n\r\nUnique Editors are " +
-    "Disabled atm due to being unfinished";
+            this.NoticeLabel.Text = resources.GetString("NoticeLabel.Text");
             // 
             // SettingsPanel
             // 

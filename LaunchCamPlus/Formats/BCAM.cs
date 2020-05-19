@@ -1966,7 +1966,7 @@ namespace Hackio.IO.BCAM
             else if (Original.StartsWith("e:"))
             {
                 string targetkey = string.Concat(Original.Split(':')[1].Where(IsNonDigit));
-                Final += Events.ContainsKey(targetkey) ? "Event: "+Original.Substring(2).Replace(targetkey, Events[targetkey]).Replace("番目", "th") : Original;
+                Final += Events.ContainsKey(targetkey) ? "Event: "+Original.Substring(2).Replace(targetkey, Events[targetkey]+" ").Replace("番目", "th") : Original;
             }
             else if (Original.StartsWith("o:"))
             {
@@ -2024,7 +2024,8 @@ namespace Hackio.IO.BCAM
                 return -1;
         }
 
-        static public bool IsNonDigit(char c) => !char.IsNumber(c);
+        public static bool IsNonDigit(char c) => !(c >= 0x30 && c <= 0x39);
+
         public static string RemoveDigits(this string str) => string.Concat(str.Where(IsNonDigit));
         
         public static float RefineAngle(this float angle)
@@ -2095,9 +2096,20 @@ namespace Hackio.IO.BCAM
             { "ポール固有", new EventData("Pole", true, false) },
             { "ポール（鉄骨）固有", new EventData("Square Pole", true, false) },
             { "移動用砲台固有", new EventData("Player Cannon", true, false) },
+            { "１ＵＰキノコ固有", new EventData("1-UP Appearence", true, false) },
+            { "？コイン固有", new EventData("?-Coin Collection", true, false) },
+            { "伸び植物固有出現デモ", new EventData("Sproutle Vine Appearance", true, false) },
+            { "伸び植物固有掴まり", new EventData("Sproutle Vine", true, false) },
+            { "つるスライダー固有滑り", new EventData("Sprauto Vine", true, false) },
+            { "つる花固有掴まり", new EventData("Creeper Plant", true, false) },
+            { "空中ブランコ固有", new EventData("Trapeze Vine", true, false) },
+            { "音符の妖精固有", new EventData("Note Fairy Appearance", true, false) },
+            { "インフェルノジェネレータ固有出現デモカメラ", new EventData("(SMG2) Cosmic Clones Appearance", true, false) },
 
+            { "看板固有会話", new EventData("Message: Signboard", true, false) },
             { "キノピオ固有会話", new EventData("Message: Toad", true, false) },
             { "ウサギ固有会話", new EventData("Message: Star Bunny", true, false) },
+            { "チコ固有会話", new EventData("Message: Luma", true, false) },
             { "ハニービー固有会話", new EventData("Message: Honeybee", true, false) },
             { "ハニークイーン固有会話", new EventData("Message: Queen Bee", true, false) },
             { "ペンギン固有会話", new EventData("Message: Penguin", true, false) },
@@ -2259,10 +2271,15 @@ namespace Hackio.IO.BCAM
     {
         public static Dictionary<string, CameraDefaults> Defaults = new Dictionary<string, CameraDefaults>()
         {
-            { "CAM_TYPE_XZ_PARA", new CameraDefaults(196631, 0, 0.2984513f, 0f, 0f, 1200f, 45f, 100, 0, 160, 0, 0, "", 300f, 800f, 120, 120, 120, 0f, 0f, 0.30f, 0.10f, 0, 0,
+            //==================================================================================================================================================================
+            { "CAM_TYPE_XZ_PARA", new CameraDefaults(196631, 0, 0.2984513f, 0f, 0f, 1200f, 45f, 100, 100, 160, 0, 0, "", 300f, 800f, 120, 120, 120, 0f, 0f, 0.30f, 0.10f, 0, 0,
                 new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,1,0), new Vector3<float>(0,1,0),
                 false, false, false, false, false, false, false, false, 0, true, false, false) },
-
+            //==================================================================================================================================================================
+            { "CAM_TYPE_EYEPOS_FIX_THERE", new CameraDefaults(196631, 0, 0.0f, 0f, 0f, 0f, 45f, 100, 100, 160, 1, 0, "", 0f, 0f, 0, 0, 120, 0f, 0f, 0.0f, 0.0f, 0, 0,
+                new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,1,0),
+                false, false, false, false, false, false, false, false, 0, false, false, false) },
+            //==================================================================================================================================================================
         };
 
         internal CameraDefaults(int version, int number, float XRot, float YRot, float ZRot, float zoom, float fov, int time, int endtime, int gndtime, int num1, int num2, string str, float maxY, float minY,

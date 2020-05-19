@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LaunchCamPlus.Properties;
+using System.Runtime.InteropServices;
 
 namespace LaunchCamPlus
 {
