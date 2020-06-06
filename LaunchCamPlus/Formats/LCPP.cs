@@ -201,10 +201,10 @@ namespace LaunchCamPlus
                             Properties.UDown = Convert.ToInt32(P[1]);
                             break;
                         case "FrontZoom":
-                            Properties.FrontOffset = Convert.ToSingle(P[1]);
+                            Properties.LookOffset = Convert.ToSingle(P[1]);
                             break;
                         case "HeightZoom":
-                            Properties.HeightOffset = Convert.ToSingle(P[1]);
+                            Properties.LookOffsetVertical = Convert.ToSingle(P[1]);
                             break;
                         case "UpperBorder":
                             P[1] = P[1].Replace("f", "");
@@ -272,7 +272,7 @@ namespace LaunchCamPlus
                             Properties.EnableFoV = P[1] == "true" ? true : false;
                             break;
                         case "SharpZoom":
-                            Properties.SharpZoom = P[1] == "true" ? true : false;
+                            Properties.StaticLookOffset = P[1] == "true" ? true : false;
                             break;
                         case "DisableAntiBlur":
                             Properties.DisableAntiBlur = P[1] == "true" ? true : false;
@@ -373,8 +373,8 @@ namespace LaunchCamPlus
                     GroundMoveDelay = (int)FindNumber(FS, Offset),
                     AirMoveDelay = (int)FindNumber(FS, Offset),
                     UDown = (int)FindNumber(FS, Offset),
-                    FrontOffset = FindNumber(FS, Offset),
-                    HeightOffset = FindNumber(FS, Offset),
+                    LookOffset = FindNumber(FS, Offset),
+                    LookOffsetVertical = FindNumber(FS, Offset),
                     UpperBorder = FindNumber(FS, Offset),
                     LowerBorder = FindNumber(FS, Offset),
                     EventFrames = (int)FindNumber(FS, Offset),
@@ -385,7 +385,7 @@ namespace LaunchCamPlus
                     VerticalPanAxis = new Vector3<float>(FindNumber(FS, Offset), FindNumber(FS, Offset), FindNumber(FS, Offset)),
                     UpAxis = new Vector3<float>(FindNumber(FS, Offset), FindNumber(FS, Offset), FindNumber(FS, Offset)),
                     DisableReset = FindBoolean(FS, Offset),
-                    SharpZoom = FindBoolean(FS, Offset),
+                    StaticLookOffset = FindBoolean(FS, Offset),
                     DisableAntiBlur = FindBoolean(FS, Offset),
                     DisableCollision = FindBoolean(FS, Offset),
                     DisableFirstPerson = FindBoolean(FS, Offset),

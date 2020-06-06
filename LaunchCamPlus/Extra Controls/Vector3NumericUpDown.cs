@@ -51,5 +51,14 @@ namespace LaunchCamPlus
         {
             return new Vector3<float>((float)XValueNumericUpDown.Value, (float)YValueNumericUpDown.Value, (float)ZValueNumericUpDown.Value);
         }
+
+        [Category("Action")]
+        [Browsable(true)]
+        public event EventHandler ValueChanged;
+
+        private void NumberValueChanged(object sender, EventArgs e)
+        {
+            ValueChanged(sender, e);
+        }
     }
 }

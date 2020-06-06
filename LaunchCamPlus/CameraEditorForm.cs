@@ -13,7 +13,6 @@ using LaunchCamPlus.CameraPanels;
 using LaunchCamPlus.Properties;
 using System.Media;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace LaunchCamPlus
 {
@@ -42,8 +41,9 @@ namespace LaunchCamPlus
             PreBufferedPanels = new Dictionary<string, CameraPanelBase>
             {
                 { "DEFAULT", new DefaultCameraPanel() { Dock = DockStyle.Fill } },
-                { "CAM_TYPE_XZ_PARA", new XZParaCameraPanel() { Dock = DockStyle.Fill } },
-                { "CAM_TYPE_EYEPOS_FIX_THERE", new EyeposFixThereCameraPanel() { Dock = DockStyle.Fill } }
+                { "CAM_TYPE_EYEPOS_FIX_THERE", new EyeposFixThereCameraPanel() { Dock = DockStyle.Fill } },
+                { "CAM_TYPE_WONDER_PLANET", new WanderPlanetCameraPanel() { Dock = DockStyle.Fill } },
+                { "CAM_TYPE_XZ_PARA", new XZParaCameraPanel() { Dock = DockStyle.Fill } }
             };
 
             ReloadTheme();
@@ -90,6 +90,7 @@ namespace LaunchCamPlus
             CameraListBox.Enabled = true;
             SaveToolStripMenuItem.Enabled = true;
             SaveAsToolStripMenuItem.Enabled = true;
+            ExportPresetToolStripMenuItem.Enabled = true;
             CameraListBox.Items.Clear();
             Console.WriteLine("New File Started!");
             AddDefaultCameraToolStripMenuItem_Click(null, null);
@@ -139,7 +140,12 @@ namespace LaunchCamPlus
         private void AddDefaultCameraToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (Cameras == null)
+            {
+                Console.WriteLine(Program.ConsoleHalfSplitter);
+                Console.WriteLine("Failed to add the camera!\nNo camera file is active");
+                Console.WriteLine(Program.ConsoleHalfSplitter);
                 return;
+            }
             BCAMEntry newcamera = CameraDefaults.Defaults["CAM_TYPE_XZ_PARA"];
             newcamera.Identification = "c:" + BCAMEx.CalculateNextCameraArea(Cameras).ToString("x4");
             newcamera.Type = "CAM_TYPE_XZ_PARA";
@@ -154,6 +160,26 @@ namespace LaunchCamPlus
             if (Program.PresetSelectorNeedsReload)
                 PreBufferedPresets.GenerateTreeview(Program.PresetPath);
             MainSplitContainer.Panel2.Controls.Add(PreBufferedPresets);
+        }
+
+        private void AddNewFromClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BCAMEntry NewFromClipboard = new BCAMEntry();
+
+            if (NewFromClipboard.FromClipboard(Clipboard.GetText()))
+            {
+                if (Cameras == null)
+                {
+                    Console.WriteLine(Program.ConsoleHalfSplitter);
+                    Console.WriteLine("Failed to add the camera!\nNo camera file is active");
+                    Console.WriteLine(Program.ConsoleHalfSplitter);
+                    return;
+                }
+                AddCamera(NewFromClipboard);
+                Console.WriteLine("Camera Added from Clipboard!");
+            }
+            else
+                Console.WriteLine("Clipboard doesn't contain a Valid LCP Camera!"+(Cameras == null ? "\nAnd there is no camera file currently active":""));
         }
 
         private void DeleteCameraToolStripMenuItem_Click(object sender, EventArgs e)
@@ -277,6 +303,8 @@ namespace LaunchCamPlus
 
         private void ExportPresetToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (MainSplitContainer.Panel2.Controls.Count > 0 && MainSplitContainer.Panel2.Controls[0] is CameraPanelBase pnl)
+                pnl.UnLoadCamera(Cameras[PrevListID]);
             CameraListBox.SelectedIndex = -1;
             MainSplitContainer.Panel2.Controls.Clear();
             EditToolStripMenuItem.Enabled = false;
@@ -375,6 +403,7 @@ namespace LaunchCamPlus
             CameraListBox.Enabled = true;
             SaveToolStripMenuItem.Enabled = true;
             SaveAsToolStripMenuItem.Enabled = true;
+            ExportPresetToolStripMenuItem.Enabled = true;
 
             Patience.Stop();
             if (Program.CanPlaySfx(Program.SuccessSfx))
@@ -472,6 +501,7 @@ namespace LaunchCamPlus
                     break;
             }
             Console.WriteLine("Save Complete!");
+            Console.WriteLine("Current time of Save: "+DateTime.Now.ToString("h:mm tt"));
             Program.IsUnsavedChanges = false;
             Console.WriteLine();
             
@@ -498,7 +528,6 @@ namespace LaunchCamPlus
         {
             if (Cameras.EntryCount == 0)
                 return;
-
             Console.WriteLine("Processing the cameras for advanced saving:");
             CameraListBox.Enabled = false;
             Control ReturnControl = null;
@@ -616,12 +645,14 @@ namespace LaunchCamPlus
             }
         }
 
-        public void ReloadEditor(bool DoUnload = false)
+        public void ReloadEditor(bool DoUnload = false, bool SetType = false)
         {
             if (MainSplitContainer.Panel2.Controls[0] is CameraPanelBase CurrentPanel)
             {
                 if (DoUnload)
                     CurrentPanel.UnLoadCamera(Cameras[PrevListID]);
+                else if (SetType)
+                    Cameras[PrevListID].Type = CurrentPanel.CurrentCameraType;
 
                 string PanelKey = GetPanelKey(Cameras[PrevListID].Type);
                 if (PanelKey.Equals(CurrentPanel.CameraType))
@@ -695,9 +726,9 @@ namespace LaunchCamPlus
             int temp = CameraListBox.SelectedIndex;
             CameraListBox.SelectedIndex = -1;
             if (Cameras[temp].FromClipboard(Clipboard.GetText()))
-            {
                 Console.WriteLine("Paste Successful!");
-            }
+            else
+                Console.WriteLine("Clipboard doesn't contain a Valid LCP Camera!");
             CameraListBox.SelectedIndex = temp;
             CameraListBox.Items[temp] = Cameras[temp].GetTranslatedName();
         }
@@ -751,6 +782,11 @@ namespace LaunchCamPlus
             {
                 e.SuppressKeyPress = true;
                 PasteCamera();
+            }
+            else if (e.Control && e.Shift && e.KeyCode == Keys.V)
+            {
+                e.SuppressKeyPress = true;
+                AddNewFromClipboardToolStripMenuItem_Click(null, null);
             }
             else if (e.Control && e.KeyCode == Keys.A)
             {

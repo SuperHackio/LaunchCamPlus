@@ -40,6 +40,7 @@
             this.AddCameraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddDefaultCameraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PresetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddNewFromClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteCameraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CopyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -157,7 +158,8 @@
             // 
             this.AddCameraToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AddDefaultCameraToolStripMenuItem,
-            this.PresetsToolStripMenuItem});
+            this.PresetsToolStripMenuItem,
+            this.AddNewFromClipboardToolStripMenuItem});
             this.AddCameraToolStripMenuItem.Image = global::LaunchCamPlus.Properties.Resources.AddCamera;
             this.AddCameraToolStripMenuItem.Name = "AddCameraToolStripMenuItem";
             this.AddCameraToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
@@ -167,7 +169,7 @@
             // 
             this.AddDefaultCameraToolStripMenuItem.Name = "AddDefaultCameraToolStripMenuItem";
             this.AddDefaultCameraToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
-            this.AddDefaultCameraToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+            this.AddDefaultCameraToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.AddDefaultCameraToolStripMenuItem.Text = "Default Camera";
             this.AddDefaultCameraToolStripMenuItem.Click += new System.EventHandler(this.AddDefaultCameraToolStripMenuItem_Click);
             // 
@@ -175,9 +177,18 @@
             // 
             this.PresetsToolStripMenuItem.Name = "PresetsToolStripMenuItem";
             this.PresetsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.PresetsToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+            this.PresetsToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.PresetsToolStripMenuItem.Text = "Choose from Presets";
             this.PresetsToolStripMenuItem.Click += new System.EventHandler(this.PresetsToolStripMenuItem_Click);
+            // 
+            // AddNewFromClipboardToolStripMenuItem
+            // 
+            this.AddNewFromClipboardToolStripMenuItem.Name = "AddNewFromClipboardToolStripMenuItem";
+            this.AddNewFromClipboardToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.V)));
+            this.AddNewFromClipboardToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.AddNewFromClipboardToolStripMenuItem.Text = "From Clipboard";
+            this.AddNewFromClipboardToolStripMenuItem.Click += new System.EventHandler(this.AddNewFromClipboardToolStripMenuItem_Click);
             // 
             // DeleteCameraToolStripMenuItem
             // 
@@ -274,6 +285,7 @@
             // 
             // ExportPresetToolStripMenuItem
             // 
+            this.ExportPresetToolStripMenuItem.Enabled = false;
             this.ExportPresetToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("ExportPresetToolStripMenuItem.Image")));
             this.ExportPresetToolStripMenuItem.Name = "ExportPresetToolStripMenuItem";
             this.ExportPresetToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
@@ -417,5 +429,6 @@
         private System.Windows.Forms.ToolStripMenuItem DeleteCameraToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem GithubReleasesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExportPresetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem AddNewFromClipboardToolStripMenuItem;
     }
 }

@@ -123,6 +123,7 @@
             0,
             0,
             196608});
+            this.RotationXNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // RotationXLabel
             // 
@@ -174,6 +175,7 @@
             0,
             0,
             196608});
+            this.RotationZNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // RotationYNumericUpDown
             // 
@@ -198,6 +200,7 @@
             0,
             0,
             196608});
+            this.RotationYNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // LowerBorderNumericUpDown
             // 
@@ -222,6 +225,7 @@
             0,
             0,
             196608});
+            this.LowerBorderNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // LowerBorderLabel
             // 
@@ -256,6 +260,7 @@
             0,
             0,
             196608});
+            this.UpperBorderNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // UpperBorderLabel
             // 
@@ -290,6 +295,7 @@
             0,
             0,
             196608});
+            this.HeightOffsetNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // HeightOffsetLabel
             // 
@@ -297,9 +303,9 @@
             this.HeightOffsetLabel.AutoSize = true;
             this.HeightOffsetLabel.Location = new System.Drawing.Point(3, 214);
             this.HeightOffsetLabel.Name = "HeightOffsetLabel";
-            this.HeightOffsetLabel.Size = new System.Drawing.Size(62, 13);
+            this.HeightOffsetLabel.Size = new System.Drawing.Size(57, 13);
             this.HeightOffsetLabel.TabIndex = 57;
-            this.HeightOffsetLabel.Text = "Air distance";
+            this.HeightOffsetLabel.Text = "↪ Vertical";
             // 
             // FrontOffsetNumericUpDown
             // 
@@ -324,15 +330,16 @@
             0,
             0,
             196608});
+            this.FrontOffsetNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // FrontOffsetLabel
             // 
             this.FrontOffsetLabel.AutoSize = true;
             this.FrontOffsetLabel.Location = new System.Drawing.Point(3, 188);
             this.FrontOffsetLabel.Name = "FrontOffsetLabel";
-            this.FrontOffsetLabel.Size = new System.Drawing.Size(74, 13);
+            this.FrontOffsetLabel.Size = new System.Drawing.Size(62, 13);
             this.FrontOffsetLabel.TabIndex = 55;
-            this.FrontOffsetLabel.Text = "Front distance";
+            this.FrontOffsetLabel.Text = "Look Offset";
             // 
             // JumpingYNumericUpDown
             // 
@@ -357,6 +364,7 @@
             0,
             0,
             196608});
+            this.JumpingYNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // MaxYLabel
             // 
@@ -401,6 +409,7 @@
             0,
             0,
             196608});
+            this.FallingYNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // FieldOfViewNumericUpDown
             // 
@@ -426,6 +435,7 @@
             0,
             0,
             196608});
+            this.FieldOfViewNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // FieldOfViewLabel
             // 
@@ -460,6 +470,7 @@
             0,
             0,
             196608});
+            this.ZoomNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // ZoomLabel
             // 
@@ -515,6 +526,7 @@
             this.GFlagEndErpFrameCheckBox.TabIndex = 70;
             this.GFlagEndErpFrameCheckBox.Text = "GFlagEndErpFrame";
             this.GFlagEndErpFrameCheckBox.UseVisualStyleBackColor = true;
+            this.GFlagEndErpFrameCheckBox.CheckedChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // GFlagThroughCheckBox
             // 
@@ -526,6 +538,7 @@
             this.GFlagThroughCheckBox.TabIndex = 71;
             this.GFlagThroughCheckBox.Text = "GFlagThrough";
             this.GFlagThroughCheckBox.UseVisualStyleBackColor = true;
+            this.GFlagThroughCheckBox.CheckedChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // Num2CheckBox
             // 
@@ -533,10 +546,11 @@
             this.Num2CheckBox.AutoSize = true;
             this.Num2CheckBox.Location = new System.Drawing.Point(203, 75);
             this.Num2CheckBox.Name = "Num2CheckBox";
-            this.Num2CheckBox.Size = new System.Drawing.Size(87, 17);
+            this.Num2CheckBox.Size = new System.Drawing.Size(104, 17);
             this.Num2CheckBox.TabIndex = 76;
-            this.Num2CheckBox.Text = "D-Pad Reset";
+            this.Num2CheckBox.Text = "No D-Pad Reset";
             this.Num2CheckBox.UseVisualStyleBackColor = true;
+            this.Num2CheckBox.CheckedChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // DisableAntiBlurCheckBox
             // 
@@ -548,6 +562,7 @@
             this.DisableAntiBlurCheckBox.TabIndex = 68;
             this.DisableAntiBlurCheckBox.Text = "Sharp Rotation";
             this.DisableAntiBlurCheckBox.UseVisualStyleBackColor = true;
+            this.DisableAntiBlurCheckBox.CheckedChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // Num1CheckBox
             // 
@@ -559,6 +574,7 @@
             this.Num1CheckBox.TabIndex = 75;
             this.Num1CheckBox.Text = "D-Pad Rotation";
             this.Num1CheckBox.UseVisualStyleBackColor = true;
+            this.Num1CheckBox.CheckedChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // FieldOfViewCheckBox
             // 
@@ -581,6 +597,7 @@
             this.EventUseTimeCheckBox.TabIndex = 73;
             this.EventUseTimeCheckBox.Text = "Event Enter Time";
             this.EventUseTimeCheckBox.UseVisualStyleBackColor = true;
+            this.EventUseTimeCheckBox.CheckedChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // DisableCollisionCheckBox
             // 
@@ -592,6 +609,7 @@
             this.DisableCollisionCheckBox.TabIndex = 66;
             this.DisableCollisionCheckBox.Text = "Disable Collision";
             this.DisableCollisionCheckBox.UseVisualStyleBackColor = true;
+            this.DisableCollisionCheckBox.CheckedChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // EventUseEndTimeCheckBox
             // 
@@ -603,16 +621,18 @@
             this.EventUseEndTimeCheckBox.TabIndex = 74;
             this.EventUseEndTimeCheckBox.Text = "Event Exit Time";
             this.EventUseEndTimeCheckBox.UseVisualStyleBackColor = true;
+            this.EventUseEndTimeCheckBox.CheckedChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // SharpZoomCheckBox
             // 
             this.SharpZoomCheckBox.AutoSize = true;
             this.SharpZoomCheckBox.Location = new System.Drawing.Point(6, 75);
             this.SharpZoomCheckBox.Name = "SharpZoomCheckBox";
-            this.SharpZoomCheckBox.Size = new System.Drawing.Size(80, 17);
+            this.SharpZoomCheckBox.Size = new System.Drawing.Size(79, 17);
             this.SharpZoomCheckBox.TabIndex = 65;
-            this.SharpZoomCheckBox.Text = "Dist. Interp.";
+            this.SharpZoomCheckBox.Text = "Static L. O.";
             this.SharpZoomCheckBox.UseVisualStyleBackColor = true;
+            this.SharpZoomCheckBox.CheckedChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // DisableFirstPersonCheckBox
             // 
@@ -624,6 +644,7 @@
             this.DisableFirstPersonCheckBox.TabIndex = 69;
             this.DisableFirstPersonCheckBox.Text = "First Person";
             this.DisableFirstPersonCheckBox.UseVisualStyleBackColor = true;
+            this.DisableFirstPersonCheckBox.CheckedChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // CamEndIntLabel
             // 
@@ -658,6 +679,7 @@
             0,
             0,
             0});
+            this.CamEndIntNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // CamIntLabel
             // 
@@ -691,6 +713,7 @@
             0,
             0,
             0});
+            this.CamIntNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // FixpointVector3NumericUpDown
             // 
@@ -701,6 +724,7 @@
             this.FixpointVector3NumericUpDown.Size = new System.Drawing.Size(100, 92);
             this.FixpointVector3NumericUpDown.TabIndex = 68;
             this.FixpointVector3NumericUpDown.Text = "Fixpoint Offset";
+            this.FixpointVector3NumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // UpAxisVector3NumericUpDown
             // 
@@ -711,6 +735,7 @@
             this.UpAxisVector3NumericUpDown.Size = new System.Drawing.Size(100, 92);
             this.UpAxisVector3NumericUpDown.TabIndex = 70;
             this.UpAxisVector3NumericUpDown.Text = "Up Axis";
+            this.UpAxisVector3NumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // VerticalPanAxisVector3NumericUpDown
             // 
@@ -722,6 +747,7 @@
             this.VerticalPanAxisVector3NumericUpDown.Size = new System.Drawing.Size(100, 92);
             this.VerticalPanAxisVector3NumericUpDown.TabIndex = 69;
             this.VerticalPanAxisVector3NumericUpDown.Text = "Vertical Axis";
+            this.VerticalPanAxisVector3NumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // GFlagEndTimeLabel
             // 
@@ -756,6 +782,7 @@
             0,
             0,
             0});
+            this.GFlagEndTimeNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // AirDelayLabel
             // 
@@ -789,6 +816,7 @@
             0,
             0,
             0});
+            this.AirDelayNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // GroundDelayLabel
             // 
@@ -822,6 +850,7 @@
             0,
             0,
             0});
+            this.GroundDelayNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // EventFrameLabel
             // 
@@ -856,6 +885,7 @@
             0,
             0,
             0});
+            this.EventFrameNumericUpDown.ValueChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // StringTextBox
             // 
@@ -866,6 +896,7 @@
             this.StringTextBox.Name = "StringTextBox";
             this.StringTextBox.Size = new System.Drawing.Size(165, 112);
             this.StringTextBox.TabIndex = 80;
+            this.StringTextBox.TextChanged += new System.EventHandler(this.AnyValueChanged);
             // 
             // label1
             // 

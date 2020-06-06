@@ -222,27 +222,27 @@
             this.FrontOffsetLabel.AutoSize = true;
             this.FrontOffsetLabel.Location = new System.Drawing.Point(3, 189);
             this.FrontOffsetLabel.Name = "FrontOffsetLabel";
-            this.FrontOffsetLabel.Size = new System.Drawing.Size(55, 13);
+            this.FrontOffsetLabel.Size = new System.Drawing.Size(62, 13);
             this.FrontOffsetLabel.TabIndex = 29;
-            this.FrontOffsetLabel.Text = "Front Dist.";
+            this.FrontOffsetLabel.Text = "Look Offset";
             // 
             // HeightOffsetLabel
             // 
             this.HeightOffsetLabel.AutoSize = true;
             this.HeightOffsetLabel.Location = new System.Drawing.Point(3, 214);
             this.HeightOffsetLabel.Name = "HeightOffsetLabel";
-            this.HeightOffsetLabel.Size = new System.Drawing.Size(43, 13);
+            this.HeightOffsetLabel.Size = new System.Drawing.Size(54, 13);
             this.HeightOffsetLabel.TabIndex = 31;
-            this.HeightOffsetLabel.Text = "Air Dist.";
+            this.HeightOffsetLabel.Text = "↪ Vertical";
             // 
             // SharpZoomCheckBox
             // 
             this.SharpZoomCheckBox.AutoSize = true;
             this.SharpZoomCheckBox.Location = new System.Drawing.Point(261, 279);
             this.SharpZoomCheckBox.Name = "SharpZoomCheckBox";
-            this.SharpZoomCheckBox.Size = new System.Drawing.Size(108, 17);
+            this.SharpZoomCheckBox.Size = new System.Drawing.Size(111, 17);
             this.SharpZoomCheckBox.TabIndex = 33;
-            this.SharpZoomCheckBox.Text = "Dist. Interpolation";
+            this.SharpZoomCheckBox.Text = "Static Look Offset";
             this.SharpZoomCheckBox.UseVisualStyleBackColor = true;
             // 
             // HeightOffsetNumericUpDown

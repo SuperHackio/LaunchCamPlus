@@ -48,6 +48,8 @@ namespace LaunchCamPlus
         [Category("Appearance")]
         [DefaultValue(typeof(Color), "Gray")]
         public Color BorderColor { get; set; }
+        public delegate void Valuechanged2(EventArgs e);
+        public Valuechanged2 ValueChange2 = (EventArgs e) => { };
         
         private decimal _textval;
         public decimal TextValue
@@ -59,13 +61,16 @@ namespace LaunchCamPlus
             set
             {
                 _textval = Math.Min(Math.Max(Minimum, value), Maximum);
+                Value = _textval;
             }
         }
 
         protected override void OnValueChanged(EventArgs e)
         {
             _textval = Value;
+            ValueChange2(e);
         }
+
         protected override void OnTextChanged(EventArgs e)
         {
             if (decimal.TryParse(string.IsNullOrWhiteSpace(Text) ? "0.0" : Text, out decimal result))
@@ -75,3 +80,4 @@ namespace LaunchCamPlus
         }
     }
 }
+

@@ -61,14 +61,14 @@ namespace LaunchCamPlus.CameraPanels
             StringTextBox.Text = Entry.String;
             CamIntNumericUpDown.Value = Entry.TransitionTime;
             CamEndIntNumericUpDown.Value = Entry.TransitionEndTime;
-            FrontOffsetNumericUpDown.Value = (decimal)Entry.FrontOffset;
-            HeightOffsetNumericUpDown.Value = (decimal)Entry.HeightOffset;
+            FrontOffsetNumericUpDown.Value = (decimal)Entry.LookOffset;
+            HeightOffsetNumericUpDown.Value = (decimal)Entry.LookOffsetVertical;
             EventFrameNumericUpDown.Value = Entry.EventFrames;
 
             FixpointVector3NumericUpDown.LoadVector3(Entry.FixPointOffset);
             UpAxisVector3NumericUpDown.LoadVector3(Entry.UpAxis);
             
-            SharpZoomCheckBox.Checked = !Entry.SharpZoom;
+            SharpZoomCheckBox.Checked = Entry.StaticLookOffset;
             DisableFirstPersonCheckBox.Checked = !Entry.DisableFirstPerson;
             GFlagEndErpFrameCheckBox.Checked = Entry.GFlagEndErpFrame;
             GFlagThroughCheckBox.Checked = Entry.GFlagThrough;
@@ -91,8 +91,8 @@ namespace LaunchCamPlus.CameraPanels
             Entry.MinY = 0;
             Entry.TransitionTime = (int)CamIntNumericUpDown.Value;
             Entry.TransitionEndTime = (int)CamEndIntNumericUpDown.Value;
-            Entry.FrontOffset = (float)FrontOffsetNumericUpDown.Value;
-            Entry.HeightOffset = (float)HeightOffsetNumericUpDown.Value;
+            Entry.LookOffset = (float)FrontOffsetNumericUpDown.Value;
+            Entry.LookOffsetVertical = (float)HeightOffsetNumericUpDown.Value;
             Entry.GroundMoveDelay = 0;
             Entry.AirMoveDelay = 0;
             Entry.UpperBorder = 0.0f;
@@ -104,7 +104,7 @@ namespace LaunchCamPlus.CameraPanels
             Entry.UpAxis = UpAxisVector3NumericUpDown.GetVector3();
             Entry.DisableReset = false;
             Entry.EnableFoV = false;
-            Entry.SharpZoom = !SharpZoomCheckBox.Checked;
+            Entry.StaticLookOffset = SharpZoomCheckBox.Checked;
             Entry.DisableAntiBlur = false;
             Entry.DisableCollision = false;
             Entry.DisableFirstPerson = !DisableFirstPersonCheckBox.Checked;

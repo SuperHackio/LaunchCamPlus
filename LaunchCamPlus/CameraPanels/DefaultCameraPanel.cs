@@ -18,33 +18,6 @@ namespace LaunchCamPlus.CameraPanels
             InitializeComponent();
         }
 
-        public override void ResizeEnd()
-        {
-            //ZoomLabel.Location = new Point(146 - (int)((MinimumSize.Width - Width) / 3.5f), Num1Label.Location.Y);
-            //ZoomNumericUpDown.Location = new Point(ZoomLabel.Location.X + ZoomLabel.Width + 6, ZoomNumericUpDown.Location.Y);
-
-            //FieldOfViewLabel.Location = new Point(ZoomLabel.Location.X, FieldOfViewLabel.Location.Y);
-            //FieldOfViewNumericUpDown.Location = new Point(FieldOfViewLabel.Location.X + FieldOfViewLabel.Width + 6, FieldOfViewNumericUpDown.Location.Y);
-
-            //Num1Label.Location = new Point(305 - (int)((MinimumSize.Width-Width)/1.5f), Num1Label.Location.Y);
-            //Num1NumericUpDown.Location = new Point(Num1Label.Location.X + Num1Label.Width + 6, Num1NumericUpDown.Location.Y);
-
-            //Num2Label.Location = new Point(305 - (int)((MinimumSize.Width - Width) / 1.5f), Num2Label.Location.Y);
-            //Num2NumericUpDown.Location = new Point(Num1NumericUpDown.Location.X, Num2NumericUpDown.Location.Y);
-            //JumpingYNumericUpDown.Location = new Point(Num1NumericUpDown.Location.X, JumpingYNumericUpDown.Location.Y);
-            //FallingYNumericUpDown.Location = new Point(Num1NumericUpDown.Location.X, FallingYNumericUpDown.Location.Y);
-
-            //MaxYLabel.Location = new Point(305 - (int)((MinimumSize.Width - Width) / 1.5f), MaxYLabel.Location.Y);
-            //MinYLabel.Location = new Point(305 - (int)((MinimumSize.Width - Width) / 1.5f), MinYLabel.Location.Y);
-
-            //RotationZNumericUpDown.Width = RotationYNumericUpDown.Width = RotationXNumericUpDown.Width = (ZoomLabel.Location.X - RotationXNumericUpDown.Location.X) - 6;
-            
-            //ZoomNumericUpDown.Width = (Num1Label.Location.X - ZoomNumericUpDown.Location.X) - 6;
-            //FieldOfViewNumericUpDown.Width = (Num2Label.Location.X - FieldOfViewNumericUpDown.Location.X) - 6;
-
-            //JumpingYNumericUpDown.Width = FallingYNumericUpDown.Width = Num1NumericUpDown.Width = Num2NumericUpDown.Width = (Width - Num1NumericUpDown.Location.X) - 6;
-        }
-
         public override void ReloadTheme()
         {
             base.ReloadTheme();
@@ -89,8 +62,8 @@ namespace LaunchCamPlus.CameraPanels
             FallingYNumericUpDown.Value = (decimal)Entry.MinY;
             CamIntNumericUpDown.Value = Entry.TransitionTime;
             CamEndIntNumericUpDown.Value = Entry.TransitionEndTime;
-            FrontOffsetNumericUpDown.Value = (decimal)Entry.FrontOffset;
-            HeightOffsetNumericUpDown.Value = (decimal)Entry.HeightOffset;
+            FrontOffsetNumericUpDown.Value = (decimal)Entry.LookOffset;
+            HeightOffsetNumericUpDown.Value = (decimal)Entry.LookOffsetVertical;
             GroundDelayNumericUpDown.Value = Entry.GroundMoveDelay;
             AirDelayNumericUpDown.Value = Entry.AirMoveDelay;
             UpperBorderNumericUpDown.Value = (decimal)Entry.UpperBorder;
@@ -106,7 +79,7 @@ namespace LaunchCamPlus.CameraPanels
 
             DisableResetCheckBox.Checked = !Entry.DisableReset;
             FieldOfViewCheckBox.Checked = Entry.EnableFoV;
-            SharpZoomCheckBox.Checked = !Entry.SharpZoom;
+            SharpZoomCheckBox.Checked = Entry.StaticLookOffset;
             DisableAntiBlurCheckBox.Checked = Entry.DisableAntiBlur;
             DisableCollisionCheckBox.Checked = !Entry.DisableCollision;
             DisableFirstPersonCheckBox.Checked = !Entry.DisableFirstPerson;
@@ -133,8 +106,8 @@ namespace LaunchCamPlus.CameraPanels
             Entry.MinY = (float)FallingYNumericUpDown.Value;
             Entry.TransitionTime = (int)CamIntNumericUpDown.Value;
             Entry.TransitionEndTime = (int)CamEndIntNumericUpDown.Value;
-            Entry.FrontOffset = (float)FrontOffsetNumericUpDown.Value;
-            Entry.HeightOffset = (float)HeightOffsetNumericUpDown.Value;
+            Entry.LookOffset = (float)FrontOffsetNumericUpDown.Value;
+            Entry.LookOffsetVertical = (float)HeightOffsetNumericUpDown.Value;
             Entry.GroundMoveDelay = (int)GroundDelayNumericUpDown.Value;
             Entry.AirMoveDelay = (int)AirDelayNumericUpDown.Value;
             Entry.UpperBorder = (float)UpperBorderNumericUpDown.Value;
@@ -148,7 +121,7 @@ namespace LaunchCamPlus.CameraPanels
             Entry.UpAxis = UpAxisVector3NumericUpDown.GetVector3();
             Entry.DisableReset = !DisableResetCheckBox.Checked;
             Entry.EnableFoV = FieldOfViewCheckBox.Checked;
-            Entry.SharpZoom = !SharpZoomCheckBox.Checked;
+            Entry.StaticLookOffset = SharpZoomCheckBox.Checked;
             Entry.DisableAntiBlur = DisableAntiBlurCheckBox.Checked;
             Entry.DisableCollision = !DisableCollisionCheckBox.Checked;
             Entry.DisableFirstPerson = !DisableFirstPersonCheckBox.Checked;

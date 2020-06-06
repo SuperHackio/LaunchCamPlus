@@ -21,6 +21,7 @@ namespace LaunchCamPlus
             Application.SetCompatibleTextRenderingDefault(false);
 
             Console.Title = Application.ProductName + " " + Application.ProductVersion + " - Console";
+            //Console.OutputEncoding = System.Text.Encoding.GetEncoding(932); // This fixes the Japanese not showing properly, but it looks so weird in the console...
             if (Settings.Default.IsFirstLaunch)
             {
                 string FullfilePath = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;

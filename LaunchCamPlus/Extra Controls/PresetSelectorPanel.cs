@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 using Hackio.IO.BCAM;
 
 namespace LaunchCamPlus
@@ -93,6 +87,13 @@ namespace LaunchCamPlus
 
         private void SelectButton_Click(object sender, EventArgs e)
         {
+            if (((CameraEditorForm)ParentForm).Cameras == null)
+            {
+                Console.WriteLine(Program.ConsoleHalfSplitter);
+                Console.WriteLine("Failed to add the preset!\nNo camera file is active");
+                Console.WriteLine(Program.ConsoleHalfSplitter);
+                return;
+            }
             try
             {
                 string full = ((FileInfo)PresetsTreeView.SelectedNode.Tag).FullName;

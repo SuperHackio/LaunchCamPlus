@@ -44,7 +44,7 @@ namespace LaunchCamPlus.CameraPanels
         }
 
         public string CameraType { get; set; }
-        private bool Loading = false;
+        protected bool Loading = false;
 
         protected override CreateParams CreateParams
         {
@@ -116,6 +116,8 @@ namespace LaunchCamPlus.CameraPanels
             if (sender is ComboBox cb && !cb.DroppedDown)
                 ((HandledMouseEventArgs)e).Handled = true;
         }
+
+        public string CurrentCameraType { get { return TypeComboBox.Text; } }
     }
 
     /// <summary>

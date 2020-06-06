@@ -68,6 +68,12 @@
             this.ZValueNumericUpDown.Name = "ZValueNumericUpDown";
             this.ZValueNumericUpDown.Size = new System.Drawing.Size(94, 20);
             this.ZValueNumericUpDown.TabIndex = 2;
+            this.ZValueNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            196608});
+            this.ZValueNumericUpDown.ValueChanged += new System.EventHandler(this.NumberValueChanged);
             // 
             // YValueNumericUpDown
             // 
@@ -89,6 +95,12 @@
             this.YValueNumericUpDown.Name = "YValueNumericUpDown";
             this.YValueNumericUpDown.Size = new System.Drawing.Size(94, 20);
             this.YValueNumericUpDown.TabIndex = 1;
+            this.YValueNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            196608});
+            this.YValueNumericUpDown.ValueChanged += new System.EventHandler(this.NumberValueChanged);
             // 
             // XValueNumericUpDown
             // 
@@ -110,6 +122,12 @@
             this.XValueNumericUpDown.Name = "XValueNumericUpDown";
             this.XValueNumericUpDown.Size = new System.Drawing.Size(94, 20);
             this.XValueNumericUpDown.TabIndex = 0;
+            this.XValueNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            196608});
+            this.XValueNumericUpDown.ValueChanged += new System.EventHandler(this.NumberValueChanged);
             // 
             // Vector3NumericUpDown
             // 

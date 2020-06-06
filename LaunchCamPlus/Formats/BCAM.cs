@@ -7,6 +7,7 @@ using LaunchCamPlus;
 using System.Collections;
 using LaunchCamPlus.Properties;
 using Hackio.IO.Util;
+using System.Text.RegularExpressions;
 
 namespace Hackio.IO.BCAM
 {
@@ -456,8 +457,8 @@ namespace Hackio.IO.BCAM
         "GroundStarMoveDelay",
         "AirStartMoveDelay",
         "udown",
-        "Front Zoom",
-        "Height Zoom",
+        "Look Offset",
+        "Look Offset Vertical",
         "Upper Border",
         "Lower Border",
         "Event Frames",
@@ -490,7 +491,7 @@ namespace Hackio.IO.BCAM
         //Put all these into 1 int through the power of masking
         "DisableReset",
         "Enable Field of View",
-        "Enable Sharp Zoom",
+        "Static Look Offset",
         "Disable Anti-blur",
         "Disable Collision",
         "Disable First Person",
@@ -1200,7 +1201,7 @@ namespace Hackio.IO.BCAM
             }
         }
 
-        public float FrontOffset
+        public float LookOffset
         {
             get
             {
@@ -1222,7 +1223,7 @@ namespace Hackio.IO.BCAM
                     Data.Add(0x145863FF, value);
             }
         }
-        public float HeightOffset
+        public float LookOffsetVertical
         {
             get
             {
@@ -1589,7 +1590,7 @@ namespace Hackio.IO.BCAM
                     Data.Add(0x9F02074F, value ? 1 : 0);
             }
         }
-        public bool SharpZoom
+        public bool StaticLookOffset
         {
             get
             {
@@ -1841,8 +1842,8 @@ namespace Hackio.IO.BCAM
                    GroundMoveDelay == entry.GroundMoveDelay &&
                    AirMoveDelay == entry.AirMoveDelay &&
                    UDown == entry.UDown &&
-                   FrontOffset == entry.FrontOffset &&
-                   HeightOffset == entry.HeightOffset &&
+                   LookOffset == entry.LookOffset &&
+                   LookOffsetVertical == entry.LookOffsetVertical &&
                    UpperBorder == entry.UpperBorder &&
                    LowerBorder == entry.LowerBorder &&
                    EventFrames == entry.EventFrames &&
@@ -1854,7 +1855,7 @@ namespace Hackio.IO.BCAM
                    EqualityComparer<Vector3<float>>.Default.Equals(UpAxis, entry.UpAxis) &&
                    DisableReset == entry.DisableReset &&
                    EnableFoV == entry.EnableFoV &&
-                   SharpZoom == entry.SharpZoom &&
+                   StaticLookOffset == entry.StaticLookOffset &&
                    DisableAntiBlur == entry.DisableAntiBlur &&
                    DisableCollision == entry.DisableCollision &&
                    DisableFirstPerson == entry.DisableFirstPerson &&
@@ -1891,8 +1892,8 @@ namespace Hackio.IO.BCAM
             hashCode = hashCode * -1521134295 + GroundMoveDelay.GetHashCode();
             hashCode = hashCode * -1521134295 + AirMoveDelay.GetHashCode();
             hashCode = hashCode * -1521134295 + UDown.GetHashCode();
-            hashCode = hashCode * -1521134295 + FrontOffset.GetHashCode();
-            hashCode = hashCode * -1521134295 + HeightOffset.GetHashCode();
+            hashCode = hashCode * -1521134295 + LookOffset.GetHashCode();
+            hashCode = hashCode * -1521134295 + LookOffsetVertical.GetHashCode();
             hashCode = hashCode * -1521134295 + UpperBorder.GetHashCode();
             hashCode = hashCode * -1521134295 + LowerBorder.GetHashCode();
             hashCode = hashCode * -1521134295 + EventFrames.GetHashCode();
@@ -1904,7 +1905,7 @@ namespace Hackio.IO.BCAM
             hashCode = hashCode * -1521134295 + EqualityComparer<Vector3<float>>.Default.GetHashCode(UpAxis);
             hashCode = hashCode * -1521134295 + DisableReset.GetHashCode();
             hashCode = hashCode * -1521134295 + EnableFoV.GetHashCode();
-            hashCode = hashCode * -1521134295 + SharpZoom.GetHashCode();
+            hashCode = hashCode * -1521134295 + StaticLookOffset.GetHashCode();
             hashCode = hashCode * -1521134295 + DisableAntiBlur.GetHashCode();
             hashCode = hashCode * -1521134295 + DisableCollision.GetHashCode();
             hashCode = hashCode * -1521134295 + DisableFirstPerson.GetHashCode();
@@ -1965,8 +1966,15 @@ namespace Hackio.IO.BCAM
             }
             else if (Original.StartsWith("e:"))
             {
-                string targetkey = string.Concat(Original.Split(':')[1].Where(IsNonDigit));
-                Final += Events.ContainsKey(targetkey) ? "Event: "+Original.Substring(2).Replace(targetkey, Events[targetkey]+" ").Replace("番目", "th") : Original;
+                string val = Original.Replace('[', '<').Replace(']', '>'); //Regex is so dumb
+                Match m = Regex.Match(val, @"^e:\S+?<\S+?>$", RegexOptions.IgnoreCase);
+                if (m.Success)
+                    Final += "Demo: "+Original.Replace("e:","");
+                else
+                { 
+                    string targetkey = string.Concat(Original.Split(':')[1].Where(IsNonDigit));
+                    Final += Events.ContainsKey(targetkey) ? "Event: "+Original.Substring(2).Replace(targetkey, Events[targetkey]+" ").Replace("番目", "th") : Original;
+                }
             }
             else if (Original.StartsWith("o:"))
             {
@@ -2083,15 +2091,23 @@ namespace Hackio.IO.BCAM
         public static Dictionary<string, EventData> Events = new Dictionary<string, EventData>()
         {
             { "シナリオスターター", new EventData("Scenario Starter", true, true) },
-            { "グリーンスーパースピンドライバー", new EventData("Green Launch Star", true, true)},
             { "スーパースピンドライバー固有出現イベント用", new EventData("Launch Star Appearance", true, false) },
             { "スーパースピンドライバー", new EventData("Launch Star", true, true) },
             { "スピンドライバ固有出現イベント用", new EventData("Sling Star Appearance", true, false) },
             { "スピンドライバ", new EventData("Sling Star", true, true) },
-            { "パワースター出現ポイント固有", new EventData("Power Star Appear Point", true, false) },
+            { "グリーンスーパースピンドライバー固有出現イベント用", new EventData("Green Launch Star Appearance", true, false) },
+            { "グリーンスーパースピンドライバー", new EventData("Green Launch Star", true, true)},
+            { "ピンクスーパースピンドライバー固有出現イベント用", new EventData("Pink Launch Star Appearance", true, false) },
+            { "ピンクスーパースピンドライバー", new EventData("Pink Launch Star", true, true)},
+            { "グランドスター固有", new EventData("Grand Star Appearance", true, false) },
             { "パワースター固有", new EventData("Power Star Appearance", true, false) },
-            { "土管固有出現", new EventData("Warp Pipe", true, false) },
+            { "グリーンスター固有", new EventData("Green Star Appearance", true, false) },
+            { "パワースター出現ポイント固有", new EventData("Power Star Appear Point", true, false) },
             { "簡易デモ実行固有簡易デモ", new EventData("Simple Demo Executor", true, false) },
+            { "鍵スイッチ固有", new EventData("Key Switch Appearence", true, false) },
+            { "カプセルケージ固有", new EventData("Capsule Cage Opening", true, false) },
+            { "ゴロ岩カバー檻固有", new EventData("Capsule Cage (Alt) Opening", true, false) },
+            { "土管固有出現", new EventData("Warp Pipe", true, false) },
             { "ウォータープレッシャー固有", new EventData("Bubble Shooter", true, false) },
             { "ポール固有", new EventData("Pole", true, false) },
             { "ポール（鉄骨）固有", new EventData("Square Pole", true, false) },
@@ -2104,25 +2120,47 @@ namespace Hackio.IO.BCAM
             { "つる花固有掴まり", new EventData("Creeper Plant", true, false) },
             { "空中ブランコ固有", new EventData("Trapeze Vine", true, false) },
             { "音符の妖精固有", new EventData("Note Fairy Appearance", true, false) },
-            { "インフェルノジェネレータ固有出現デモカメラ", new EventData("(SMG2) Cosmic Clones Appearance", true, false) },
+            { "インフェルノジェネレータ固有出現デモカメラ", new EventData("Cosmic Clones Appearance", true, false) },
+            { "バネベーゴマン", new EventData("Spring Topman", true, true) },
+            { "隠れバネベーゴマン", new EventData("Hiding Spring Topman", true, true) },
+            { "モンテ固有", new EventData("Chuckster Pianta", true, false) },
+            { "ハラペココインチコ固有飛行", new EventData("Coin Hungry Luma", true, false) },
+            { "チューブスライダー固有滑り", new EventData("Tube Slider", true, false) },
+            { "チューブスライダー固有飛び出し", new EventData("Tube Slider Exit", true, false) },
+            { "プチポーター固有基点でワープイン", new EventData("Minigame Teleporter (Prepare to Warp)", true, false) },
+            { "プチポーター固有ワープ点でワープアウト", new EventData("Minigame Teleporter (Arrive at Destination)", true, false) },
+            { "プチポーター固有ワープ点でワープイン", new EventData("Minigame Teleporter (Prepare return warp)", true, false) },
+            { "プチポーター固有基点でワープアウト", new EventData("Minigame Teleporter (Arrive from returning)", true, false) },
 
             { "看板固有会話", new EventData("Message: Signboard", true, false) },
             { "キノピオ固有会話", new EventData("Message: Toad", true, false) },
+            { "郵便屋さんキノピオ固有注目会話", new EventData("Message: Mailtoad", true, false) },
+            { "銀行屋さんキノピオ固有注目会話", new EventData("Message: Banktoad", true, false) },
             { "ウサギ固有会話", new EventData("Message: Star Bunny", true, false) },
+            { "ロゼッタ固有会話", new EventData("Message: Rosalina", true, false) },
+            { "マイスター固有会話", new EventData("Message: Lubba", true, false) },
             { "チコ固有会話", new EventData("Message: Luma", true, false) },
-            { "ハニービー固有会話", new EventData("Message: Honeybee", true, false) },
             { "ハニークイーン固有会話", new EventData("Message: Queen Bee", true, false) },
-            { "ペンギン固有会話", new EventData("Message: Penguin", true, false) },
-            { "ペンギンコーチ固有会話", new EventData("Message: Penguin Coach", true, false) },
+            { "ハニービー固有会話", new EventData("Message: Honeybee", true, false) },
             { "ペンギン仙人固有会話", new EventData("Message: Penguin Elder", true, false) },
+            { "ペンギンコーチ固有会話", new EventData("Message: Penguin Coach", true, false) },
+            { "ペンギン固有会話", new EventData("Message: Penguin", true, false) },
+            { "パマタリアン固有会話", new EventData("Message: Gearmo", true, false) },
+            { "パマタリアンハンター固有会話", new EventData("Message: Gearmo Hunter", true, false) },
             { "赤ボム兵固有会話", new EventData("Message: Bob-omb Buddy", true, false) },
+            { "モンテ固有会話", new EventData("Message: Pianta", true, false) },
+            { "ピーチャン固有会話", new EventData("Message: Jibberjay", true, false) },
+            { "モック固有会話", new EventData("Message: Whittle", true, false) },
+            { "さすらいの遊び人(通常会話)固有会話", new EventData("Message: The Chimp (NPC)", true, false) },
 
 
-            { "引き戻し", new EventData("Pull Back", false, false) },
+            { "引き戻し", new EventData("Pull Back Area", false, false) },
             { "水上フォロー", new EventData("Water Follow", false, false) },
             { "水中フォロー", new EventData("Underwater Follow", false, false) },
             { "水中プラネット", new EventData("Underwater Planet", false, false) },
-            { "フーファイターカメラ", new EventData("Foo Fighter Camera", false, false) }
+            { "フーファイターカメラ", new EventData("Foo Fighter Camera", false, false) },
+
+            { "DemoName[CameraPartName]", new EventData("Demo Camera Template", false, false) }
         };
         /// <summary>
         /// o: cameras
@@ -2272,7 +2310,7 @@ namespace Hackio.IO.BCAM
         public static Dictionary<string, CameraDefaults> Defaults = new Dictionary<string, CameraDefaults>()
         {
             //==================================================================================================================================================================
-            { "CAM_TYPE_XZ_PARA", new CameraDefaults(196631, 0, 0.2984513f, 0f, 0f, 1200f, 45f, 100, 100, 160, 0, 0, "", 300f, 800f, 120, 120, 120, 0f, 0f, 0.30f, 0.10f, 0, 0,
+            { "CAM_TYPE_XZ_PARA", new CameraDefaults(196631, 0, 0.2984513f, 0f, 0f, 1200f, 45f, 100, 100, 160, 1, 0, "", 300f, 800f, 120, 120, 120, 0f, 0f, 0.30f, 0.10f, 0, 0,
                 new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,1,0), new Vector3<float>(0,1,0),
                 false, false, false, false, false, false, false, false, 0, true, false, false) },
             //==================================================================================================================================================================
@@ -2280,12 +2318,16 @@ namespace Hackio.IO.BCAM
                 new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,1,0),
                 false, false, false, false, false, false, false, false, 0, false, false, false) },
             //==================================================================================================================================================================
+            { "CAM_TYPE_WONDER_PLANET", new CameraDefaults(196631, 0, 0.0f, 0f, 0f, 0f, 45f, 100, 100, 160, 1, 0, "", 300f, 800f, 120, 120, 120, 0f, 0f, 0.3f, 0.1f, 0, 0,
+                new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0),
+                false, false, false, false, false, false, false, false, 0, false, false, false) },
+            //==================================================================================================================================================================
         };
 
         internal CameraDefaults(int version, int number, float XRot, float YRot, float ZRot, float zoom, float fov, int time, int endtime, int gndtime, int num1, int num2, string str, float maxY, float minY,
-            int gndmovedelay, int airmovedelay, int udown, float frontzoom, float heightzoom, float upperborder, float lowerborder, int evframes, int evpriority,
+            int gndmovedelay, int airmovedelay, int udown, float lookoffset, float lookoffsety, float upperborder, float lowerborder, int evframes, int evpriority,
             Vector3<float> fixpointoffset, Vector3<float> worldpointoffset, Vector3<float> playeroffset, Vector3<float> verticalpanaxis, Vector3<float> upaxis,
-            bool disablereset, bool enablefov, bool sharpzoom, bool disableantiblur, bool disablecollision, bool disablefirstperson, bool Gflagenderpframe, bool Gflagthrough, int Gflagendtime,
+            bool disablereset, bool enablefov, bool staticlookoffset, bool disableantiblur, bool disablecollision, bool disablefirstperson, bool Gflagenderpframe, bool Gflagthrough, int Gflagendtime,
             bool useverticalpanaxis, bool eventuseendtime, bool eventusetime) => DefaultValues = new Dictionary<uint, object>
             {
                 { 0x14F51CD8, version },
@@ -2306,8 +2348,8 @@ namespace Hackio.IO.BCAM
                 { 0xD26F6AA9, gndmovedelay },
                 { 0x93AECC0B, airmovedelay },
                 { 0x069FE297, udown },
-                { 0x145863FF, frontzoom },
-                { 0x76B41C57, heightzoom },
+                { 0x145863FF, lookoffset },
+                { 0x76B41C57, lookoffsety },
                 { 0x06A558A2, upperborder },
                 { 0x06262B01, lowerborder },
                 { 0x05C676D0, evframes },
@@ -2331,7 +2373,7 @@ namespace Hackio.IO.BCAM
 
                 { 0x41E363AC, disablereset },
                 { 0x9F02074F, enablefov },
-                { 0x82D5627E, sharpzoom },
+                { 0x82D5627E, staticlookoffset },
                 { 0xE2044E84, disableantiblur },
                 { 0x521E5C3F, disablecollision },
                 { 0xBB74D6C1, disablefirstperson },

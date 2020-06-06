@@ -60,6 +60,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +69,12 @@
     </Compile>
     <Compile Include="CameraPanels\EyeposFixThereCameraPanel.Designer.cs">
       <DependentUpon>EyeposFixThereCameraPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CameraPanels\WanderPlanetCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CameraPanels\WanderPlanetCameraPanel.Designer.cs">
+      <DependentUpon>WanderPlanetCameraPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="CameraPanels\XZParaCameraPanel.cs">
       <SubType>UserControl</SubType>
@@ -162,6 +169,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CameraPanels\EyeposFixThereCameraPanel.resx">
       <DependentUpon>EyeposFixThereCameraPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CameraPanels\WanderPlanetCameraPanel.resx">
+      <DependentUpon>WanderPlanetCameraPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CameraPanels\XZParaCameraPanel.resx">
       <DependentUpon>XZParaCameraPanel.cs</DependentUpon>
