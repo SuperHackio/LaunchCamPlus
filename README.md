@@ -1,12 +1,13 @@
 # LaunchCamPlus
-Launch Cam Plus is the new SMG1/2 Camera Editor with a 0% chance of breaking your files and a 100% chance of saving when you press save!
+Launch Cam Plus is a standalone SMG1/2 Camera Editor with a 0% chance of breaking your files and a 100% chance of saving when you press save!
 
 Features:
 - Making Cameras (Obviously)
-- Allows you to make and share Camera Presets that anyone can add to their Camera Data!
-- Comes with *Official Presets*.
+- Comes with Camera Presets.
+- Allows user created presets
 - Utilizes the way Camera Data is written to optimize the Data
-- Rail Camera Support
+- Dark and Light themes!
+- Camera Identification Assistant (for help with getting the correct ID's)
 
 Planned Features:
 - Previewing your cameras (This won't come for a while, sorry)
@@ -14,14 +15,12 @@ Planned Features:
 - Complete list of Event Cameras (This will happen gradually)
 
 # Submitting a Preset
-If you want one of your presets to become an "Official Preset", open a new issue and attach your .lcpp file.<br>
+If you want one of your presets to be included with LCP, open a new issue and attach your .lcpp file.<br>
 .lcpc is not accepted.
 - **Name the Issue "Preset Request" Alternatively, use the Issue Template for presets**
 
 # Other Information
-As of Launch Cam Plus 2.3.0.0, the program has an Update Alert option. If the ABOUT button (At the top of the main menu) is RED, a new LCP update is available.<br>
-In the event that LCP crashes on you, it will print out a Crash Log. Open a [New Issue](https://github.com/SuperHackio/LaunchCamPlus/issues) and attach your Crash Log.<br>
-Speak another language that's not English? Don't worry, you don't need to translate the Crash Log **UNLESS** asked otherwise.
+As of Launch Cam Plus Pre-release 2.3.8.0, Launch Cam Plus has an Update Notification that will turn the "About" button GREEN if an update is availible. If you see an update is ready, please download it as soon as you can.
 
 # Credits
 Main Programmer: Super Hackio<br>
