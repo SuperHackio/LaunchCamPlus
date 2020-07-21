@@ -6,10 +6,10 @@ using System.Text;
 using LaunchCamPlus;
 using System.Collections;
 using LaunchCamPlus.Properties;
-using Hackio.IO.Util;
+using Hack.io.Util;
 using System.Text.RegularExpressions;
 
-namespace Hackio.IO.BCAM
+namespace Hack.io.BCAM
 {
     public class BCAM
     {
@@ -2074,16 +2074,6 @@ namespace Hackio.IO.BCAM
             array.CopyTo(Finalarray, 0);
             return Finalarray[0];
         }
-        public static List<T> SortBy<T>(this List<T> OriginalList, T[] sortref)
-        {
-            List<T> FinalList = new List<T>();
-
-            for (int i = 0; i < sortref.Length; i++)
-                if (OriginalList.Contains(sortref[i]))
-                    FinalList.Add(sortref[i]);
-
-            return FinalList;
-        }
 
         /// <summary>
         /// e: cameras
@@ -2099,6 +2089,7 @@ namespace Hackio.IO.BCAM
             { "グリーンスーパースピンドライバー", new EventData("Green Launch Star", true, true)},
             { "ピンクスーパースピンドライバー固有出現イベント用", new EventData("Pink Launch Star Appearance", true, false) },
             { "ピンクスーパースピンドライバー", new EventData("Pink Launch Star", true, true)},
+            { "Gキャプチャーターゲット固有", new EventData("Pull Star Appearance", true, false) },
             { "グランドスター固有", new EventData("Grand Star Appearance", true, false) },
             { "パワースター固有", new EventData("Power Star Appearance", true, false) },
             { "グリーンスター固有", new EventData("Green Star Appearance", true, false) },
@@ -2110,7 +2101,12 @@ namespace Hackio.IO.BCAM
             { "土管固有出現", new EventData("Warp Pipe", true, false) },
             { "ウォータープレッシャー固有", new EventData("Bubble Shooter", true, false) },
             { "ポール固有", new EventData("Pole", true, false) },
+            { "ポール（２方向）固有", new EventData("Pole 2 Way", true, false) },
+            { "ポール（モデル無し）固有", new EventData("Pole (No Model)", true, false) },
             { "ポール（鉄骨）固有", new EventData("Square Pole", true, false) },
+            { "ポール(モデル無し鉄骨)固有", new EventData("Square Pole (No Model)", true, false) },
+            { "ポール（木Ａ）固有", new EventData("Pole Tree A", true, false) },
+            { "ポール（木B）固有", new EventData("Pole Tree B", true, false) },
             { "移動用砲台固有", new EventData("Player Cannon", true, false) },
             { "１ＵＰキノコ固有", new EventData("1-UP Appearence", true, false) },
             { "？コイン固有", new EventData("?-Coin Collection", true, false) },
@@ -2133,6 +2129,8 @@ namespace Hackio.IO.BCAM
             { "プチポーター固有基点でワープアウト", new EventData("Minigame Teleporter (Arrive from returning)", true, false) },
 
             { "看板固有会話", new EventData("Message: Signboard", true, false) },
+            { "でか看板固有会話", new EventData("Message: Big Signboard", true, false) },
+            { "ピーチ固有会話", new EventData("Message: Peach", true, false) },
             { "キノピオ固有会話", new EventData("Message: Toad", true, false) },
             { "郵便屋さんキノピオ固有注目会話", new EventData("Message: Mailtoad", true, false) },
             { "銀行屋さんキノピオ固有注目会話", new EventData("Message: Banktoad", true, false) },
@@ -2140,6 +2138,7 @@ namespace Hackio.IO.BCAM
             { "ロゼッタ固有会話", new EventData("Message: Rosalina", true, false) },
             { "マイスター固有会話", new EventData("Message: Lubba", true, false) },
             { "チコ固有会話", new EventData("Message: Luma", true, false) },
+            { "でかチコ固有会話", new EventData("Message: Big Luma", true, false) },
             { "ハニークイーン固有会話", new EventData("Message: Queen Bee", true, false) },
             { "ハニービー固有会話", new EventData("Message: Honeybee", true, false) },
             { "ペンギン仙人固有会話", new EventData("Message: Penguin Elder", true, false) },

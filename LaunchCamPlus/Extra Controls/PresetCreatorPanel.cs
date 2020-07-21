@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using Hackio.IO.BCAM;
+using Hack.io.BCAM;
 
 namespace LaunchCamPlus
 {

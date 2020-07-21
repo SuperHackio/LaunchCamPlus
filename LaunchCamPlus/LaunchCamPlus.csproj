@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>LaunchCamPlus</RootNamespace>
     <AssemblyName>LaunchCamPlus</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -41,14 +41,14 @@
     <ApplicationIcon>LaunchCamPlusIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Hackio.IO">
-      <HintPath>..\..\Hackio.IO\Hackio.IO\bin\Debug\Hackio.IO.dll</HintPath>
+    <Reference Include="Hack.io">
+      <HintPath>..\..\Hack.io\Hack.io\bin\Release\Hack.io.dll</HintPath>
     </Reference>
-    <Reference Include="Hackio.IO.RARC">
-      <HintPath>..\..\Hackio.IO\Hackio.IO.RARC\bin\Debug\Hackio.IO.RARC.dll</HintPath>
+    <Reference Include="Hack.io.RARC">
+      <HintPath>..\..\Hack.io\Hack.io.RARC\bin\Release\Hack.io.RARC.dll</HintPath>
     </Reference>
-    <Reference Include="Hackio.IO.YAZ0">
-      <HintPath>..\..\Hackio.IO\Hackio.IO.YAZ0\bin\Debug\Hackio.IO.YAZ0.dll</HintPath>
+    <Reference Include="Hack.io.YAZ0">
+      <HintPath>..\..\Hack.io\Hack.io.YAZ0\bin\Release\Hack.io.YAZ0.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -60,7 +60,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
