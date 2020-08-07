@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LaunchCamPlus.Properties;
+using Hack.io.BCAM;
 
 namespace LaunchCamPlus
 {
@@ -85,7 +86,7 @@ namespace LaunchCamPlus
             Console.WriteLine("Thank you for using Super Hackio's Launch Cam Plus!");
             Thread.Sleep(1000);
         }
-
+        
         public static bool IsProgramReady { get; set; } = false;
         public static string GetFromAppPath(string Target) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Target);
         public static string PresetPath
@@ -134,6 +135,21 @@ namespace LaunchCamPlus
         public static readonly string SuccessSfx = GetFromAppPath("sfx/Success.wav");
         public static readonly string FailureSfx = GetFromAppPath("sfx/Failure.wav");
         public static bool CanPlaySfx(string file) => Settings.Default.EnableSFX && File.Exists(file);
+
+        /// <summary>
+        /// Creates a backup....I can't find where to put this to make it actually helpful...
+        /// </summary>
+        /// <param name="Cameras"><see cref="CameraEditorForm.Cameras"/></param>
+        public static void CreateBackup(BCAM Cameras)
+        {
+            LCPP Backup = new LCPP();
+            for (int i = 0; i < Cameras.EntryCount; i++)
+                Backup.Add(Cameras[i]);
+            Backup.Creator = "LCP Backup Code";
+            string date = DateTime.Now.ToString("MMMM dd yyyy | h:m:s tt");
+            Backup.Name = "LCP Backup " + date;
+            Backup.Save(Path.Combine(PresetPath, $"BACKUP-{date}.lcpp"), false);
+        }
     }
 
     public static class ProgramColours

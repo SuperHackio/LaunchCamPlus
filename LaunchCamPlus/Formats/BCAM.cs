@@ -2094,6 +2094,7 @@ namespace Hack.io.BCAM
             { "パワースター固有", new EventData("Power Star Appearance", true, false) },
             { "グリーンスター固有", new EventData("Green Star Appearance", true, false) },
             { "パワースター出現ポイント固有", new EventData("Power Star Appear Point", true, false) },
+            { "チコ集め固有集めデモカメラ", new EventData("Silver Star Completion", true, false) },
             { "簡易デモ実行固有簡易デモ", new EventData("Simple Demo Executor", true, false) },
             { "鍵スイッチ固有", new EventData("Key Switch Appearence", true, false) },
             { "カプセルケージ固有", new EventData("Capsule Cage Opening", true, false) },

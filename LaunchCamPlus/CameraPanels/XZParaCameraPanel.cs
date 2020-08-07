@@ -16,45 +16,13 @@ namespace LaunchCamPlus.CameraPanels
         public XZParaCameraPanel()
         {
             InitializeComponent();
-        }
-
-        public override void ReloadTheme()
-        {
-            base.ReloadTheme();
-
-            for (int i = 0; i < Controls.Count; i++)
-            {
-                if (Controls[i] is Label || Controls[i] is CheckBox)
-                {
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                }
-                if (Controls[i] is ColourNumericUpDown)
-                {
-                    Controls[i].BackColor = ProgramColours.WindowColour;
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                    ((ColourNumericUpDown)Controls[i]).BorderColor = ProgramColours.BorderColour;
-                }
-                if (Controls[i] is Vector3NumericUpDown)
-                {
-                    ((Vector3NumericUpDown)Controls[i]).ReloadTheme();
-                }
-                if (Controls[i] is ColourTextBox)
-                {
-                    Controls[i].BackColor = ProgramColours.WindowColour;
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                    ((ColourTextBox)Controls[i]).BorderColor = ProgramColours.BorderColour;
-                }
-                if (Controls[i] is GroupBox)
-                {
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                    Controls[i].BackColor = ProgramColours.ControlBackColor;
-                }
-            }
+            SetupUnsaved();
         }
 
         public override void LoadCamera(BCAMEntry Entry)
         {
             base.LoadCamera(Entry);
+            Loading = true;
             RotationXNumericUpDown.Value = (decimal)Entry.RotationX.RadianToDegree();
             RotationYNumericUpDown.Value = (decimal)Entry.RotationY.RadianToDegree();
             RotationZNumericUpDown.Value = (decimal)Entry.RotationZ.RadianToDegree();
@@ -90,6 +58,7 @@ namespace LaunchCamPlus.CameraPanels
             UseVerticalPanAxisCheckBox.Checked = Entry.EnableVerticalPanAxis;
             EventUseTimeCheckBox.Checked = Entry.EventUseTransitionTime;
             EventUseEndTimeCheckBox.Checked = Entry.EventUseTransitionEndTime;
+            Loading = false;
         }
 
         public override void UnLoadCamera(BCAMEntry Entry)
@@ -138,13 +107,13 @@ namespace LaunchCamPlus.CameraPanels
         private void FieldOfViewCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             FieldOfViewNumericUpDown.Enabled = FieldOfViewCheckBox.Checked;
+            IndicateChangeMade();
         }
 
         private void UseVerticalPanAxisCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             VerticalPanAxisVector3NumericUpDown.Enabled = UseVerticalPanAxisCheckBox.Checked;
+            IndicateChangeMade();
         }
-
-        private void AnyValueChanged(object sender, EventArgs e){ }
     }
 }

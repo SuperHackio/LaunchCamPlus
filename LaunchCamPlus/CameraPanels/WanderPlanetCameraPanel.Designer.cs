@@ -190,6 +190,7 @@
             0,
             0,
             0});
+            this.EventFrameNumericUpDown.ValueChanged += new System.EventHandler(this.IndicateChangeMade);
             // 
             // GFlagThroughCheckBox
             // 
@@ -232,6 +233,7 @@
             0,
             0,
             0});
+            this.GFlagEndTimeNumericUpDown.ValueChanged += new System.EventHandler(this.IndicateChangeMade);
             // 
             // CamEndIntLabel
             // 
@@ -297,6 +299,7 @@
             0,
             0,
             196608});
+            this.HeightOffsetNumericUpDown.ValueChanged += new System.EventHandler(this.IndicateChangeMade);
             // 
             // HeightOffsetLabel
             // 
@@ -330,6 +333,7 @@
             0,
             0,
             196608});
+            this.FrontOffsetNumericUpDown.ValueChanged += new System.EventHandler(this.IndicateChangeMade);
             // 
             // FrontOffsetLabel
             // 
@@ -407,6 +411,7 @@
             0,
             0,
             196608});
+            this.FieldOfViewNumericUpDown.ValueChanged += new System.EventHandler(this.IndicateChangeMade);
             // 
             // FieldOfViewLabel
             // 
@@ -444,6 +449,7 @@
             0,
             0,
             196608});
+            this.RotationYNumericUpDown.ValueChanged += new System.EventHandler(this.IndicateChangeMade);
             // 
             // PlayerOffsetYNumericUpDown
             // 

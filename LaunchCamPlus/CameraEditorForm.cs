@@ -84,6 +84,9 @@ namespace LaunchCamPlus
         #region File
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (Program.IsUnsavedChanges && !IsDiscardChanges())
+                return;
+
             Filename = null;
             MainSplitContainer.Panel2.Controls.Clear();
             Cameras = new BCAM();
@@ -95,10 +98,13 @@ namespace LaunchCamPlus
             Console.WriteLine("New File Started!");
             AddDefaultCameraToolStripMenuItem_Click(null, null);
             CameraListBox.SelectedIndex = 0;
+            Program.IsUnsavedChanges = false;
         }
 
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (Program.IsUnsavedChanges && !IsDiscardChanges())
+                return;
             Console.WriteLine();
             Console.WriteLine("Supported Files => .bcam .arc .rarc");
             if (ofd.ShowDialog() == DialogResult.OK && File.Exists(ofd.FileName))
@@ -216,6 +222,7 @@ namespace LaunchCamPlus
             Cameras.MoveCamera(previous, BCAMEx.CameraMoveOptions.TOP);
             ReloadCameraListBox();
             CameraListBox.SelectedIndex = 0;
+            Program.IsUnsavedChanges = true;
         }
 
         private void MoveUpToolStripMenuItem_Click(object sender, EventArgs e)
@@ -228,6 +235,7 @@ namespace LaunchCamPlus
             Cameras.MoveCamera(previous, BCAMEx.CameraMoveOptions.UP);
             ReloadCameraListBox();
             CameraListBox.SelectedIndex = previous == 0 ? CameraListBox.Items.Count - 1 : previous - 1;
+            Program.IsUnsavedChanges = true;
         }
 
         private void MoveDownToolStripMenuItem_Click(object sender, EventArgs e)
@@ -240,6 +248,7 @@ namespace LaunchCamPlus
             Cameras.MoveCamera(previous, BCAMEx.CameraMoveOptions.DOWN);
             ReloadCameraListBox();
             CameraListBox.SelectedIndex = previous == CameraListBox.Items.Count - 1 ? 0 : previous + 1;
+            Program.IsUnsavedChanges = true;
         }
 
         private void MoveToBottomToolStripMenuItem_Click(object sender, EventArgs e)
@@ -252,6 +261,7 @@ namespace LaunchCamPlus
             Cameras.MoveCamera(previous, BCAMEx.CameraMoveOptions.BOTTOM);
             ReloadCameraListBox();
             CameraListBox.SelectedIndex = CameraListBox.Items.Count - 1;
+            Program.IsUnsavedChanges = true;
         }
         #endregion
 
@@ -280,6 +290,7 @@ namespace LaunchCamPlus
                     }
                 }
             }
+            Program.IsUnsavedChanges = true;
         }
 
         private void IdentificationAssistantToolStripMenuItem_Click(object sender, EventArgs e)
@@ -373,14 +384,18 @@ namespace LaunchCamPlus
                     Console.WriteLine("Loading as an Archive:");
                     RARC Archive = YAZ0.Check(file) ? new RARC(YAZ0.Decompress(file)) : new RARC(file);
                     Console.WriteLine("Archive Loaded. Looking for the .bcam...");
-                    List<RARCFile> foundfiles = Archive.FindFileTypes(".bcam");
-                    if (foundfiles.Count == 0)
+                    RARCFile FoundFile = Archive.GetFile("Camera/CameraParam.bcam", true);
+                    if (FoundFile == null)
                     {
-                        Console.WriteLine("Load Failed! No BCAM was found inside the archive!");
-                        goto OpenFailed;
+                        FoundFile = Archive.GetFile("ActorInfo/CameraParam.bcam", true);
+                        if (FoundFile == null)
+                        { 
+                            Console.WriteLine("Load Failed! No BCAM was found inside the archive!\n(Maybe it was in the wrong place?)");
+                            goto OpenFailed;
+                        }
                     }
                     Console.WriteLine(".bcam found.");
-                    Cameras = new BCAM(foundfiles[0].GetMemoryStream());
+                    Cameras = new BCAM(FoundFile.GetMemoryStream());
                     Console.WriteLine("Load Complete!");
                     break;
             }
@@ -404,6 +419,7 @@ namespace LaunchCamPlus
             SaveToolStripMenuItem.Enabled = true;
             SaveAsToolStripMenuItem.Enabled = true;
             ExportPresetToolStripMenuItem.Enabled = true;
+            Program.IsUnsavedChanges = false;
 
             Patience.Stop();
             if (Program.CanPlaySfx(Program.SuccessSfx))
@@ -462,9 +478,9 @@ namespace LaunchCamPlus
                     Console.WriteLine("Loading the target Archive:");
                     RARC Archive = YAZ0.Check(Filename) ? new RARC(YAZ0.Decompress(Filename)) : new RARC(Filename);
                     Console.WriteLine("Archive Loaded. Looking for the .bcam to replace...");
-                    List<RARCFile> foundfiles = Archive.FindFileTypes(".bcam");
+                    
 
-                    if (foundfiles.Count == 0)
+                    if (Archive.GetFile("Camera/CameraParam.bcam") == null && Archive.GetFile("ActorInfo/CameraParam.bcam") == null)
                     {
                         Console.WriteLine("Error finding a bcam");
                         DialogResult dr = MessageBox.Show("The archive has no .bcam to replace.\nWould you like to create one?", "Missing .bcam", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -475,19 +491,22 @@ namespace LaunchCamPlus
                             goto SaveFailed;
                         }
                         Console.WriteLine("Injecting...");
-                        if (!Archive.Root.SubDirectories.Any(SUB => SUB.Name.ToLower().Equals("camera")))
-                            Archive.Root.SubDirectories.Add(new RARCDirectory() { Name = "Camera", Files = new List<RARCFile>() });
+                        if (!Archive.Root.Items.Any(SUB => SUB.Value is RARCDirectory dir && dir.Name.ToLower().Equals("camera")))
+                            Archive.Root.Items.Add("Camera", new RARCDirectory() { Name = "Camera" });
 
                         MemoryStream ms = new MemoryStream();
                         Cameras.Save(ms);
-                        Archive.Root.SubDirectories[Archive.Root.GetSubDirIndex("camera")].Files.Add(new RARCFile() { Name = "CameraParam.bcam", FileData = ms.ToArray() });
+                        Archive.Root.SetFile("Camera/CameraParam.bcam", new RARCFile() { Name = "CameraParam.bcam", FileData = ms.ToArray() }, false);
                     }
                     else
                     {
                         Console.WriteLine(".bcam found. Saving...");
                         MemoryStream ms = new MemoryStream();
                         Cameras.Save(ms);
-                        Archive.ReplaceFileByName("cameraparam.bcam", new RARCFile() { Name = "CameraParam.bcam", FileData = ms.ToArray() });
+                        if(Archive.GetFile("ActorInfo/CameraParam.bcam") != null)
+                            Archive.SetFile("ActorInfo/CameraParam.bcam", new RARCFile() { Name = "CameraParam.bcam", FileData = ms.ToArray() }, true);
+                        else
+                            Archive.SetFile("Camera/CameraParam.bcam", new RARCFile() { Name = "CameraParam.bcam", FileData = ms.ToArray() }, true);
                     }
 
                     Console.WriteLine(".bcam saved into the archive.");
@@ -549,6 +568,8 @@ namespace LaunchCamPlus
                 MainSplitContainer.Panel2.Controls.Add(ReturnControl);
             Console.WriteLine("Cameras have been processed!");
         }
+
+        private bool IsDiscardChanges() => MessageBox.Show("You have Unsaved Changes, are you sure you want to proceed?", "Confirm Action", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
 
         public void ReloadTheme()
         {
@@ -713,6 +734,7 @@ namespace LaunchCamPlus
         {
             Cameras.Add(NewCamera);
             CameraListBox.Items.Add(NewCamera.GetTranslatedName());
+            Program.IsUnsavedChanges = true;
         }
 
         private void CopyCamera()
@@ -731,6 +753,7 @@ namespace LaunchCamPlus
                 Console.WriteLine("Clipboard doesn't contain a Valid LCP Camera!");
             CameraListBox.SelectedIndex = temp;
             CameraListBox.Items[temp] = Cameras[temp].GetTranslatedName();
+            Program.IsUnsavedChanges = true;
         }
 
         public KeyValuePair<BCAMEntry, int> StealSelected()
@@ -834,12 +857,15 @@ namespace LaunchCamPlus
                 PresetsToolStripMenuItem.Enabled = true;
                 AutoSortToolStripMenuItem.Enabled = true;
             }
+            else if (e.Control is CameraPanelBase cpb)
+                cpb.UnLoadCamera(Cameras[PrevListID]);
         }
 
         private void CameraEditorForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Settings.Default.Save();
-            //Put the Unsaved Changes code here...once it comes time to write that
+            if (e.CloseReason == CloseReason.UserClosing && Program.IsUnsavedChanges && !IsDiscardChanges())
+                e.Cancel = true;
         }
         #endregion
 

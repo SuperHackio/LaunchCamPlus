@@ -16,47 +16,49 @@ namespace LaunchCamPlus.CameraPanels
         public WanderPlanetCameraPanel()
         {
             InitializeComponent();
+            SetupUnsaved();
             PlayerOffsetYNumericUpDown.ValueChange2 = PlayerOffsetYNumericUpDown_ValueChange2;
             PlayerOffsetXNumericUpDown.ValueChange2 = PlayerOffsetXNumericUpDown_ValueChange2;
         }
 
-        public override void ReloadTheme()
-        {
-            base.ReloadTheme();
+        //public override void ReloadTheme()
+        //{
+        //    base.ReloadTheme();
 
-            for (int i = 0; i < Controls.Count; i++)
-            {
-                if (Controls[i] is Label || Controls[i] is CheckBox)
-                {
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                }
-                if (Controls[i] is ColourNumericUpDown)
-                {
-                    Controls[i].BackColor = ProgramColours.WindowColour;
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                    ((ColourNumericUpDown)Controls[i]).BorderColor = ProgramColours.BorderColour;
-                }
-                if (Controls[i] is Vector3NumericUpDown)
-                {
-                    ((Vector3NumericUpDown)Controls[i]).ReloadTheme();
-                }
-                if (Controls[i] is ColourTextBox)
-                {
-                    Controls[i].BackColor = ProgramColours.WindowColour;
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                    ((ColourTextBox)Controls[i]).BorderColor = ProgramColours.BorderColour;
-                }
-                if (Controls[i] is GroupBox)
-                {
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                    Controls[i].BackColor = ProgramColours.ControlBackColor;
-                }
-            }
-        }
+        //    for (int i = 0; i < Controls.Count; i++)
+        //    {
+        //        if (Controls[i] is Label || Controls[i] is CheckBox)
+        //        {
+        //            Controls[i].ForeColor = ProgramColours.TextColour;
+        //        }
+        //        if (Controls[i] is ColourNumericUpDown)
+        //        {
+        //            Controls[i].BackColor = ProgramColours.WindowColour;
+        //            Controls[i].ForeColor = ProgramColours.TextColour;
+        //            ((ColourNumericUpDown)Controls[i]).BorderColor = ProgramColours.BorderColour;
+        //        }
+        //        if (Controls[i] is Vector3NumericUpDown)
+        //        {
+        //            ((Vector3NumericUpDown)Controls[i]).ReloadTheme();
+        //        }
+        //        if (Controls[i] is ColourTextBox)
+        //        {
+        //            Controls[i].BackColor = ProgramColours.WindowColour;
+        //            Controls[i].ForeColor = ProgramColours.TextColour;
+        //            ((ColourTextBox)Controls[i]).BorderColor = ProgramColours.BorderColour;
+        //        }
+        //        if (Controls[i] is GroupBox)
+        //        {
+        //            Controls[i].ForeColor = ProgramColours.TextColour;
+        //            Controls[i].BackColor = ProgramColours.ControlBackColor;
+        //        }
+        //    }
+        //}
 
         public override void LoadCamera(BCAMEntry Entry)
         {
             base.LoadCamera(Entry);
+            Loading = true;
             RotationYNumericUpDown.Value = Math.Min(RotationYNumericUpDown.Maximum, Math.Max(RotationYNumericUpDown.Minimum, (decimal)Entry.RotationY.RadianToDegree()));
             StringTextBox.Text = Entry.String;
             FieldOfViewNumericUpDown.Value = (decimal)Entry.FieldOfView;
@@ -81,6 +83,7 @@ namespace LaunchCamPlus.CameraPanels
             GFlagEndTimeNumericUpDown.Value = (decimal)Entry.GFlagEndTime;
             EventUseTimeCheckBox.Checked = Entry.EventUseTransitionTime;
             EventUseEndTimeCheckBox.Checked = Entry.EventUseTransitionEndTime;
+            Loading = false;
         }
 
         public override void UnLoadCamera(BCAMEntry Entry)
@@ -130,6 +133,7 @@ namespace LaunchCamPlus.CameraPanels
         private void FieldOfViewCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             FieldOfViewNumericUpDown.Enabled = FieldOfViewCheckBox.Checked;
+            IndicateChangeMade();
         }
 
         private void PlayerOffsetYNumericUpDown_ValueChange2(EventArgs e)

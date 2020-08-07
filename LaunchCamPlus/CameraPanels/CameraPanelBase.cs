@@ -40,6 +40,7 @@ namespace LaunchCamPlus.CameraPanels
                 }));
             };
             TypeComboBox.MouseWheel += TypeComboBox_MouseWheel;
+            SetupUnsaved();
             Loading = false;
         }
 
@@ -56,7 +57,7 @@ namespace LaunchCamPlus.CameraPanels
             }
         }
 
-        public virtual void ReloadTheme()
+        public void ReloadTheme()
         {
             TypeComboBox.ForeColor =
                 IDTextBox.ForeColor =
@@ -68,6 +69,35 @@ namespace LaunchCamPlus.CameraPanels
                 TypeComboBox.BackColor = ProgramColours.WindowColour;
 
             TypeComboBox.BorderColor = ProgramColours.BorderColour;
+
+            for (int i = 0; i < Controls.Count; i++)
+            {
+                if (Controls[i] is Label || Controls[i] is CheckBox)
+                {
+                    Controls[i].ForeColor = ProgramColours.TextColour;
+                }
+                else if (Controls[i] is ColourNumericUpDown)
+                {
+                    Controls[i].BackColor = ProgramColours.WindowColour;
+                    Controls[i].ForeColor = ProgramColours.TextColour;
+                    ((ColourNumericUpDown)Controls[i]).BorderColor = ProgramColours.BorderColour;
+                }
+                else if (Controls[i] is Vector3NumericUpDown)
+                {
+                    ((Vector3NumericUpDown)Controls[i]).ReloadTheme();
+                }
+                else if (Controls[i] is ColourTextBox || Controls[i] is ColourComboBox)
+                {
+                    Controls[i].BackColor = ProgramColours.WindowColour;
+                    Controls[i].ForeColor = ProgramColours.TextColour;
+                    ((dynamic)Controls[i]).BorderColor = ProgramColours.BorderColour;
+                }
+                else if (Controls[i] is GroupBox)
+                {
+                    Controls[i].ForeColor = ProgramColours.TextColour;
+                    Controls[i].BackColor = ProgramColours.ControlBackColor;
+                }
+            }
         }
 
         public virtual void ResizeEnd()
@@ -101,7 +131,11 @@ namespace LaunchCamPlus.CameraPanels
             IDTextBox.SelectionLength = 0;
         }
 
-        public void UpdateID(string id) => IDTextBox.Text = id;
+        public void UpdateID(string id)
+        {
+            IDTextBox.Text = id;
+            IndicateChangeMade();
+        }
 
         private void TypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -117,7 +151,29 @@ namespace LaunchCamPlus.CameraPanels
                 ((HandledMouseEventArgs)e).Handled = true;
         }
 
-        public string CurrentCameraType { get { return TypeComboBox.Text; } }
+        public string CurrentCameraType => TypeComboBox.Text;
+
+        protected void IndicateChangeMade() => Program.IsUnsavedChanges = !Loading ? true : Program.IsUnsavedChanges;
+        protected void IndicateChangeMade(EventArgs e) => Program.IsUnsavedChanges = !Loading ? true : Program.IsUnsavedChanges;
+        protected void IndicateChangeMade(object sender, EventArgs e) => Program.IsUnsavedChanges = !Loading ? true : Program.IsUnsavedChanges;
+
+
+        protected void SetupUnsaved()
+        {
+            foreach (Control c in Controls)
+            {
+                if (c is ColourNumericUpDown CNUD)
+                    CNUD.ValueChange2 += IndicateChangeMade;
+                else if (c is ColourTextBox CTB)
+                    CTB.TextChanged += IndicateChangeMade;
+                else if (c is Vector3NumericUpDown V3NUD)
+                    V3NUD.ValueChanged += IndicateChangeMade;
+                else if (c is CheckBox CB)
+                    CB.CheckedChanged += IndicateChangeMade;
+                else if (c is ComboBox CMB)
+                    CMB.SelectedIndexChanged += IndicateChangeMade;
+            }
+        }
     }
 
     /// <summary>

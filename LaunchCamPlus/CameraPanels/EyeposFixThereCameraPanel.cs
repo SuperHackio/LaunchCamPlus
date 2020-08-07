@@ -16,46 +16,13 @@ namespace LaunchCamPlus.CameraPanels
         public EyeposFixThereCameraPanel()
         {
             InitializeComponent();
-        }
-
-
-        public override void ReloadTheme()
-        {
-            base.ReloadTheme();
-
-            for (int i = 0; i < Controls.Count; i++)
-            {
-                if (Controls[i] is Label || Controls[i] is CheckBox)
-                {
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                }
-                if (Controls[i] is ColourNumericUpDown)
-                {
-                    Controls[i].BackColor = ProgramColours.WindowColour;
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                    ((ColourNumericUpDown)Controls[i]).BorderColor = ProgramColours.BorderColour;
-                }
-                if (Controls[i] is Vector3NumericUpDown)
-                {
-                    ((Vector3NumericUpDown)Controls[i]).ReloadTheme();
-                }
-                if (Controls[i] is ColourTextBox)
-                {
-                    Controls[i].BackColor = ProgramColours.WindowColour;
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                    ((ColourTextBox)Controls[i]).BorderColor = ProgramColours.BorderColour;
-                }
-                if (Controls[i] is GroupBox)
-                {
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                    Controls[i].BackColor = ProgramColours.ControlBackColor;
-                }
-            }
+            SetupUnsaved();
         }
         
         public override void LoadCamera(BCAMEntry Entry)
         {
             base.LoadCamera(Entry);
+            Loading = true;
             RotationZNumericUpDown.Value = (decimal)Entry.RotationZ.RadianToDegree();
             Num1CheckBox.Checked = Entry.Num1 > 0;
             StringTextBox.Text = Entry.String;
@@ -75,6 +42,7 @@ namespace LaunchCamPlus.CameraPanels
             GFlagEndTimeNumericUpDown.Value = (decimal)Entry.GFlagEndTime;
             EventUseTimeCheckBox.Checked = Entry.EventUseTransitionTime;
             EventUseEndTimeCheckBox.Checked = Entry.EventUseTransitionEndTime;
+            Loading = false;
         }
 
         public override void UnLoadCamera(BCAMEntry Entry)

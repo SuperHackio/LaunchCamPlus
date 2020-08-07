@@ -73,7 +73,6 @@
             0,
             0,
             196608});
-            this.ZValueNumericUpDown.ValueChanged += new System.EventHandler(this.NumberValueChanged);
             // 
             // YValueNumericUpDown
             // 
@@ -100,7 +99,6 @@
             0,
             0,
             196608});
-            this.YValueNumericUpDown.ValueChanged += new System.EventHandler(this.NumberValueChanged);
             // 
             // XValueNumericUpDown
             // 
@@ -127,7 +125,6 @@
             0,
             0,
             196608});
-            this.XValueNumericUpDown.ValueChanged += new System.EventHandler(this.NumberValueChanged);
             // 
             // Vector3NumericUpDown
             // 

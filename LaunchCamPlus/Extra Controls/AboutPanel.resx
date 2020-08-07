@@ -147,7 +147,7 @@ If you used Launch Cam Plus for editing cameras in your Galaxy Hack, please put 
 By using Launch Cam Plus, you agree to keep this Watermark and to not modify it externally.
 Removing the Watermark will cause corruption in the file, so maybe don't do this.
 If you are editing LCP from the source code, please do not remove the watermark.
-2b. The watermark is here only to ensure proper credit is used. Think of it as a backup in case sombody forgets to put the official credit line in their Credits.
+2b. The watermark is here only to ensure proper credit is used. Think of it as a backup in case somebody forgets to put the official credit line in their Credits.
 
 3. Reverse Engineering
 Why would you need to do this when the Source code is on Github?
@@ -161,7 +161,8 @@ These are Libraries made by the same author of Launch Cam Plus, Super Hackio.
     Hackio.IO.dll - The base Library that handles File I/O with Endian Files
     Hackio.IO.RARC.dll - The Library that handles Loading and Saving Nintendo Archives (NOT U8 ARCHIVES)
     Hackio.IO.YAZ0.dll - The Library responsible for Yaz0 Compression
-Do not use these .dll's in your programs. Instead, please download the Hackio.IO Libraries from the Github Page once they are available.
+Do not use these .dll's in your programs. Instead, please download the Hackio.IO Libraries from their Github Page.
+https://github.com/SuperHackio/Hack.io
 
 
 Thank you for reading this! Enjoy using Launch Cam Plus!</value>

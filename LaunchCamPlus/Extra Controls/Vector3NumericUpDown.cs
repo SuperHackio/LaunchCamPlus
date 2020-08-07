@@ -15,6 +15,9 @@ namespace LaunchCamPlus
         public Vector3NumericUpDown()
         {
             InitializeComponent();
+            XValueNumericUpDown.ValueChange2 += NumberValueChanged;
+            YValueNumericUpDown.ValueChange2 += NumberValueChanged;
+            ZValueNumericUpDown.ValueChange2 += NumberValueChanged;
         }
 
         [EditorBrowsable(EditorBrowsableState.Always)]
@@ -56,9 +59,9 @@ namespace LaunchCamPlus
         [Browsable(true)]
         public event EventHandler ValueChanged;
 
-        private void NumberValueChanged(object sender, EventArgs e)
+        private void NumberValueChanged(EventArgs e)
         {
-            ValueChanged(sender, e);
+            ValueChanged(null, e);
         }
     }
 }
