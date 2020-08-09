@@ -107,13 +107,11 @@ namespace LaunchCamPlus.CameraPanels
         private void FieldOfViewCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             FieldOfViewNumericUpDown.Enabled = FieldOfViewCheckBox.Checked;
-            IndicateChangeMade();
         }
 
         private void UseVerticalPanAxisCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             VerticalPanAxisVector3NumericUpDown.Enabled = UseVerticalPanAxisCheckBox.Checked;
-            IndicateChangeMade();
         }
     }
 }

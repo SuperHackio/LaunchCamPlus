@@ -2322,6 +2322,10 @@ namespace Hack.io.BCAM
                 new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0),
                 false, false, false, false, false, false, false, false, 0, false, false, false) },
             //==================================================================================================================================================================
+            { "CAM_TYPE_POINT_FIX", new CameraDefaults(196631, 0, 0.0f, 0.0f, 0f, 1200f, 45f, 100, 100, 160, 0, 0, "", 300f, 800f, 120, 120, 120, 0f, 0f, 0.0f, 0.0f, 0, 0,
+                new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0.99989913f,0), new Vector3<float>(0,0,0), new Vector3<float>(0,1,0),
+                false, false, false, false, false, false, false, false, 0, false, false, false) },
+            //==================================================================================================================================================================
         };
 
         internal CameraDefaults(int version, int number, float XRot, float YRot, float ZRot, float zoom, float fov, int time, int endtime, int gndtime, int num1, int num2, string str, float maxY, float minY,

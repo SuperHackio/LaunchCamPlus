@@ -21,40 +21,6 @@ namespace LaunchCamPlus.CameraPanels
             PlayerOffsetXNumericUpDown.ValueChange2 = PlayerOffsetXNumericUpDown_ValueChange2;
         }
 
-        //public override void ReloadTheme()
-        //{
-        //    base.ReloadTheme();
-
-        //    for (int i = 0; i < Controls.Count; i++)
-        //    {
-        //        if (Controls[i] is Label || Controls[i] is CheckBox)
-        //        {
-        //            Controls[i].ForeColor = ProgramColours.TextColour;
-        //        }
-        //        if (Controls[i] is ColourNumericUpDown)
-        //        {
-        //            Controls[i].BackColor = ProgramColours.WindowColour;
-        //            Controls[i].ForeColor = ProgramColours.TextColour;
-        //            ((ColourNumericUpDown)Controls[i]).BorderColor = ProgramColours.BorderColour;
-        //        }
-        //        if (Controls[i] is Vector3NumericUpDown)
-        //        {
-        //            ((Vector3NumericUpDown)Controls[i]).ReloadTheme();
-        //        }
-        //        if (Controls[i] is ColourTextBox)
-        //        {
-        //            Controls[i].BackColor = ProgramColours.WindowColour;
-        //            Controls[i].ForeColor = ProgramColours.TextColour;
-        //            ((ColourTextBox)Controls[i]).BorderColor = ProgramColours.BorderColour;
-        //        }
-        //        if (Controls[i] is GroupBox)
-        //        {
-        //            Controls[i].ForeColor = ProgramColours.TextColour;
-        //            Controls[i].BackColor = ProgramColours.ControlBackColor;
-        //        }
-        //    }
-        //}
-
         public override void LoadCamera(BCAMEntry Entry)
         {
             base.LoadCamera(Entry);

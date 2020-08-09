@@ -179,6 +179,9 @@
     <EmbeddedResource Include="CameraPanels\EyeposFixThereCameraPanel.resx">
       <DependentUpon>EyeposFixThereCameraPanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CameraPanels\PointFixCameraPanel.resx">
+      <DependentUpon>PointFixCameraPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CameraPanels\WanderPlanetCameraPanel.resx">
       <DependentUpon>WanderPlanetCameraPanel.cs</DependentUpon>
     </EmbeddedResource>

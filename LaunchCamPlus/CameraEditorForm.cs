@@ -42,6 +42,7 @@ namespace LaunchCamPlus
             {
                 { "DEFAULT", new DefaultCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_EYEPOS_FIX_THERE", new EyeposFixThereCameraPanel() { Dock = DockStyle.Fill } },
+                { "CAM_TYPE_POINT_FIX", new PointFixCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_WONDER_PLANET", new WanderPlanetCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_XZ_PARA", new XZParaCameraPanel() { Dock = DockStyle.Fill } }
             };
@@ -480,7 +481,7 @@ namespace LaunchCamPlus
                     Console.WriteLine("Archive Loaded. Looking for the .bcam to replace...");
                     
 
-                    if (Archive.GetFile("Camera/CameraParam.bcam") == null && Archive.GetFile("ActorInfo/CameraParam.bcam") == null)
+                    if (Archive.GetFile("Camera/CameraParam.bcam", true) == null && Archive.GetFile("ActorInfo/CameraParam.bcam", true) == null)
                     {
                         Console.WriteLine("Error finding a bcam");
                         DialogResult dr = MessageBox.Show("The archive has no .bcam to replace.\nWould you like to create one?", "Missing .bcam", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -857,8 +858,8 @@ namespace LaunchCamPlus
                 PresetsToolStripMenuItem.Enabled = true;
                 AutoSortToolStripMenuItem.Enabled = true;
             }
-            else if (e.Control is CameraPanelBase cpb)
-                cpb.UnLoadCamera(Cameras[PrevListID]);
+            //else if (e.Control is CameraPanelBase cpb)
+            //    cpb.UnLoadCamera(Cameras[PrevListID]);
         }
 
         private void CameraEditorForm_FormClosing(object sender, FormClosingEventArgs e)
