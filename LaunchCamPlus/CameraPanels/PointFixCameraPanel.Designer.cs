@@ -74,6 +74,11 @@
             0,
             0,
             0});
+            this.PlayerOffsetYNumericUpDown.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.PlayerOffsetYNumericUpDown.Name = "PlayerOffsetYNumericUpDown";
             this.PlayerOffsetYNumericUpDown.Size = new System.Drawing.Size(94, 20);
             this.PlayerOffsetYNumericUpDown.TabIndex = 133;
@@ -102,6 +107,11 @@
             0,
             0,
             0});
+            this.PlayerOffsetXNumericUpDown.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.PlayerOffsetXNumericUpDown.Name = "PlayerOffsetXNumericUpDown";
             this.PlayerOffsetXNumericUpDown.Size = new System.Drawing.Size(94, 20);
             this.PlayerOffsetXNumericUpDown.TabIndex = 131;

@@ -79,6 +79,12 @@
     <Compile Include="CameraPanels\PointFixCameraPanel.Designer.cs">
       <DependentUpon>PointFixCameraPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="CameraPanels\TowerCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CameraPanels\TowerCameraPanel.Designer.cs">
+      <DependentUpon>TowerCameraPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="CameraPanels\WanderPlanetCameraPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -181,6 +187,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CameraPanels\PointFixCameraPanel.resx">
       <DependentUpon>PointFixCameraPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CameraPanels\TowerCameraPanel.resx">
+      <DependentUpon>TowerCameraPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CameraPanels\WanderPlanetCameraPanel.resx">
       <DependentUpon>WanderPlanetCameraPanel.cs</DependentUpon>

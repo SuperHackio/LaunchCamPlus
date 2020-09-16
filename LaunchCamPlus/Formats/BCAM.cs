@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Text;
+﻿using Hack.io.Util;
 using LaunchCamPlus;
-using System.Collections;
 using LaunchCamPlus.Properties;
-using Hack.io.Util;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Hack.io.BCAM
@@ -977,6 +977,9 @@ namespace Hack.io.BCAM
                     Data.Add(0xAE79D1C0, value);
             }
         }
+        /// <summary>
+        /// Event value, only used by e: cameras
+        /// </summary>
         public int TransitionEndTime
         {
             get
@@ -1290,6 +1293,9 @@ namespace Hack.io.BCAM
             }
         }
 
+        /// <summary>
+        /// Event value, only used by e: cameras
+        /// </summary>
         public int EventFrames
         {
             get
@@ -1312,6 +1318,9 @@ namespace Hack.io.BCAM
                     Data.Add(0x05C676D0, value);
             }
         }
+        /// <summary>
+        /// Event value, only used by e: cameras
+        /// </summary>
         public int EventPriority
         {
             get
@@ -1678,6 +1687,9 @@ namespace Hack.io.BCAM
                     Data.Add(0xBB74D6C1, value ? 1 : 0);
             }
         }
+        /// <summary>
+        /// Game Flag, only used by g: cameras
+        /// </summary>
         public bool GFlagEndErpFrame
         {
             get
@@ -1700,6 +1712,9 @@ namespace Hack.io.BCAM
                     Data.Add(0xDA484167, value ? 1 : 0);
             }
         }
+        /// <summary>
+        /// Game Flag, only used by g: cameras
+        /// </summary>
         public bool GFlagThrough
         {
             get
@@ -1722,6 +1737,9 @@ namespace Hack.io.BCAM
                     Data.Add(0xED8DD072, value ? 1 : 0);
             }
         }
+        /// <summary>
+        /// Game Flag, only used by g: cameras
+        /// </summary>
         public int GFlagEndTime
         {
             get
@@ -1766,29 +1784,10 @@ namespace Hack.io.BCAM
                     Data.Add(0x26C8C3C0, value ? 1 : 0);
             }
         }
+        /// <summary>
+        /// Event Flag, only used by e: cameras
+        /// </summary>
         public bool EventUseTransitionTime
-        {
-            get
-            {
-                if (Data.ContainsKey(0x45E50EE5))
-                    return (int)Data[0x45E50EE5] > 0;
-                else
-                    return (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x45E50EE5];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x45E50EE5))
-                {
-                    if (value == (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x45E50EE5])
-                        Data.Remove(0x45E50EE5);
-                    else
-                        Data[0x45E50EE5] = value ? 1 : 0;
-                }
-                else if (value != (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x45E50EE5])
-                    Data.Add(0x45E50EE5, value ? 1 : 0);
-            }
-        }
-        public bool EventUseTransitionEndTime
         {
             get
             {
@@ -1808,6 +1807,31 @@ namespace Hack.io.BCAM
                 }
                 else if (value != (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x1BCD52AA])
                     Data.Add(0x1BCD52AA, value ? 1 : 0);
+            }
+        }
+        /// <summary>
+        /// Event Flag, only used by e: cameras
+        /// </summary>
+        public bool EventUseTransitionEndTime
+        {
+            get
+            {
+                if (Data.ContainsKey(0x45E50EE5))
+                    return (int)Data[0x45E50EE5] > 0;
+                else
+                    return (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x45E50EE5];
+            }
+            set
+            {
+                if (Data.ContainsKey(0x45E50EE5))
+                {
+                    if (value == (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x45E50EE5])
+                        Data.Remove(0x45E50EE5);
+                    else
+                        Data[0x45E50EE5] = value ? 1 : 0;
+                }
+                else if (value != (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x45E50EE5])
+                    Data.Add(0x45E50EE5, value ? 1 : 0);
             }
         }
 
