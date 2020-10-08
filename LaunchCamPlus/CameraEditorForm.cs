@@ -73,6 +73,7 @@ namespace LaunchCamPlus
         public BCAM Cameras { get; set; }
         Dictionary<string, CameraPanelBase> PreBufferedPanels;
         int PrevListID;
+        bool DisableEditorChange;
 
         private SettingsPanel PreBufferedSettings;
         private IdentificationAssistant PreBufferedAssistant;
@@ -663,7 +664,9 @@ namespace LaunchCamPlus
             if (CameraListBox.SelectedIndex > -1)
             {
                 Cameras[CameraListBox.SelectedIndex].Identification = newID;
+                DisableEditorChange = true;
                 CameraListBox.Items[CameraListBox.SelectedIndex] = Cameras[CameraListBox.SelectedIndex].GetTranslatedName();
+                DisableEditorChange = false;
             }
         }
 
@@ -692,6 +695,9 @@ namespace LaunchCamPlus
 
         private void CameraListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (DisableEditorChange)
+                return;
+
             if (MainSplitContainer.Panel2.Controls.Count > 0 && (MainSplitContainer.Panel2.Controls[0] is PresetCreatorPanel))
             {
                 PreBufferedAssistant.ApplyButton.Enabled = false;
