@@ -321,8 +321,10 @@ namespace LaunchCamPlus
         {
             FS.Position += 2;
             byte[] Bytes = FS.Read(0, (int)(FS.Length - FS.Position));
-            MemoryStream MS = YAZ0.Decompress(Bytes);
-            MS.Position = 0x06;
+            MemoryStream MS = new MemoryStream(YAZ0.Decompress(Bytes))
+            {
+                Position = 0x06
+            };
             LoadModernFile(MS);
         }
 
@@ -477,7 +479,7 @@ namespace LaunchCamPlus
         public void SaveCompressedModernFile(Stream FS)
         {
             FS.Write(new byte[6] { 0x4C, 0x43, 0x50, 0x43, 0x4E, 0x57 }, 0, 4);
-            byte[] Result = YAZ0.Compress(SaveModernFile());
+            byte[] Result = YAZ0.Compress(SaveModernFile()).ToArray();
             FS.Write(Result, 0, Result.Length);
         }
     }

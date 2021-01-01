@@ -60,6 +60,7 @@
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainSplitContainer = new System.Windows.Forms.SplitContainer();
             this.CameraListBox = new System.Windows.Forms.ListBox();
+            this.Yaz0BackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.EditorMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainSplitContainer)).BeginInit();
             this.MainSplitContainer.Panel1.SuspendLayout();
@@ -372,6 +373,10 @@
             this.CameraListBox.SelectedIndexChanged += new System.EventHandler(this.CameraListBox_SelectedIndexChanged);
             this.CameraListBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CameraListBox_KeyDown);
             // 
+            // Yaz0BackgroundWorker
+            // 
+            this.Yaz0BackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.Yaz0BackgroundWorker_DoWork);
+            // 
             // CameraEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -430,5 +435,6 @@
         private System.Windows.Forms.ToolStripMenuItem GithubReleasesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExportPresetToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AddNewFromClipboardToolStripMenuItem;
+        private System.ComponentModel.BackgroundWorker Yaz0BackgroundWorker;
     }
 }

@@ -23,27 +23,11 @@ namespace LaunchCamPlus
 
             Console.Title = Application.ProductName + " " + Application.ProductVersion + " - Console";
             //Console.OutputEncoding = System.Text.Encoding.GetEncoding(932); // This fixes the Japanese not showing properly, but it looks so weird in the console...
-            if (Settings.Default.IsFirstLaunch)
+            if (Settings.Default.IsNeedUpgrade)
             {
-                string FullfilePath = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
-                string VersionDirectoryfilePath = Path.GetFullPath(Path.Combine(FullfilePath, @"..\..\" + Application.ProductVersion));
-                string BasePath = Path.GetFullPath(Path.Combine(FullfilePath, @"..\..\"));
                 Settings.Default.Upgrade();
-                if (Directory.Exists(BasePath) && !Settings.Default.IsFirstLaunch)
-                {
-                    Console.WriteLine("Updating User Settings...");
-                    DirectoryInfo DirInfo = new DirectoryInfo(BasePath);
-                    DirectoryInfo[] Dirs = DirInfo.GetDirectories();
-                    for (int i = 0; i < Dirs.Length; i++)
-                        if (!Dirs[i].FullName.Equals(VersionDirectoryfilePath))
-                            Directory.Delete(Dirs[i].FullName, true);
-                }
-                else
-                {
-                    Console.WriteLine("First time launch: Initilizing User Settings...");
-                    Settings.Default.IsFirstLaunch = false;
-                    Settings.Default.Save();
-                }
+                Settings.Default.IsNeedUpgrade = false;
+                Settings.Default.Save();
             }
 
             Console.WriteLine("Initilizing...");

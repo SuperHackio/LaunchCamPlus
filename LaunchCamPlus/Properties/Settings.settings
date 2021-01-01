@@ -44,5 +44,11 @@
     <Setting Name="EnableSFX" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="IsNeedUpgrade" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ElapsedTimeStrong" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.14708972953216373</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -43,6 +43,7 @@ namespace LaunchCamPlus
                 { "DEFAULT", new DefaultCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_EYEPOS_FIX_THERE", new EyeposFixThereCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_POINT_FIX", new PointFixCameraPanel() { Dock = DockStyle.Fill } },
+                { "CAM_TYPE_RAIL_FOLLOW", new RailFollowCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_WONDER_PLANET", new WanderPlanetCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_XZ_PARA", new XZParaCameraPanel() { Dock = DockStyle.Fill } }
             };
@@ -384,20 +385,20 @@ namespace LaunchCamPlus
                 case ".arc":
                 case ".rarc":
                     Console.WriteLine("Loading as an Archive:");
-                    RARC Archive = YAZ0.Check(file) ? new RARC(YAZ0.Decompress(file)) : new RARC(file);
+                    RARC Archive = YAZ0.Check(file) ? new RARC(new MemoryStream(YAZ0.Decompress(File.ReadAllBytes(file)))) : new RARC(file);
                     Console.WriteLine("Archive Loaded. Looking for the .bcam...");
-                    RARCFile FoundFile = Archive.GetFile("Camera/CameraParam.bcam", true);
-                    if (FoundFile == null)
+                    string CameraParamPath = Archive.GetItemKeyFromNoCase("Camera/CameraParam.bcam");
+                    if (CameraParamPath == null)
                     {
-                        FoundFile = Archive.GetFile("ActorInfo/CameraParam.bcam", true);
-                        if (FoundFile == null)
+                        CameraParamPath = Archive.GetItemKeyFromNoCase("ActorInfo/CameraParam.bcam");
+                        if (CameraParamPath == null)
                         { 
                             Console.WriteLine("Load Failed! No BCAM was found inside the archive!\n(Maybe it was in the wrong place?)");
                             goto OpenFailed;
                         }
                     }
                     Console.WriteLine(".bcam found.");
-                    Cameras = new BCAM(FoundFile.GetMemoryStream());
+                    Cameras = new BCAM(new MemoryStream(((RARC.File)Archive[CameraParamPath]).FileData));
                     Console.WriteLine("Load Complete!");
                     break;
             }
@@ -478,11 +479,11 @@ namespace LaunchCamPlus
                 case ".arc":
                 case ".rarc":
                     Console.WriteLine("Loading the target Archive:");
-                    RARC Archive = YAZ0.Check(Filename) ? new RARC(YAZ0.Decompress(Filename)) : new RARC(Filename);
+                    RARC Archive = YAZ0.Check(Filename) ? new RARC(new MemoryStream(YAZ0.Decompress(File.ReadAllBytes(Filename)))) : new RARC(Filename);
                     Console.WriteLine("Archive Loaded. Looking for the .bcam to replace...");
                     
-
-                    if (Archive.GetFile("Camera/CameraParam.bcam", true) == null && Archive.GetFile("ActorInfo/CameraParam.bcam", true) == null)
+                    string FinalPath = new string[] { Archive.GetItemKeyFromNoCase("Camera/CameraParam.bcam"), Archive.GetItemKeyFromNoCase("ActorInfo/CameraParam.bcam") }.FirstOrDefault(s => !string.IsNullOrEmpty(s));
+                    if (FinalPath is null)
                     {
                         Console.WriteLine("Error finding a bcam");
                         DialogResult dr = MessageBox.Show("The archive has no .bcam to replace.\nWould you like to create one?", "Missing .bcam", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -492,32 +493,34 @@ namespace LaunchCamPlus
                             Console.WriteLine("The chosen file has not been modified, and your changes have not been saved.");
                             goto SaveFailed;
                         }
-                        Console.WriteLine("Injecting...");
-                        if (!Archive.Root.Items.Any(SUB => SUB.Value is RARCDirectory dir && dir.Name.ToLower().Equals("camera")))
-                            Archive.Root.Items.Add("Camera", new RARCDirectory() { Name = "Camera" });
-
-                        MemoryStream ms = new MemoryStream();
-                        Cameras.Save(ms);
-                        Archive.Root.SetFile("Camera/CameraParam.bcam", new RARCFile() { Name = "CameraParam.bcam", FileData = ms.ToArray() }, false);
+                        FinalPath = "Camera/CameraParam.bcam";
                     }
-                    else
-                    {
-                        Console.WriteLine(".bcam found. Saving...");
-                        MemoryStream ms = new MemoryStream();
-                        Cameras.Save(ms);
-                        if(Archive.GetFile("ActorInfo/CameraParam.bcam") != null)
-                            Archive.SetFile("ActorInfo/CameraParam.bcam", new RARCFile() { Name = "CameraParam.bcam", FileData = ms.ToArray() }, true);
-                        else
-                            Archive.SetFile("Camera/CameraParam.bcam", new RARCFile() { Name = "CameraParam.bcam", FileData = ms.ToArray() }, true);
-                    }
+                    Console.WriteLine(FinalPath is null ? "Injecting..." : ".bcam found. Saving...");
+                    MemoryStream ms = new MemoryStream();
+                    Cameras.Save(ms);
+                    Archive[FinalPath] = new RARC.File("CameraParam.bcam", ms);
 
                     Console.WriteLine(".bcam saved into the archive.");
                     Console.WriteLine("Saving the archive...");
                     Archive.Save(Filename);
                     if (Settings.Default.IsUseYAZ0)
                     {
-                        Console.WriteLine("Yaz0 Encoding...");
-                        YAZ0.Compress(Filename);
+                        Stopwatch Watch = new Stopwatch();
+                        long UncompressedFilesize = File.ReadAllBytes(Filename).Length;
+                        double ETA = UncompressedFilesize * Settings.Default.ElapsedTimeStrong;
+                        Watch.Start();
+                        Yaz0BackgroundWorker.RunWorkerAsync(Filename);
+
+                        EnabledContents(this, false);
+                        while (Yaz0BackgroundWorker.IsBusy)
+                        {
+                            Console.Write($"\rYaz0 Encoding: ({Watch.Elapsed.ToString("mm\\:ss\\.fff")} Elapsed, {TimeSpan.FromMilliseconds(ETA).ToString("mm\\:ss\\.fff")} Estimated)");
+                            Application.DoEvents();
+                        }
+                        Watch.Stop();
+                        Settings.Default.ElapsedTimeStrong = (double)Watch.ElapsedMilliseconds / (double)UncompressedFilesize;
+                        Console.WriteLine("\nYaz0 Encoding Complete!");
+                        EnabledContents(this, true);
                     }
                     break;
             }
@@ -871,7 +874,7 @@ namespace LaunchCamPlus
         private void CameraEditorForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Settings.Default.Save();
-            if (e.CloseReason == CloseReason.UserClosing && Program.IsUnsavedChanges && !IsDiscardChanges())
+            if (Yaz0BackgroundWorker.IsBusy || (e.CloseReason == CloseReason.UserClosing && Program.IsUnsavedChanges && !IsDiscardChanges()))
                 e.Cancel = true;
         }
         #endregion
@@ -1004,6 +1007,16 @@ namespace LaunchCamPlus
             public override Color OverflowButtonGradientEnd => Color.Black;
         }
         #endregion
+
+        private void Yaz0BackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) => YAZ0.Compress((string)e.Argument);
+
+        private void EnabledContents(Control panel, bool enabled)
+        {
+            foreach (Control ctrl in panel.Controls)
+            {
+                ctrl.Enabled = enabled;
+            }
+        }
     }
 
     public static class ControlEx
