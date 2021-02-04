@@ -369,7 +369,6 @@ namespace Hack.io.BCAM
         public static readonly uint[] PreferredHashOrder = new uint[]{
         #region General
         0x14F51CD8, //Version
-        0x00000DC1, //No
         0x00000D1B, //ID
         0x20C58F89, //Type
         0xCAD56011, //string
@@ -438,7 +437,6 @@ namespace Hack.io.BCAM
         public static readonly string[] HashNames = new string[]{
         #region General
         "Version",
-        "No",
         "ID",
         "Type",
         "string",
@@ -2338,32 +2336,31 @@ namespace Hack.io.BCAM
         public static Dictionary<string, CameraDefaults> Defaults = new Dictionary<string, CameraDefaults>()
         {
             //==================================================================================================================================================================
-            { "CAM_TYPE_XZ_PARA", new CameraDefaults(196631, 0, 0.2984513f, 0f, 0f, 1200f, 45f, 100, 100, 160, 1, 0, "", 300f, 800f, 120, 120, 120, 0f, 0f, 0.30f, 0.10f, 0, 0,
+            { "CAM_TYPE_XZ_PARA", new CameraDefaults(196631, 0.2984513f, 0f, 0f, 1200f, 45f, 100, 100, 160, 1, 0, "", 300f, 800f, 120, 120, 120, 0f, 0f, 0.30f, 0.10f, 0, 0,
                 new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,1,0), new Vector3<float>(0,1,0),
                 false, false, false, false, false, false, false, false, 0, true, false, false) },
             //==================================================================================================================================================================
-            { "CAM_TYPE_EYEPOS_FIX_THERE", new CameraDefaults(196631, 0, 0.0f, 0f, 0f, 0f, 45f, 100, 100, 160, 1, 0, "", 0f, 0f, 0, 0, 120, 0f, 0f, 0.0f, 0.0f, 0, 0,
+            { "CAM_TYPE_EYEPOS_FIX_THERE", new CameraDefaults(196631, 0.0f, 0f, 0f, 0f, 45f, 100, 100, 160, 1, 0, "", 0f, 0f, 0, 0, 120, 0f, 0f, 0.0f, 0.0f, 0, 0,
                 new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,1,0),
                 false, false, false, false, false, false, false, false, 0, false, false, false) },
             //==================================================================================================================================================================
-            { "CAM_TYPE_WONDER_PLANET", new CameraDefaults(196631, 0, 0.0f, 0f, 0f, 0f, 45f, 100, 100, 160, 1, 0, "", 300f, 800f, 120, 120, 120, 0f, 0f, 0.3f, 0.1f, 0, 0,
+            { "CAM_TYPE_WONDER_PLANET", new CameraDefaults(196631, 0.0f, 0f, 0f, 0f, 45f, 100, 100, 160, 1, 0, "", 300f, 800f, 120, 120, 120, 0f, 0f, 0.3f, 0.1f, 0, 0,
                 new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0),
                 false, false, false, false, false, false, false, false, 0, false, false, false) },
             //==================================================================================================================================================================
-            { "CAM_TYPE_POINT_FIX", new CameraDefaults(196631, 0, 0.0f, 0.0f, 0f, 1200f, 45f, 100, 100, 160, 0, 0, "", 300f, 800f, 120, 120, 120, 0f, 0f, 0.0f, 0.0f, 0, 0,
+            { "CAM_TYPE_POINT_FIX", new CameraDefaults(196631, 0.0f, 0.0f, 0f, 1200f, 45f, 100, 100, 160, 0, 0, "", 300f, 800f, 120, 120, 120, 0f, 0f, 0.0f, 0.0f, 0, 0,
                 new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0.99989913f,0), new Vector3<float>(0,0,0), new Vector3<float>(0,1,0),
                 false, false, false, false, false, false, false, false, 0, false, false, false) },
             //==================================================================================================================================================================
         };
 
-        internal CameraDefaults(int version, int number, float XRot, float YRot, float ZRot, float zoom, float fov, int time, int endtime, int gndtime, int num1, int num2, string str, float maxY, float minY,
+        internal CameraDefaults(int version, float XRot, float YRot, float ZRot, float zoom, float fov, int time, int endtime, int gndtime, int num1, int num2, string str, float maxY, float minY,
             int gndmovedelay, int airmovedelay, int udown, float lookoffset, float lookoffsety, float upperborder, float lowerborder, int evframes, int evpriority,
             Vector3<float> fixpointoffset, Vector3<float> worldpointoffset, Vector3<float> playeroffset, Vector3<float> verticalpanaxis, Vector3<float> upaxis,
             bool disablereset, bool enablefov, bool staticlookoffset, bool disableantiblur, bool disablecollision, bool disablefirstperson, bool Gflagenderpframe, bool Gflagthrough, int Gflagendtime,
             bool useverticalpanaxis, bool eventuseendtime, bool eventusetime) => DefaultValues = new Dictionary<uint, object>
             {
                 { 0x14F51CD8, version },
-                { 0x00000DC1, number },
                 { 0xABC4A1CF, XRot },
                 { 0xABC4A1CE, YRot },
                 { 0x0035807D, ZRot },
