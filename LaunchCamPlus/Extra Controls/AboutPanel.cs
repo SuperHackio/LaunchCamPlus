@@ -21,9 +21,7 @@ namespace LaunchCamPlus
 
         public void ReloadTheme()
         {
-            ForeColor = InformationTextBox.ForeColor = ProgramColours.TextColour;
-            InformationTextBox.BackColor = ProgramColours.ControlBackColor;
-            InformationTextBox.BorderColor = ProgramColours.BorderColour;
+            ForeColor = ProgramColours.TextColour;
         }
 
         private void AboutPanel_Resize(object sender, EventArgs e)

@@ -55,7 +55,7 @@ namespace Hack.io.BCAM
             Console.WriteLine("Complete!");
 
 #if DEBUG
-            for (int i = 0; i < 53; i++)
+            for (int i = 0; i < 52; i++)
             {
                 if (!Fields.ContainsKey(PreferredHashOrder[i]))
                 {
@@ -192,7 +192,7 @@ namespace Hack.io.BCAM
             }
 
 #if DEBUG
-            for (int i = 0; i < 53; i++)
+            for (int i = 0; i < 52; i++)
             {
                 if (!FinalHashes.Contains(PreferredHashOrder[i]))
                 {
@@ -206,7 +206,7 @@ namespace Hack.io.BCAM
             #endregion
 
             #region Collect the strings
-            List<string> Strings = new List<string>() { "930" };
+            List<string> Strings = new List<string>();// { "930" };
             for (int i = 0; i < EntryCount; i++)
             {
                 for (int j = 0; j < Entries[i].Data.Count; j++)

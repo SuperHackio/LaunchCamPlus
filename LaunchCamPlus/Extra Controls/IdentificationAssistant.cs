@@ -23,6 +23,8 @@ namespace LaunchCamPlus
             this.SetDoubleBuffered();
             EventComboBox.SetDoubleBuffered();
             CategoryComboBox.SetDoubleBuffered();
+            CamIDNumericUpDown.ValueChange2 += CamIDNumericUpDown_ValueChanged;
+            SubCamIDNumericUpDown.ValueChange2 += CamIDNumericUpDown_ValueChanged;
         }
 
         public void ReloadTheme()
@@ -97,12 +99,7 @@ namespace LaunchCamPlus
             BuildEvent();
         }
 
-        private void CamIDNumericUpDown_ValueChanged(object sender, EventArgs e)
-        {
-            BuildEvent();
-        }
-
-        private void SubCamIDNumericUpDown_ValueChanged(object sender, EventArgs e)
+        private void CamIDNumericUpDown_ValueChanged(EventArgs e)
         {
             BuildEvent();
         }

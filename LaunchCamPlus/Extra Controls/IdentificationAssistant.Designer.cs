@@ -117,7 +117,11 @@
             this.SubCamIDNumericUpDown.Name = "SubCamIDNumericUpDown";
             this.SubCamIDNumericUpDown.Size = new System.Drawing.Size(239, 20);
             this.SubCamIDNumericUpDown.TabIndex = 21;
-            this.SubCamIDNumericUpDown.ValueChanged += new System.EventHandler(this.SubCamIDNumericUpDown_ValueChanged);
+            this.SubCamIDNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // CamIDNumericUpDown
             // 
@@ -131,7 +135,11 @@
             this.CamIDNumericUpDown.Name = "CamIDNumericUpDown";
             this.CamIDNumericUpDown.Size = new System.Drawing.Size(159, 20);
             this.CamIDNumericUpDown.TabIndex = 19;
-            this.CamIDNumericUpDown.ValueChanged += new System.EventHandler(this.CamIDNumericUpDown_ValueChanged);
+            this.CamIDNumericUpDown.TextValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // EventComboBox
             // 

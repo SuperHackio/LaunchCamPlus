@@ -32,8 +32,6 @@
             this.LogoPictureBox = new System.Windows.Forms.PictureBox();
             this.AboutLabel = new System.Windows.Forms.Label();
             this.InfoLabel = new System.Windows.Forms.Label();
-            this.OtherInfoLabel = new System.Windows.Forms.Label();
-            this.InformationTextBox = new LaunchCamPlus.ColourTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.LogoPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,11 +51,11 @@
             // 
             this.AboutLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.AboutLabel.AutoSize = true;
-            this.AboutLabel.Location = new System.Drawing.Point(237, 428);
+            this.AboutLabel.Location = new System.Drawing.Point(252, 428);
             this.AboutLabel.Name = "AboutLabel";
-            this.AboutLabel.Size = new System.Drawing.Size(201, 13);
+            this.AboutLabel.Size = new System.Drawing.Size(189, 13);
             this.AboutLabel.TabIndex = 1;
-            this.AboutLabel.Text = "© Super Hackio Incorporated 2018-2020";
+            this.AboutLabel.Text = "Super Hackio Incorporated 2018-2021";
             // 
             // InfoLabel
             // 
@@ -66,39 +64,14 @@
             this.InfoLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.InfoLabel.Location = new System.Drawing.Point(0, 50);
             this.InfoLabel.Name = "InfoLabel";
-            this.InfoLabel.Size = new System.Drawing.Size(436, 238);
+            this.InfoLabel.Size = new System.Drawing.Size(389, 238);
             this.InfoLabel.TabIndex = 2;
             this.InfoLabel.Text = resources.GetString("InfoLabel.Text");
-            // 
-            // OtherInfoLabel
-            // 
-            this.OtherInfoLabel.AutoSize = true;
-            this.OtherInfoLabel.Location = new System.Drawing.Point(3, 306);
-            this.OtherInfoLabel.Name = "OtherInfoLabel";
-            this.OtherInfoLabel.Size = new System.Drawing.Size(90, 13);
-            this.OtherInfoLabel.TabIndex = 4;
-            this.OtherInfoLabel.Text = "Other information:";
-            // 
-            // InformationTextBox
-            // 
-            this.InformationTextBox.HideSelection = false;
-            this.InformationTextBox.Location = new System.Drawing.Point(3, 322);
-            this.InformationTextBox.Multiline = true;
-            this.InformationTextBox.Name = "InformationTextBox";
-            this.InformationTextBox.ReadOnly = true;
-            this.InformationTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.InformationTextBox.ShortcutsEnabled = false;
-            this.InformationTextBox.Size = new System.Drawing.Size(433, 103);
-            this.InformationTextBox.TabIndex = 0;
-            this.InformationTextBox.TabStop = false;
-            this.InformationTextBox.Text = resources.GetString("InformationTextBox.Text");
             // 
             // AboutPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.OtherInfoLabel);
-            this.Controls.Add(this.InformationTextBox);
             this.Controls.Add(this.InfoLabel);
             this.Controls.Add(this.AboutLabel);
             this.Controls.Add(this.LogoPictureBox);
@@ -117,7 +90,5 @@
         private System.Windows.Forms.PictureBox LogoPictureBox;
         private System.Windows.Forms.Label AboutLabel;
         private System.Windows.Forms.Label InfoLabel;
-        private ColourTextBox InformationTextBox;
-        private System.Windows.Forms.Label OtherInfoLabel;
     }
 }
