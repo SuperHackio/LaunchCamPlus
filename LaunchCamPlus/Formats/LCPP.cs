@@ -356,7 +356,6 @@ namespace LaunchCamPlus
                 {
                     Version = (int)FindNumber(FS, Offset),
                     Identification = FindString(FS, Offset),
-                    Num = (int)FindNumber(FS, Offset),
                     Type = FindString(FS, Offset),
                     RotationX = FindNumber(FS, Offset),
                     RotationY = FindNumber(FS, Offset),

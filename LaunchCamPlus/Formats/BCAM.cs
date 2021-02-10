@@ -208,16 +208,10 @@ namespace Hack.io.BCAM
             #region Collect the strings
             List<string> Strings = new List<string>();// { "930" };
             for (int i = 0; i < EntryCount; i++)
-            {
-                for (int j = 0; j < Entries[i].Data.Count; j++)
-                {
-                    if (Fields.ContainsKey(Entries[i].Data.ElementAt(j).Key) && Fields[Entries[i].Data.ElementAt(j).Key].DataType == DataTypes.STRING)
-                    {
-                        if (!Strings.Any(O => O.Equals((string)Entries[i].Data.ElementAt(j).Value)))
-                            Strings.Add((string)Entries[i].Data.ElementAt(j).Value);
-                    }
-                }
-            }
+                foreach (KeyValuePair<uint, BCAMField> item in Fields)
+                    if (item.Value.DataType == DataTypes.STRING)
+                        if (!Strings.Contains(Entries[i].Data[item.Key]))
+                            Strings.Add((string)Entries[i].Data[item.Key]);
             #endregion
 
             BCSV.WriteReverse(BitConverter.GetBytes(Fields.Count), 0, 4);
@@ -504,7 +498,6 @@ namespace Hack.io.BCAM
 
         public static readonly DataTypes[] HashDataTypes = new DataTypes[]
         {
-            DataTypes.INT32,
             DataTypes.INT32,
             DataTypes.STRING,
             DataTypes.STRING,
@@ -795,13 +788,9 @@ namespace Hack.io.BCAM
         }
 
         /// <summary>
-        /// USELESS
+        /// USELESS?
         /// </summary>
         public int Version { get; set; }
-        /// <summary>
-        /// USELESS
-        /// </summary>
-        public int Num { get; set; }
 
         public string Identification
         {
