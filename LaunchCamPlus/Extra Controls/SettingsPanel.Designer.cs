@@ -72,7 +72,7 @@
             this.AboutLabel.Name = "AboutLabel";
             this.AboutLabel.Size = new System.Drawing.Size(201, 13);
             this.AboutLabel.TabIndex = 1;
-            this.AboutLabel.Text = "© Super Hackio Incorporated 2018-2020";
+            this.AboutLabel.Text = "© Super Hackio Incorporated 2018-2021";
             // 
             // VisualSettingsGroupBox
             // 
