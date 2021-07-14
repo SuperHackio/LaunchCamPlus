@@ -85,7 +85,7 @@ namespace Hack.io.BCAM
             ushort offset = 0;
             if (Settings.Default.IsEnforceCompress)
             {
-                //FinalHashes.Add(PreferredHashOrder[0]);
+                FinalHashes.Add(PreferredHashOrder[0]);
                 //FinalHashes.Add(PreferredHashOrder[1]);
                 for (int i = 0; i < EntryCount; i++)
                     for (int j = 0; j < Entries[i].Data.Count; j++)
@@ -129,29 +129,35 @@ namespace Hack.io.BCAM
                 FinalHashes = FinalHashes.SortBy(PreferredHashOrder);
 
                 Fields = new Dictionary<uint, BCAMField>();
-                //short FlagOffset = -1;
-                //byte flagshift = 0;
-                //BitArray MaskArray;
+                short FlagOffset = -1;
+                byte flagshift = 0;
+                BitArray MaskArray;
                 for (int i = 0; i < FinalHashes.Count; i++)
                 {
                     BCAMField CurrentField = new BCAMField() { HashName = FinalHashes[i], EntryOffset = offset, DataType = CameraDefaults.DefaultTypes[FinalHashes[i]] };
 
-                    //if (Settings.Default.IsEnforceCompress && FlagHashes.Any(O => O == FinalHashes[i]))
-                    //{
-                    //    MaskArray = new BitArray(new int[1]);
-                    //    if (FlagOffset == -1)
-                    //    {
-                    //        FlagOffset = (short)offset;
-                    //        offset += 4;
-                    //    }
+                    if (Settings.Default.IsEnforceCompress && FlagHashes.Any(O => O == FinalHashes[i]))
+                    {
+                        MaskArray = new BitArray(new int[1]);
+                        if (FlagOffset == -1)
+                        {
+                            FlagOffset = (short)offset;
+                            offset += 4;
+                        }
 
-                    //    CurrentField.EntryOffset = (ushort)FlagOffset;
-                    //    MaskArray[flagshift] = true;
-                    //    CurrentField.Bitmask = (uint)MaskArray.ToInt32();
-                    //    CurrentField.ShiftAmount = flagshift++;
-                    //}
-                    //else
-                    //{
+                        CurrentField.EntryOffset = (ushort)FlagOffset;
+                        MaskArray[flagshift] = true;
+                        CurrentField.Bitmask = (uint)MaskArray.ToInt32();
+                        CurrentField.ShiftAmount = flagshift++;
+
+                        if (flagshift == 8)
+                        {
+                            FlagOffset = -1;
+                            flagshift = 0;
+                        }
+                    }
+                    else
+                    {
                         CurrentField.ShiftAmount = 0;
                         switch (CurrentField.DataType)
                         {
@@ -175,7 +181,7 @@ namespace Hack.io.BCAM
                             default:
                                 throw new Exception();
                         }
-                    //}
+                    }
 
                     Fields.Add(FinalHashes[i], CurrentField);
                 }
@@ -553,24 +559,23 @@ namespace Hack.io.BCAM
             DataTypes.INT32,
             DataTypes.INT32,
         };
-
         //The game doesn't allow this.... Can we get an F in the chat.
-        //private static uint[] FlagHashes => new uint[]
-        //{
-        //    //Put all these into 1 int through the power of masking
-        //    0x41E363AC, //DisableReset
-        //    0x9F02074F, //Enable Field of View
-        //    0x82D5627E, //Enable Sharp Zoom
-        //    0xE2044E84, //Disable Anti-blur
-        //    0x521E5C3F, //Disable Collision
-        //    0xBB74D6C1, //Disable First Person
-        //    0xDA484167, //GroupFlagEndErpFrame
-        //    0xED8DD072, //GroupFlagThrough
-        //    0x67D981E8, //GroupFlagEndTransitionSpeed //LOL THIS ISN'T EVEN A FLAG 😂
-        //    0x26C8C3C0, //Use Verticle Pan Axis'
-        //    0x45E50EE5, //Event Use Transition
-        //    0x1BCD52AA  //Event Use End Transition
-        //};
+        private static uint[] FlagHashes => new uint[]
+        {
+            //Put all these into 1 int through the power of masking
+            0x41E363AC, //DisableReset
+            0x9F02074F, //Enable Field of View
+            0x82D5627E, //Enable Sharp Zoom
+            0xE2044E84, //Disable Anti-blur
+            0x521E5C3F, //Disable Collision
+            0xBB74D6C1, //Disable First Person
+            0xDA484167, //GroupFlagEndErpFrame
+            0xED8DD072, //GroupFlagThrough
+            //0x67D981E8, //GroupFlagEndTransitionSpeed //LOL THIS ISN'T EVEN A FLAG 😂
+            0x26C8C3C0, //Use Verticle Pan Axis'
+            0x45E50EE5, //Event Use Transition
+            0x1BCD52AA  //Event Use End Transition
+        };
 
         public Dictionary<uint, string> HashLookup
         {
@@ -788,7 +793,7 @@ namespace Hack.io.BCAM
         }
 
         /// <summary>
-        /// USELESS?
+        /// NOT USELESS!! SMG needs it at some points
         /// </summary>
         public int Version { get; set; }
 
@@ -1725,7 +1730,7 @@ namespace Hack.io.BCAM
             }
         }
         /// <summary>
-        /// Game Flag, only used by g: cameras
+        /// Only used by g: cameras
         /// </summary>
         public int GFlagEndTime
         {
