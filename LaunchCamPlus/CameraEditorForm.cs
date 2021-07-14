@@ -478,8 +478,13 @@ namespace LaunchCamPlus
                     break;
                 case ".arc":
                 case ".rarc":
+                    if (!File.Exists(Filename))
+                    {
+                        MessageBox.Show("The output archive does not exist. Your changes have not been saved.");
+                        goto SaveFailed;
+                    }
                     Console.WriteLine("Loading the target Archive:");
-                    RARC Archive = YAZ0.Check(Filename) ? new RARC(new MemoryStream(YAZ0.Decompress(File.ReadAllBytes(Filename)))) : new RARC(Filename);
+                    RARC Archive = YAZ0.Check(Filename) ? new RARC(YAZ0.DecompressToMemoryStream(Filename)) : new RARC(Filename);
                     Console.WriteLine("Archive Loaded. Looking for the .bcam to replace...");
                     
                     string FinalPath = new string[] { Archive.GetItemKeyFromNoCase("Camera/CameraParam.bcam"), Archive.GetItemKeyFromNoCase("ActorInfo/CameraParam.bcam") }.FirstOrDefault(s => !string.IsNullOrEmpty(s));
@@ -498,7 +503,7 @@ namespace LaunchCamPlus
                     Console.WriteLine(FinalPath is null ? "Injecting..." : ".bcam found. Saving...");
                     MemoryStream ms = new MemoryStream();
                     Cameras.Save(ms);
-                    Archive[FinalPath] = new RARC.File("CameraParam.bcam", ms);
+                    Archive[FinalPath] = new RARC.File(((RARC.File)Archive[FinalPath]).Name, ms);
 
                     Console.WriteLine(".bcam saved into the archive.");
                     Console.WriteLine("Saving the archive...");
