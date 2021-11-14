@@ -1,0 +1,3 @@
+[submodule "Hack.io"]
+	path = Hack.io
+	url = https://github.com/SuperHackio/Hack.io
