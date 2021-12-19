@@ -158,8 +158,8 @@ namespace LaunchCamPlus.CameraPanels
         public string CurrentCameraType => TypeComboBox.Text;
 
         protected void IndicateChangeMade() => Program.IsUnsavedChanges = !Loading ? true : Program.IsUnsavedChanges;
-        protected void IndicateChangeMade(EventArgs e) => Program.IsUnsavedChanges = !Loading ? true : Program.IsUnsavedChanges;
-        protected void IndicateChangeMade(object sender, EventArgs e) => Program.IsUnsavedChanges = !Loading ? true : Program.IsUnsavedChanges;
+        protected void IndicateChangeMade(EventArgs e) => IndicateChangeMade();
+        protected void IndicateChangeMade(object sender, EventArgs e) => IndicateChangeMade();
 
 
         protected void SetupUnsaved()
