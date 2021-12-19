@@ -24,6 +24,7 @@ namespace LaunchCamPlus.CameraPanels
         {
             base.LoadCamera(Entry);
             Loading = true;
+            RotationZNumericUpDown.Value = (decimal)Entry.RotationZ.RadianToDegree();
             ZoomNumericUpDown.Value = (decimal)Entry.Zoom;
             StringTextBox.Text = Entry.String;
             FieldOfViewNumericUpDown.Value = (decimal)Entry.FieldOfView;
@@ -51,7 +52,7 @@ namespace LaunchCamPlus.CameraPanels
             base.UnLoadCamera(Entry);
             Entry.RotationX = 0.0f;
             Entry.RotationY = 0.0f;
-            Entry.RotationZ = (float)RotationZNumericUpDown.Value;
+            Entry.RotationZ = ((float)RotationZNumericUpDown.Value).DegreeToRadian();
             Entry.Zoom = (float)ZoomNumericUpDown.Value;
             Entry.Num1 = 0;
             Entry.Num2 = 0;
