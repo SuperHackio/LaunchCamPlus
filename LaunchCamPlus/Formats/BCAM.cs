@@ -131,32 +131,32 @@ namespace Hack.io.BCAM
                 Fields = new Dictionary<uint, BCAMField>();
                 short FlagOffset = -1;
                 byte flagshift = 0;
-                BitArray MaskArray;
+                //BitArray MaskArray;
                 for (int i = 0; i < FinalHashes.Count; i++)
                 {
                     BCAMField CurrentField = new BCAMField() { HashName = FinalHashes[i], EntryOffset = offset, DataType = CameraDefaults.DefaultTypes[FinalHashes[i]] };
 
-                    if (Settings.Default.IsEnforceCompress && FlagHashes.Any(O => O == FinalHashes[i]))
-                    {
-                        MaskArray = new BitArray(new int[1]);
-                        if (FlagOffset == -1)
-                        {
-                            FlagOffset = (short)offset;
-                            offset += 4;
-                        }
+                    //if (Settings.Default.IsEnforceCompress && FlagHashes.Any(O => O == FinalHashes[i]))
+                    //{
+                    //    MaskArray = new BitArray(new int[1]);
+                    //    if (FlagOffset == -1)
+                    //    {
+                    //        FlagOffset = (short)offset;
+                    //        offset += 4;
+                    //    }
 
-                        CurrentField.EntryOffset = (ushort)FlagOffset;
-                        MaskArray[flagshift] = true;
-                        CurrentField.Bitmask = (uint)MaskArray.ToInt32();
-                        CurrentField.ShiftAmount = flagshift++;
+                    //    CurrentField.EntryOffset = (ushort)FlagOffset;
+                    //    MaskArray[flagshift] = true;
+                    //    CurrentField.Bitmask = (uint)MaskArray.ToInt32();
+                    //    CurrentField.ShiftAmount = flagshift++;
 
-                        if (flagshift == 8)
-                        {
-                            FlagOffset = -1;
-                            flagshift = 0;
-                        }
-                    }
-                    else
+                    //    if (flagshift == 8)
+                    //    {
+                    //        FlagOffset = -1;
+                    //        flagshift = 0;
+                    //    }
+                    //}
+                    //else
                     {
                         CurrentField.ShiftAmount = 0;
                         switch (CurrentField.DataType)
@@ -2141,6 +2141,7 @@ namespace Hack.io.BCAM
             { "バネベーゴマン", new EventData("Spring Topman", true, true) },
             { "隠れバネベーゴマン", new EventData("Hiding Spring Topman", true, true) },
             { "モンテ固有", new EventData("Chuckster Pianta", true, false) },
+            { "アイテムドリル固有", new EventData("Spin Drill Usage", true, false) },
             { "ハラペココインチコ固有飛行", new EventData("Coin Hungry Luma", true, false) },
             { "チューブスライダー固有滑り", new EventData("Tube Slider", true, false) },
             { "チューブスライダー固有飛び出し", new EventData("Tube Slider Exit", true, false) },
@@ -2160,6 +2161,7 @@ namespace Hack.io.BCAM
             { "マイスター固有会話", new EventData("Message: Lubba", true, false) },
             { "チコ固有会話", new EventData("Message: Luma", true, false) },
             { "でかチコ固有会話", new EventData("Message: Big Luma", true, false) },
+            { "よろず屋チコ固有独自会話", new EventData("Message: Luma Shop", true, false) },
             { "ハニークイーン固有会話", new EventData("Message: Queen Bee", true, false) },
             { "ハニービー固有会話", new EventData("Message: Honeybee", true, false) },
             { "ペンギン仙人固有会話", new EventData("Message: Penguin Elder", true, false) },
@@ -2180,7 +2182,8 @@ namespace Hack.io.BCAM
             { "水中プラネット", new EventData("Underwater Planet", false, false) },
             { "フーファイターカメラ", new EventData("Foo Fighter Camera", false, false) },
 
-            { "DemoName[CameraPartName]", new EventData("Demo Camera Template", false, false) }
+            { "DemoName[CameraPartName]", new EventData("Demo Camera Template", false, false) },
+            { "g:ObjectName:CameraID:0", new EventData("Collision Camera Template", false, false) },
         };
         /// <summary>
         /// o: cameras
