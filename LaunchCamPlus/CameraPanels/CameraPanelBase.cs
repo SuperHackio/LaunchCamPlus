@@ -117,6 +117,10 @@ namespace LaunchCamPlus.CameraPanels
         public virtual void UnLoadCamera(BCAMEntry Entry)
         {
             Entry.Identification = IDTextBox.Text;
+            if (Entry.Identification.ToLower()[0] == 's' || Entry.Identification.ToLower()[0] == 'c')
+            {
+                Entry.Identification = Entry.Identification.ToLower();
+            }
             Entry.Type = TypeComboBox.Text;
         }
 
