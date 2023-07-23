@@ -1986,11 +1986,25 @@ namespace Hack.io.BCAM
                 Match m = Regex.Match(val, @"^e:\S+?<\S+?>$", RegexOptions.IgnoreCase);
                 if (m.Success)
                     Final += "Demo: "+Original.Replace("e:","");
+                else if (Regex.IsMatch(Original, @"e:.*\s\d-\S"))
+                {
+                    Final = Original;
+
+                    //Warp pods have a very....interesting pattern to them...
+                    string[] data = Original.Split();
+                    if (data.Length != 2)
+                        goto Exit;
+                    string[] values = data[1].Split('-');
+                    if (values.Length != 2)
+                        goto Exit;
+                    Final = $"Event: Warp Pod (Group {values[0]}, Arg0 = {(values[1][0]-'A')})";
+                }
                 else
                 { 
                     string targetkey = string.Concat(Original.Split(':')[1].Where(IsNonDigit));
                     Final += Events.ContainsKey(targetkey) ? "Event: "+Original.Substring(2).Replace(targetkey, Events[targetkey]+" ").Replace("番目", "th") : Original;
                 }
+            Exit:;
             }
             else if (Original.StartsWith("o:"))
             {
@@ -2149,6 +2163,8 @@ namespace Hack.io.BCAM
             { "プチポーター固有ワープ点でワープアウト", new EventData("Minigame Teleporter (Arrive at Destination)", true, false) },
             { "プチポーター固有ワープ点でワープイン", new EventData("Minigame Teleporter (Prepare return warp)", true, false) },
             { "プチポーター固有基点でワープアウト", new EventData("Minigame Teleporter (Arrive from returning)", true, false) },
+
+            { "ワープカメラ (GroupID)-(The ASCII character Arg0+65 represents)", new EventData("Warp Pod Template", false, false) },
 
             { "看板固有会話", new EventData("Message: Signboard", true, false) },
             { "でか看板固有会話", new EventData("Message: Big Signboard", true, false) },

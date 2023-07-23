@@ -89,12 +89,18 @@ namespace LaunchCamPlus
         public static bool IsUpdateReady
         {
             get
-            {
+            {      
+#if DEBUG
+                Console.WriteLine("-- LCP is in DEBUG MODE --");
+                return false;
+#else
                 try
                 {
                     new System.Net.WebClient().DownloadFile("https://raw.githubusercontent.com/SuperHackio/LaunchCamPlus/master/LaunchCamPlus/UpdateAlert.txt", @AppDomain.CurrentDomain.BaseDirectory + "VersionCheck.txt");
 
-                    Version Internet = new Version(File.ReadAllText(@AppDomain.CurrentDomain.BaseDirectory + "VersionCheck.txt"));
+                    string[] lines = File.ReadAllLines(@AppDomain.CurrentDomain.BaseDirectory + "VersionCheck.txt");
+
+                    Version Internet = new Version(lines[0]);
                     File.Delete(@AppDomain.CurrentDomain.BaseDirectory + "VersionCheck.txt");
                     Version Local = new Version(Application.ProductVersion);
                     return Local.CompareTo(Internet) < 0;
@@ -105,8 +111,9 @@ namespace LaunchCamPlus
                     //Imagine not having internet lol
                     return false;
                 }
+#endif
             }
-            
+
         }
         public static bool ShowNeedsUpdate { get; set; } = false;
 
