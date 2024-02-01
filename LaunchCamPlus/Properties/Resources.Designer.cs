@@ -19,7 +19,7 @@ namespace LaunchCamPlus.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -113,6 +113,16 @@ namespace LaunchCamPlus.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Copy {
+            get {
+                object obj = ResourceManager.GetObject("Copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DefaultSplash {
             get {
                 object obj = ResourceManager.GetObject("DefaultSplash", resourceCulture);
@@ -135,7 +145,47 @@ namespace LaunchCamPlus.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Export_Preset {
             get {
-                object obj = ResourceManager.GetObject("Export_Preset", resourceCulture);
+                object obj = ResourceManager.GetObject("Export Preset", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap FlatAll {
+            get {
+                object obj = ResourceManager.GetObject("FlatAll", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap FlatBoth {
+            get {
+                object obj = ResourceManager.GetObject("FlatBoth", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap FlatIn {
+            get {
+                object obj = ResourceManager.GetObject("FlatIn", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap FlatOut {
+            get {
+                object obj = ResourceManager.GetObject("FlatOut", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -203,6 +253,46 @@ namespace LaunchCamPlus.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap LinearAll {
+            get {
+                object obj = ResourceManager.GetObject("LinearAll", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap LinearBoth {
+            get {
+                object obj = ResourceManager.GetObject("LinearBoth", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap LinearIn {
+            get {
+                object obj = ResourceManager.GetObject("LinearIn", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap LinearOut {
+            get {
+                object obj = ResourceManager.GetObject("LinearOut", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap MoveCameraBottom {
             get {
                 object obj = ResourceManager.GetObject("MoveCameraBottom", resourceCulture);
@@ -236,6 +326,36 @@ namespace LaunchCamPlus.Properties {
         internal static System.Drawing.Bitmap MoveCameraUp {
             get {
                 object obj = ResourceManager.GetObject("MoveCameraUp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap New {
+            get {
+                object obj = ResourceManager.GetObject("New", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Paste {
+            get {
+                object obj = ResourceManager.GetObject("Paste", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Preset {
+            get {
+                object obj = ResourceManager.GetObject("Preset", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -295,7 +415,7 @@ namespace LaunchCamPlus.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Save_As {
             get {
-                object obj = ResourceManager.GetObject("Save_As", resourceCulture);
+                object obj = ResourceManager.GetObject("Save As", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -305,7 +425,7 @@ namespace LaunchCamPlus.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Save_File {
             get {
-                object obj = ResourceManager.GetObject("Save_File", resourceCulture);
+                object obj = ResourceManager.GetObject("Save File", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

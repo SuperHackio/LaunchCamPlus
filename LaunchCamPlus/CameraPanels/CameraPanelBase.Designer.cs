@@ -28,74 +28,75 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.IDLabel = new System.Windows.Forms.Label();
-            this.TypeLabel = new System.Windows.Forms.Label();
-            this.TypeComboBox = new LaunchCamPlus.ColourComboBox();
-            this.IDTextBox = new LaunchCamPlus.ColourTextBox();
-            this.SuspendLayout();
+            IDLabel = new Label();
+            TypeLabel = new Label();
+            TypeComboBox = new ExtraControls.ColourComboBox();
+            IDTextBox = new ExtraControls.ColourTextBox();
+            SuspendLayout();
             // 
             // IDLabel
             // 
-            this.IDLabel.AutoSize = true;
-            this.IDLabel.Location = new System.Drawing.Point(3, 6);
-            this.IDLabel.Name = "IDLabel";
-            this.IDLabel.Size = new System.Drawing.Size(21, 13);
-            this.IDLabel.TabIndex = 1;
-            this.IDLabel.Text = "ID:";
+            IDLabel.AutoSize = true;
+            IDLabel.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            IDLabel.Location = new Point(3, 6);
+            IDLabel.Name = "IDLabel";
+            IDLabel.Size = new Size(21, 13);
+            IDLabel.TabIndex = 1;
+            IDLabel.Text = "ID:";
             // 
             // TypeLabel
             // 
-            this.TypeLabel.AutoSize = true;
-            this.TypeLabel.Location = new System.Drawing.Point(3, 32);
-            this.TypeLabel.Name = "TypeLabel";
-            this.TypeLabel.Size = new System.Drawing.Size(34, 13);
-            this.TypeLabel.TabIndex = 3;
-            this.TypeLabel.Text = "Type:";
+            TypeLabel.AutoSize = true;
+            TypeLabel.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            TypeLabel.Location = new Point(3, 32);
+            TypeLabel.Name = "TypeLabel";
+            TypeLabel.Size = new Size(34, 13);
+            TypeLabel.TabIndex = 3;
+            TypeLabel.Text = "Type:";
             // 
             // TypeComboBox
             // 
-            this.TypeComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.TypeComboBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
-            this.TypeComboBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.TypeComboBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            this.TypeComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.TypeComboBox.FormattingEnabled = true;
-            this.TypeComboBox.Location = new System.Drawing.Point(43, 29);
-            this.TypeComboBox.Name = "TypeComboBox";
-            this.TypeComboBox.Size = new System.Drawing.Size(395, 21);
-            this.TypeComboBox.TabIndex = 4;
-            this.TypeComboBox.SelectedIndexChanged += new System.EventHandler(this.TypeComboBox_SelectedIndexChanged);
+            TypeComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            TypeComboBox.AutoCompleteMode = AutoCompleteMode.Append;
+            TypeComboBox.AutoCompleteSource = AutoCompleteSource.ListItems;
+            TypeComboBox.BorderColor = Color.FromArgb(200, 200, 200);
+            TypeComboBox.FlatStyle = FlatStyle.Flat;
+            TypeComboBox.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            TypeComboBox.FormattingEnabled = true;
+            TypeComboBox.Location = new Point(43, 29);
+            TypeComboBox.Name = "TypeComboBox";
+            TypeComboBox.Size = new Size(395, 21);
+            TypeComboBox.TabIndex = 4;
+            TypeComboBox.SelectedIndexChanged += TypeComboBox_SelectedIndexChanged;
             // 
             // IDTextBox
             // 
-            this.IDTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.IDTextBox.Location = new System.Drawing.Point(43, 3);
-            this.IDTextBox.Name = "IDTextBox";
-            this.IDTextBox.Size = new System.Drawing.Size(395, 20);
-            this.IDTextBox.TabIndex = 0;
-            this.IDTextBox.TextChanged += new System.EventHandler(this.IDTextBox_TextChanged);
+            IDTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            IDTextBox.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            IDTextBox.Location = new Point(43, 3);
+            IDTextBox.Name = "IDTextBox";
+            IDTextBox.Size = new Size(395, 20);
+            IDTextBox.TabIndex = 0;
+            IDTextBox.TextChanged += IDTextBox_TextChanged;
             // 
             // CameraPanelBase
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.TypeComboBox);
-            this.Controls.Add(this.TypeLabel);
-            this.Controls.Add(this.IDLabel);
-            this.Controls.Add(this.IDTextBox);
-            this.Name = "CameraPanelBase";
-            this.Size = new System.Drawing.Size(441, 441);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(TypeComboBox);
+            Controls.Add(TypeLabel);
+            Controls.Add(IDLabel);
+            Controls.Add(IDTextBox);
+            Name = "CameraPanelBase";
+            Size = new Size(441, 441);
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
         private System.Windows.Forms.Label IDLabel;
         private System.Windows.Forms.Label TypeLabel;
-        private ColourComboBox TypeComboBox;
-        private ColourTextBox IDTextBox;
+        private LaunchCamPlus.ExtraControls.ColourComboBox TypeComboBox;
+        private LaunchCamPlus.ExtraControls.ColourTextBox IDTextBox;
     }
 }

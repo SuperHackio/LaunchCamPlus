@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hack.io.BCAM;
+﻿using LaunchCamPlus.Formats;
 
 namespace LaunchCamPlus.CameraPanels
 {
@@ -12,7 +7,8 @@ namespace LaunchCamPlus.CameraPanels
     /// </summary>
     interface ICameraPanel
     {
-        void LoadCamera(BCAMEntry Target);
-        void UnLoadCamera(BCAMEntry Target);
+        BCAM.Entry Item { get; set; }
+        void LoadCamera(BCAM.Entry entry);
+        void UnloadCamera();
     }
 }

@@ -1,31 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Hack.io.BCAM;
-using LaunchCamPlus.Properties;
+﻿using LaunchCamPlus.ExtraControls;
+using LaunchCamPlus.Formats;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LaunchCamPlus.CameraPanels
 {
-    public partial class CameraPanelBase : UserControl, ICameraPanel
+    public partial class CameraPanelBase : UserControl, ICameraPanel, IReloadTheme
     {
-        protected CameraPanelBase() 
+        public string CameraType
+        {
+            get => Item?.Type ?? "";
+            set => Item.Type = value;
+        }
+        protected bool Loading = false;
+        [AllowNull] //don't use the ? here
+        protected BCAM.Entry _Item;
+        public BCAM.Entry Item
+        {
+            get => _Item;
+            set => _Item = value;
+        }
+
+        protected delegate void CameraIdChangeDelegate(string CameraId);
+        protected event CameraIdChangeDelegate? OnCameraIdChange = null;
+
+        protected CameraPanelBase()
         {
             InitializeComponent();
             Loading = true;
-            TypeComboBox.DataSource = Enum.GetValues(typeof(CameraType));
+            TypeComboBox.DataSource = Enum.GetValues(typeof(BCAM.CameraType));
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
-            TypeComboBox.Resize += (s, e) => {
+            TypeComboBox.Resize += (s, e) =>
+            {
                 if (!TypeComboBox.IsHandleCreated)
                     return;
 
-                TypeComboBox.BeginInvoke(new Action(() => {
+                TypeComboBox.BeginInvoke(new Action(() =>
+                {
                     var parent = TypeComboBox.FindForm();
                     if (parent == null)
                         return;
@@ -44,8 +55,6 @@ namespace LaunchCamPlus.CameraPanels
             Loading = false;
         }
 
-        public string CameraType { get; set; }
-        protected bool Loading = false;
 
         protected override CreateParams CreateParams
         {
@@ -57,48 +66,7 @@ namespace LaunchCamPlus.CameraPanels
             }
         }
 
-        public void ReloadTheme()
-        {
-            TypeComboBox.ForeColor =
-                IDTextBox.ForeColor =
-                TypeLabel.ForeColor =
-                IDLabel.ForeColor = ProgramColours.TextColour;
-
-            IDTextBox.BackColor =
-            IDTextBox.BorderColor =
-                TypeComboBox.BackColor = ProgramColours.WindowColour;
-
-            TypeComboBox.BorderColor = ProgramColours.BorderColour;
-
-            for (int i = 0; i < Controls.Count; i++)
-            {
-                if (Controls[i] is Label || Controls[i] is CheckBox)
-                {
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                }
-                else if (Controls[i] is ColourNumericUpDown)
-                {
-                    Controls[i].BackColor = ProgramColours.WindowColour;
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                    ((ColourNumericUpDown)Controls[i]).BorderColor = ProgramColours.BorderColour;
-                }
-                else if (Controls[i] is Vector3NumericUpDown)
-                {
-                    ((Vector3NumericUpDown)Controls[i]).ReloadTheme();
-                }
-                else if (Controls[i] is ColourTextBox || Controls[i] is ColourComboBox)
-                {
-                    Controls[i].BackColor = ProgramColours.WindowColour;
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                    ((dynamic)Controls[i]).BorderColor = ProgramColours.BorderColour;
-                }
-                else if (Controls[i] is GroupBox)
-                {
-                    Controls[i].ForeColor = ProgramColours.TextColour;
-                    Controls[i].BackColor = ProgramColours.ControlBackColor;
-                }
-            }
-        }
+        public void ReloadTheme() => ControlEx.ReloadTheme(this);
 
         public virtual void ResizeEnd()
         {
@@ -106,33 +74,37 @@ namespace LaunchCamPlus.CameraPanels
         }
 
 
-        public virtual void LoadCamera(BCAMEntry Entry)
+        public virtual void LoadCamera(BCAM.Entry Entry)
         {
-            Loading = true;
+            Item = Entry;
             IDTextBox.Text = Entry.Identification;
             TypeComboBox.Text = Entry.Type;
-            Loading = false;
         }
 
-        public virtual void UnLoadCamera(BCAMEntry Entry)
+        public virtual void UnloadCamera()
         {
-            Entry.Identification = IDTextBox.Text;
-            if (Entry.Identification.ToLower()[0] == 's' || Entry.Identification.ToLower()[0] == 'c')
+            Item.Identification = IDTextBox.Text;
+            char x = Item.Identification.ToLower()[0];
+            if (x == 's' || x == 'c')
             {
-                Entry.Identification = Entry.Identification.ToLower();
+                Item.Identification = Item.Identification.ToLower();
             }
-            Entry.Type = TypeComboBox.Text;
+            Item.Type = TypeComboBox.Text;
         }
 
         private void IDTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (Loading)
-                return;
-            int cursorpos = IDTextBox.SelectionStart;
-            ((CameraEditorForm)ParentForm).RefreshSelected(IDTextBox.Text);
-            IDTextBox.Focus();
-            IDTextBox.SelectionStart = cursorpos;
-            IDTextBox.SelectionLength = 0;
+            if (!Loading)
+            {
+                Item.Identification = IDTextBox.Text;
+                Program.UpdateCameraId(Item);
+            }
+            OnCameraIdChange?.Invoke(Item.Identification);
+            //int cursorpos = IDTextBox.SelectionStart;
+            //((CameraEditorForm)ParentForm).RefreshSelected(IDTextBox.Text);
+            //IDTextBox.Focus();
+            //IDTextBox.SelectionStart = cursorpos;
+            //IDTextBox.SelectionLength = 0;
         }
 
         public void UpdateID(string id)
@@ -143,13 +115,14 @@ namespace LaunchCamPlus.CameraPanels
 
         private void TypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Loading || Settings.Default.IsUseDefaultOnly)
+            if (Loading || !Program.Settings.IsUseUniqueEditor)
                 return;
 
-            ((CameraEditorForm)ParentForm)?.ReloadEditor(true);
+            Item.Type = TypeComboBox.Text;
+            Program.ReloadEditorPanel();
         }
 
-        void TypeComboBox_MouseWheel(object sender, MouseEventArgs e)
+        void TypeComboBox_MouseWheel(object? sender, MouseEventArgs e)
         {
             if (sender is ComboBox cb && !cb.DroppedDown)
                 ((HandledMouseEventArgs)e).Handled = true;
@@ -157,9 +130,9 @@ namespace LaunchCamPlus.CameraPanels
 
         public string CurrentCameraType => TypeComboBox.Text;
 
-        protected void IndicateChangeMade() => Program.IsUnsavedChanges = !Loading ? true : Program.IsUnsavedChanges;
+        protected void IndicateChangeMade() => Program.IsUnsavedChanges = !Loading || Program.IsUnsavedChanges;
         protected void IndicateChangeMade(EventArgs e) => IndicateChangeMade();
-        protected void IndicateChangeMade(object sender, EventArgs e) => IndicateChangeMade();
+        protected void IndicateChangeMade(object? sender, EventArgs e) => IndicateChangeMade();
 
 
         protected void SetupUnsaved()
@@ -180,60 +153,5 @@ namespace LaunchCamPlus.CameraPanels
         }
     }
 
-    /// <summary>
-    /// The Enumerator of Camera Types
-    /// </summary>
-    public enum CameraType
-    {
-        CAM_TYPE_2D_SLIDE, //Slides 4 ways only. (Not forward or backward)
-        CAM_TYPE_ANIM,
-        CAM_TYPE_BEHIND_DEBUG,
-        CAM_TYPE_BLACK_HOLE,
-        CAM_TYPE_BOSS_DONKETSU,
-        CAM_TYPE_CHARMED_FIX,
-        CAM_TYPE_CHARMED_VECREG,
-        CAM_TYPE_CHARMED_VECREG_TOWER,
-        CAM_TYPE_CUBE_PLANET, //Allows the camera to rotate to fit the current gravity
-        CAM_TYPE_DEAD,
-        CAM_TYPE_DONKETSU_TEST,
-        CAM_TYPE_DPD,
-        CAM_TYPE_EYEPOS_FIX, //Moves the camera to a fixed location
-        CAM_TYPE_EYEPOS_FIX_THERE, //Freezes the camera on place - Only rotates until freed
-        CAM_TYPE_EYE_FIXED_THERE_TEST,
-        CAM_TYPE_FOLLOW,
-        CAM_TYPE_FOO_FIGHTER, //Red Star Related
-        CAM_TYPE_FOO_FIGHTER_PLANET, //Red Star Related
-        CAM_TYPE_FREEZE,
-        CAM_TYPE_FRONT_AND_BACK,
-        CAM_TYPE_GROUND,
-        CAM_TYPE_ICECUBE_PLANET,
-        CAM_TYPE_INNER_CYLINDER,
-        CAM_TYPE_INWARD_SPHERE,
-        CAM_TYPE_INWARD_TOWER, //Moves around a fixpoint so the fixpoint X & Z pos is never visible (Unconfirmed)
-        CAM_TYPE_INWARD_TOWER_TEST,
-        CAM_TYPE_MEDIAN_PLANET,
-        CAM_TYPE_MEDIAN_TOWER,
-        CAM_TYPE_MTXREG_PARALLEL,
-        CAM_TYPE_OBJ_PARALLEL, //Moves based on Mario's position. Usually used for Flying
-        CAM_TYPE_POINT_FIX,
-        CAM_TYPE_RACE_FOLLOW,
-        CAM_TYPE_RAIL_DEMO,
-        CAM_TYPE_RAIL_FOLLOW,
-        CAM_TYPE_RAIL_WATCH,
-        CAM_TYPE_SLIDER,
-        CAM_TYPE_SPHERE_TRUNDLE,
-        CAM_TYPE_SPIRAL_DEMO,
-        CAM_TYPE_SUBJECTIVE,
-        CAM_TYPE_TALK, //NPC Camera
-        CAM_TYPE_TOWER, //Moves around a fixpoint so the fixpoint X & Z pos is always visible
-        CAM_TYPE_TOWER_POS,
-        CAM_TYPE_TRIPOD_PLANET,
-        CAM_TYPE_TRUNDLE,
-        CAM_TYPE_TWISTED_PASSAGE,
-        CAM_TYPE_WATER_FOLLOW,
-        CAM_TYPE_WATER_PLANET,
-        CAM_TYPE_WATER_PLANET_BOSS,
-        CAM_TYPE_WONDER_PLANET,
-        CAM_TYPE_XZ_PARA //The most basic camera ever.
-    }
+
 }

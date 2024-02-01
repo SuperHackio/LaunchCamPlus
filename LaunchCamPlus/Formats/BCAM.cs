@@ -1,1288 +1,291 @@
-﻿using Hack.io.Util;
-using LaunchCamPlus;
-using LaunchCamPlus.Properties;
+﻿using Hack.io.BCSV;
+using Hack.io.Utility;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
+using static LaunchCamPlus.Formats.BCAMUtility;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Hack.io.BCAM
+namespace LaunchCamPlus.Formats;
+
+public class BCAM : BCSV
 {
-    public class BCAM
+    #region CAMERA_HASHES
+    public const uint HASH_VERSION = 0x14F51CD8;
+    public const uint HASH_ID = 0x00000D1B;
+    public const uint HASH_CAMTYPE = 0x20C58F89;
+    public const uint HASH_STRING = 0xCAD56011;
+    public const uint HASH_ANGLEB = 0xABC4A1CF;
+    public const uint HASH_ANGLEA = 0xABC4A1CE;
+    public const uint HASH_ROLL = 0x0035807D;
+    public const uint HASH_DIST = 0x002F0DA6;
+    public const uint HASH_FOVY = 0x00300D4C;
+    public const uint HASH_CAMINT = 0xAE79D1C0;
+    public const uint HASH_CAMENDINT = 0xEB66C5C3;
+    public const uint HASH_GNDINT = 0xB6004E72;
+    public const uint HASH_NUM1 = 0x0033C56B;
+    public const uint HASH_NUM2 = 0x0033C56C;
+    public const uint HASH_UPLAY = 0x06A54929;
+    public const uint HASH_LPLAY = 0x062675A0;
+    public const uint HASH_PUSHDELAY = 0xD26F6AA9;
+    public const uint HASH_PUSHDELAYLOW = 0x93AECC0B;
+    public const uint HASH_UDOWN = 0x069FE297;
+    public const uint HASH_LOFFSET = 0x145863FF;
+    public const uint HASH_LOFFSETV = 0x76B41C57;
+    public const uint HASH_UPPER = 0x06A558A2;
+    public const uint HASH_LOWER = 0x06262B01;
+    public const uint HASH_EVFRM = 0x05C676D0;
+    public const uint HASH_EVPRIORITY = 0x730D4555;
+    public const uint HASH_WOFFSET_X = 0xBEC02B34;
+    public const uint HASH_WOFFSET_Y = 0xBEC02B35;
+    public const uint HASH_WOFFSET_Z = 0xBEC02B36;
+    public const uint HASH_WPOINT_X = 0x31CB1323;
+    public const uint HASH_WPOINT_Y = 0x31CB1324;
+    public const uint HASH_WPOINT_Z = 0x31CB1325;
+    public const uint HASH_AXIS_X = 0xAC52894B;
+    public const uint HASH_AXIS_Y = 0xAC52894C;
+    public const uint HASH_AXIS_Z = 0xAC52894D;
+    public const uint HASH_VPANAXIS_X = 0x3B5CB472;
+    public const uint HASH_VPANAXIS_Y = 0x3B5CB473;
+    public const uint HASH_VPANAXIS_Z = 0x3B5CB474;
+    public const uint HASH_UP_X = 0x0036D9C5;
+    public const uint HASH_UP_Y = 0x0036D9C6;
+    public const uint HASH_UP_Z = 0x0036D9C7;
+    public const uint HASH_FLAG_NORESET = 0x41E363AC;
+    public const uint HASH_FLAG_NOFOVY = 0x9F02074F;
+    public const uint HASH_FLAG_LOFSERPOFF = 0x82D5627E;
+    public const uint HASH_FLAG_ANTIBLUROFF = 0xE2044E84;
+    public const uint HASH_FLAG_COLLISIONOFF = 0x521E5C3F;
+    public const uint HASH_FLAG_SUBJECTIVEOFF = 0xBB74D6C1;
+    public const uint HASH_GFLAG_ENABLEENDERPFRAME = 0xDA484167;
+    public const uint HASH_GFLAG_THRU = 0xED8DD072;
+    public const uint HASH_GFLAG_CAMENDINT = 0x67D981E8;
+    public const uint HASH_VPANUSE = 0x26C8C3C0;
+    public const uint HASH_EFLAG_ENABLEENDERPFRAME = 0x45E50EE5;
+    public const uint HASH_EFLAG_ENABLEERPFRAME = 0x1BCD52AA;
+    #endregion
+
+    /// <summary>
+    /// Gets or sets the BCSV.Entry at the specified index.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public new Entry this[int index]
     {
-        public Dictionary<uint, BCAMField> Fields { get; set; }
-        public int FieldCount => Fields == null ? -1 : Fields.Count;
-        public List<BCAMEntry> Entries { get; internal set; }
-        public int EntryCount => Entries == null ? -1 : Entries.Count;
-
-        public BCAMEntry this[int index]
-        {
-            get { return Entries[index]; }
-            set { Entries[index] = value; }
-        }
-        public void Add(BCAMEntry entry) => Entries.Add(entry);
-        public void AddRange(List<BCAMEntry> list) => Entries.AddRange(list);
-        public void Remove(int index) => Entries.RemoveAt(index);
-        public void Clear() => Entries.Clear();
-        public void Sort() => Entries = Entries.OrderBy(o => o.Identification).ToList();
-
-        public BCAM()
-        {
-            Entries = new List<BCAMEntry>();
-        }
-        public BCAM(Stream BCSV)
-        {
-            Fields = new Dictionary<uint, BCAMField>();
-            Entries = new List<BCAMEntry>();
-
-            int entrycount = BitConverter.ToInt32(BCSV.ReadReverse(0, 4), 0);
-            Console.Write($"{entrycount} Cameras ");
-            int fieldcount = BitConverter.ToInt32(BCSV.ReadReverse(0, 4), 0);
-            Console.WriteLine($"done with {fieldcount} fields");
-            uint dataoffset = BitConverter.ToUInt32(BCSV.ReadReverse(0, 4), 0);
-            uint entrysize = BitConverter.ToUInt32(BCSV.ReadReverse(0, 4), 0);
-
-            Console.WriteLine("Loading Fields:");
-            for (int i = 0; i < fieldcount; i++)
-            {
-                BCAMField currentfield = new BCAMField(BCSV);
-                Fields.Add(currentfield.HashName, currentfield);
-                Console.Write($"\r{Math.Min(((float)(i + 1) / (float)fieldcount) * 100.0f, 100.0f)}%          ");
-            }
-            Console.WriteLine("Complete!");
-
-#if DEBUG
-            for (int i = 0; i < 52; i++)
-            {
-                if (!Fields.ContainsKey(PreferredHashOrder[i]))
-                {
-                    Console.WriteLine("Excluded Field: " + HashLookup[PreferredHashOrder[i]]);
-                }
-            }
-#endif
-
-            Console.WriteLine("Loading Entries:");
-            for (int i = 0; i < entrycount; i++)
-            {
-                BCAMEntry currententry = new BCAMEntry(BCSV, Fields, dataoffset + (entrycount * entrysize));
-                Entries.Add(currententry);
-                BCSV.Position += entrysize;
-
-                Console.Write($"\r{Math.Min(((float)(i + 1) / (float)entrycount) * 100.0f, 100.0f)}%          ");
-            }
-            Console.WriteLine("Complete!");
-        }
-
-        public void Save(Stream BCSV)
-        {
-            CameraDefaults.InitDataTypeList();
-            BCSV.WriteReverse(BitConverter.GetBytes(EntryCount), 0, 4);
-            List<uint> FinalHashes = new List<uint>();
-
-            ushort offset = 0;
-            if (Settings.Default.IsEnforceCompress)
-            {
-                FinalHashes.Add(PreferredHashOrder[0]);
-                //FinalHashes.Add(PreferredHashOrder[1]);
-                for (int i = 0; i < EntryCount; i++)
-                    for (int j = 0; j < Entries[i].Data.Count; j++)
-                        if (!FinalHashes.Contains(Entries[i].Data.ElementAt(j).Key))
-                            FinalHashes.Add(Entries[i].Data.ElementAt(j).Key);
-
-                if (Entries.Any(E => E.IsOfCategory("e")))
-                {
-                    if (!FinalHashes.Contains(0x05C676D0))
-                        FinalHashes.Add(0x05C676D0);
-                    if (!FinalHashes.Contains(0x730D4555))
-                        FinalHashes.Add(0x730D4555);
-                }
-
-                if (FinalHashes.Any(O => O == 0xBEC02B34 || O == 0xBEC02B35 || O == 0xBEC02B36))
-                    for (int i = 0; i < 3; i++)
-                        if (!FinalHashes.Contains((uint)(0xBEC02B34 + i)))
-                            FinalHashes.Add((uint)(0xBEC02B34 + i));
-
-                if (FinalHashes.Any(O => O == 0x31CB1323 || O == 0x31CB1324 || O == 0x31CB1325))
-                    for (int i = 0; i < 3; i++)
-                        if (!FinalHashes.Contains((uint)(0x31CB1323 + i)))
-                            FinalHashes.Add((uint)(0x31CB1323 + i));
-
-                if (FinalHashes.Any(O => O == 0xAC52894B || O == 0xAC52894C || O == 0xAC52894D))
-                    for (int i = 0; i < 3; i++)
-                        if (!FinalHashes.Contains((uint)(0xAC52894B + i)))
-                            FinalHashes.Add((uint)(0xAC52894B + i));
-
-                if (FinalHashes.Any(O => O == 0x3B5CB472 || O == 0x3B5CB473 || O == 0x3B5CB474))
-                    for (int i = 0; i < 3; i++)
-                        if (!FinalHashes.Contains((uint)(0x3B5CB472 + i)))
-                            FinalHashes.Add((uint)(0x3B5CB472 + i));
-
-                if (FinalHashes.Any(O => O == 0x0036D9C5 || O == 0x0036D9C6 || O == 0x0036D9C7))
-                    for (int i = 0; i < 3; i++)
-                        if (!FinalHashes.Contains((uint)(0x0036D9C5 + i)))
-                            FinalHashes.Add((uint)(0x0036D9C5 + i));
-
-
-                FinalHashes = FinalHashes.SortBy(PreferredHashOrder);
-
-                Fields = new Dictionary<uint, BCAMField>();
-                short FlagOffset = -1;
-                byte flagshift = 0;
-                //BitArray MaskArray;
-                for (int i = 0; i < FinalHashes.Count; i++)
-                {
-                    BCAMField CurrentField = new BCAMField() { HashName = FinalHashes[i], EntryOffset = offset, DataType = CameraDefaults.DefaultTypes[FinalHashes[i]] };
-
-                    //if (Settings.Default.IsEnforceCompress && FlagHashes.Any(O => O == FinalHashes[i]))
-                    //{
-                    //    MaskArray = new BitArray(new int[1]);
-                    //    if (FlagOffset == -1)
-                    //    {
-                    //        FlagOffset = (short)offset;
-                    //        offset += 4;
-                    //    }
-
-                    //    CurrentField.EntryOffset = (ushort)FlagOffset;
-                    //    MaskArray[flagshift] = true;
-                    //    CurrentField.Bitmask = (uint)MaskArray.ToInt32();
-                    //    CurrentField.ShiftAmount = flagshift++;
-
-                    //    if (flagshift == 8)
-                    //    {
-                    //        FlagOffset = -1;
-                    //        flagshift = 0;
-                    //    }
-                    //}
-                    //else
-                    {
-                        CurrentField.ShiftAmount = 0;
-                        switch (CurrentField.DataType)
-                        {
-                            case DataTypes.STRING:
-                            case DataTypes.FLOAT:
-                            case DataTypes.UINT32:
-                            case DataTypes.INT32:
-                                offset += 4;
-                                CurrentField.Bitmask = 0xFFFFFFFF;
-                                break;
-                            case DataTypes.INT16:
-                                offset += 2;
-                                CurrentField.Bitmask = 0x0000FFFF;
-                                break;
-                            case DataTypes.BYTE:
-                                offset++;
-                                CurrentField.Bitmask = 0x000000FF;
-                                break;
-                            case DataTypes.UNKNOWN:
-                            case DataTypes.NULL:
-                            default:
-                                throw new Exception();
-                        }
-                    }
-
-                    Fields.Add(FinalHashes[i], CurrentField);
-                }
-            }
-            else
-            {
-                Fields = new Dictionary<uint, BCAMField>();
-                for (int i = 0; i < PreferredHashOrder.Length; i++)
-                {
-                    Fields.Add(PreferredHashOrder[i], new BCAMField() { HashName = PreferredHashOrder[i], Bitmask = HashDataTypes[i] == DataTypes.BYTE ? 0x000000FF : (HashDataTypes[i] == DataTypes.INT16 ? 0x0000FFFF : 0xFFFFFFFF), DataType = HashDataTypes[i], EntryOffset = offset, ShiftAmount = 0 });
-                    offset += (ushort)(HashDataTypes[i] == DataTypes.BYTE ? 1 : (HashDataTypes[i] == DataTypes.INT16 ? 2 : 4));
-                    FinalHashes.Add(PreferredHashOrder[i]);
-                }
-            }
-
-#if DEBUG
-            for (int i = 0; i < 52; i++)
-            {
-                if (!FinalHashes.Contains(PreferredHashOrder[i]))
-                {
-                    Console.WriteLine("Excluded Field: "+HashLookup[PreferredHashOrder[i]]);
-                }
-            }
-#endif
-            #region Fill the Entries
-            for (int i = 0; i < EntryCount; i++)
-                Entries[i].FillMissingFields(FinalHashes);
-            #endregion
-
-            #region Collect the strings
-            List<string> Strings = new List<string>();// { "930" };
-            for (int i = 0; i < EntryCount; i++)
-                foreach (KeyValuePair<uint, BCAMField> item in Fields)
-                    if (item.Value.DataType == DataTypes.STRING)
-                        if (!Strings.Contains(Entries[i].Data[item.Key]))
-                            Strings.Add((string)Entries[i].Data[item.Key]);
-            #endregion
-
-            BCSV.WriteReverse(BitConverter.GetBytes(Fields.Count), 0, 4);
-            BCSV.Write(new byte[4], 0, 4);
-            BCSV.WriteReverse(BitConverter.GetBytes((int)offset), 0, 4);
-
-            Console.WriteLine("Writing the Fields:");
-            for (int i = 0; i < Fields.Count; i++)
-            {
-                Fields.ElementAt(i).Value.Write(BCSV);
-                Console.Write($"\r{Math.Min(((float)(i + 1) / (float)Fields.Count) * 100.0f, 100.0f)}%          ");
-            }
-            Console.WriteLine("Complete!");
-
-            while (BCSV.Position % 4 != 0)
-                BCSV.WriteByte(0x00);
-
-            uint DataPos = (uint)BCSV.Position;
-            BCSV.Position = 0x08;
-            BCSV.WriteReverse(BitConverter.GetBytes(DataPos), 0, 4);
-            BCSV.Position = DataPos;
-            Console.WriteLine("Writing the Entries:");
-            for (int i = 0; i < EntryCount; i++)
-            {
-                Entries[i].Save(BCSV, Fields, offset, Strings);
-                Console.Write($"\r{Math.Min(((float)(i + 1) / (float)Entries.Count) * 100.0f, 100.0f)}%          ");
-            }
-            Console.WriteLine("Complete!");
-            for (int i = 0; i < Strings.Count; i++)
-            {
-                BCSV.WriteString(Strings[i], 0x00);
-            }
-            uint numPadding = 16 - (uint)(BCSV.Position % 16);
-            byte[] padding = new byte[numPadding];
-            for (int i = 0; i < numPadding; i++)
-                padding[i] = 64;
-            BCSV.Write(padding, 0, (int)numPadding);
-        }
-
-        public int InsertAndCombine(int StartingValue, int AddingValue, out uint Mask, out byte ShiftVal)
-        {
-            Mask = 0;
-            ShiftVal = 0;
-
-            BitArray StartingBits = new BitArray(new int[] { StartingValue });
-            BitArray AddingBits = new BitArray(new int[] { AddingValue });
-
-            int MinAddBitSize = GetMinLength(AddingValue);
-            bool success = false;
-            for (int i = 0; i < StartingBits.Count-MinAddBitSize; i++)
-            {
-                if (StartingBits[i] == AddingBits[0])
-                {
-                    bool CanFit = true;
-                    for (int j = 0; j < MinAddBitSize; j++)
-                    {
-                        if (StartingBits[i+j] != AddingBits[j])
-                        {
-                            CanFit = false;
-                            break;
-                        }
-                    }
-
-                    if (CanFit)
-                    {
-                        success = true;
-                        BitArray BitMask = new BitArray(new int[1]);
-                        for (int j = 0; j < MinAddBitSize; j++)
-                        {
-                            BitMask[i + j] = true;
-                        }
-                        Mask = (uint)BitMask.ToInt32();
-                        ShiftVal = (byte)i;
-                        break;
-                    }
-                }
-            }
-            if (!success)
-            {
-                int NumberInsertLocation = GetMinLength(StartingValue);
-                int BackwardsOffset = 0;
-                bool HasFoundFit = false;
-                int BestFitOffset = 0;
-                while (NumberInsertLocation - BackwardsOffset > 0)
-                {
-                    if (StartingBits[NumberInsertLocation-BackwardsOffset] == AddingBits[0])
-                    {
-                        bool CanFit = true;
-                        for (int i = 0; i < MinAddBitSize; i++)
-                        {
-                            if (AddingBits[i] && StartingBits[(NumberInsertLocation-BackwardsOffset)+i] != AddingBits[i])
-                            {
-                                if ((NumberInsertLocation - BackwardsOffset) + i < NumberInsertLocation)
-                                {
-                                    CanFit = false;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (CanFit)
-                        {
-                            HasFoundFit = true;
-                            BestFitOffset = NumberInsertLocation - BackwardsOffset;
-                            break;
-                        }
-                    }
-                    BackwardsOffset++;
-                }
-
-                for (int j = 0; j < MinAddBitSize; j++)
-                {
-                    StartingBits[HasFoundFit ? BestFitOffset + j : NumberInsertLocation] = AddingBits[j];
-                }
-
-                BitArray BitMask = new BitArray(new int[1]);
-                for (int j = 0; j < MinAddBitSize; j++)
-                {
-                    BitMask[HasFoundFit ? BestFitOffset + j : NumberInsertLocation] = true;
-                }
-                Mask = (uint)BitMask.ToInt32();
-                ShiftVal = (byte)(HasFoundFit ? BestFitOffset : NumberInsertLocation);
-            }
-
-
-            return StartingBits.ToInt32();
-        }
-
-        private int GetMinLength(int val)
-        {
-            for (int i = 28; i >= 0; i -= 4)
-                if ((val >> i) > 0)
-                    return i + 4;
-            return 0;
-        }
-
-
-        public static uint FieldNameToHash(string field)
-        {
-            uint ret = 0;
-            foreach (char ch in field)
-            {
-                ret *= 0x1F;
-                ret += ch;
-            }
-            return ret;
-        }
-
-        public static readonly uint[] PreferredHashOrder = new uint[]{
-        #region General
-        0x14F51CD8, //Version
-        0x00000D1B, //ID
-        0x20C58F89, //Type
-        0xCAD56011, //string
-        0xABC4A1CF, //RotationX
-        0xABC4A1CE, //RotationY
-        0x0035807D, //RotationZ
-        0x002F0DA6, //Zoom
-        0x00300D4C, //Field of View
-        0xAE79D1C0, //Transition Time
-        0xEB66C5C3, //End Transition Time
-        0xB6004E72, //Ground Speed.....Does literally nothing. Only different in like, 8 files between both games.
-        0x0033C56B, //num1 [Various things]
-        0x0033C56C, //num2 [Various things]
-        0x06A54929, //MaxY
-        0x062675A0, //MinY
-        0xD26F6AA9, //GroundStarMoveDelay
-        0x93AECC0B, //AirStartMoveDelay
-        0x069FE297, //udown...does literally nothing...?
-        0x145863FF, //Front Zoom
-        0x76B41C57, //Height Zoom
-        0x06A558A2, //Upper Border
-        0x06262B01, //Lower Border
-        0x05C676D0, //Event Frames
-        0x730D4555, //Event Priority
-        #endregion
-
-        #region Coordinates
-        0xBEC02B34, //Fixpoint Offset X
-        0xBEC02B35, //Fixpoint Offset Y
-        0xBEC02B36, //Fixpoint Offset Z
-        //--------------------------------------------------------------------------------------------------
-        0x31CB1323, //Worldpoint Offset X
-        0x31CB1324, //Worldpoint Offset Y
-        0x31CB1325, //Worldpoint Offset Z
-        //--------------------------------------------------------------------------------------------------
-        0xAC52894B, //Player Offset X
-        0xAC52894C, //Player Offset Y
-        0xAC52894D, //Player Offset Z
-        //--------------------------------------------------------------------------------------------------
-        0x3B5CB472, //Verticle Pan Axis X
-        0x3B5CB473, //Verticle Pan Axis Y
-        0x3B5CB474, //Verticle Pan Axis Z
-        //--------------------------------------------------------------------------------------------------
-        0x0036D9C5, //Up Axis X
-        0x0036D9C6, //Up Axis Y
-        0x0036D9C7, //Up Axis Z
-        #endregion
-
-        #region Flags
-        //Put all these into 1 int through the power of masking
-        0x41E363AC, //DisableReset
-        0x9F02074F, //Enable Field of View
-        0x82D5627E, //Enable Sharp Zoom
-        0xE2044E84, //Disable Anti-blur
-        0x521E5C3F, //Disable Collision
-        0xBB74D6C1, //Disable First Person
-        0xDA484167, //GroupFlagEndErpFrame
-        0xED8DD072, //GroupFlagThrough
-        0x67D981E8, //GroupFlagEndTransitionSpeed
-        0x26C8C3C0, //Use Verticle Pan Axis
-        0x45E50EE5, //Event Use Transition
-        0x1BCD52AA  //Event Use End Transition
-        #endregion
-        };
-        
-        public static readonly string[] HashNames = new string[]{
-        #region General
-        "Version",
-        "ID",
-        "Type",
-        "string",
-        "RotationX",
-        "RotationY",
-        "RotationZ",
-        "Zoom",
-        "Field of View",
-        "Transition Time",
-        "End Transition Time",
-        "Ground Speed",
-        "num1",
-        "num2",
-        "MaxY",
-        "MinY",
-        "GroundStarMoveDelay",
-        "AirStartMoveDelay",
-        "udown",
-        "Look Offset",
-        "Look Offset Vertical",
-        "Upper Border",
-        "Lower Border",
-        "Event Frames",
-        "Event Priority",
-        #endregion
-
-        #region Coordinates
-        "Fixpoint Offset X",
-        "Fixpoint Offset Y",
-        "Fixpoint Offset Z",
-        //--------------------------------------------------------------------------------------------------
-        "Worldpoint Offset X",
-        "Worldpoint Offset Y",
-        "Worldpoint Offset Z",
-        //--------------------------------------------------------------------------------------------------
-        "Player Offset X",
-        "Player Offset Y",
-        "Player Offset Z",
-        //--------------------------------------------------------------------------------------------------
-        "Verticle Pan Axis X",
-        "Verticle Pan Axis Y",
-        "Verticle Pan Axis Z",
-        //--------------------------------------------------------------------------------------------------
-        "Up Axis X",
-        "Up Axis Y",
-        "Up Axis Z",
-        #endregion
-
-        #region Flags
-        //Put all these into 1 int through the power of masking
-        "DisableReset",
-        "Enable Field of View",
-        "Static Look Offset",
-        "Disable Anti-blur",
-        "Disable Collision",
-        "Disable First Person",
-        "GroupFlagEndErpFrame",
-        "GroupFlagThrough",
-        "GroupFlagEndTransitionSpeed",
-        "Use Verticle Pan Axis",
-        "Event Use Transition",
-        "Event Use End Transition",
-        #endregion
-        };
-
-        public static readonly DataTypes[] HashDataTypes = new DataTypes[]
-        {
-            DataTypes.INT32,
-            DataTypes.STRING,
-            DataTypes.STRING,
-            DataTypes.STRING,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.INT32,
-            DataTypes.INT32,
-
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-            DataTypes.FLOAT,
-
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.INT32,
-            DataTypes.INT32,
-        };
-        //The game doesn't allow this.... Can we get an F in the chat.
-        private static uint[] FlagHashes => new uint[]
-        {
-            //Put all these into 1 int through the power of masking
-            0x41E363AC, //DisableReset
-            0x9F02074F, //Enable Field of View
-            0x82D5627E, //Enable Sharp Zoom
-            0xE2044E84, //Disable Anti-blur
-            0x521E5C3F, //Disable Collision
-            0xBB74D6C1, //Disable First Person
-            0xDA484167, //GroupFlagEndErpFrame
-            0xED8DD072, //GroupFlagThrough
-            //0x67D981E8, //GroupFlagEndTransitionSpeed //LOL THIS ISN'T EVEN A FLAG 😂
-            0x26C8C3C0, //Use Verticle Pan Axis'
-            0x45E50EE5, //Event Use Transition
-            0x1BCD52AA  //Event Use End Transition
-        };
-
-        public Dictionary<uint, string> HashLookup
-        {
-            get
-            {
-                if (_lookup == null)
-                {
-                    _lookup = new Dictionary<uint, string>();
-                    for (int i = 0; i < PreferredHashOrder.Length; i++)
-                        _lookup.Add(PreferredHashOrder[i], HashNames[i]);
-                }
-                return _lookup;
-            }
-        }
-        private Dictionary<uint, string> _lookup = null;
+        get => (Entry)base[index];
+        set => base[index] = value;
     }
 
-    public class BCAMField
+    public BCAM()
     {
-        public uint HashName { get; set; }
-        public uint Bitmask { get; set; }
-        public ushort EntryOffset { get; internal set; }
-        public byte ShiftAmount { get; set; }
-        public DataTypes DataType { get; set; }
+        AddRange(PreMadeFields);
+    }
 
-        public BCAMField()
+    protected override Entry CreateEntry() => new();
+
+    public int IndexOf(Entry entry)
+    {
+        for (int i = 0; i < Entries.Count; i++)
         {
-
+            if (ReferenceEquals(Entries[i], entry))
+                return i;
         }
-        public BCAMField(Stream BCSV)
-        {
-            HashName = BitConverter.ToUInt32(BCSV.ReadReverse(0, 4), 0);
-            Bitmask = BitConverter.ToUInt32(BCSV.ReadReverse(0, 4), 0);
-            EntryOffset = BitConverter.ToUInt16(BCSV.ReadReverse(0, 2), 0);
-            ShiftAmount = (byte)BCSV.ReadByte();
-            DataType = (DataTypes)BCSV.ReadByte();
-        }
+        return -1;
+    }
 
-        internal void Write(Stream BCSV)
+    public override void Load(Stream Strm)
+    {
+        base.Load(Strm);
+        for (int i = 0; i < PreMadeFields.Count; i++)
         {
-            BCSV.WriteReverse(BitConverter.GetBytes(HashName), 0, 4);
-            BCSV.WriteReverse(BitConverter.GetBytes(Bitmask), 0, 4);
-            BCSV.WriteReverse(BitConverter.GetBytes(EntryOffset), 0, 2);
-            BCSV.WriteByte(ShiftAmount);
-            BCSV.WriteByte((byte)DataType);
+            Field f = PreMadeFields[i];
+            if (!ContainsField(f.HashName))
+                Fields.Add(f.HashName, f);
         }
     }
 
-    public class BCAMEntry
+    public void OrderBy(Func<BCSV.Entry, object> keySelector) => Entries = [.. Entries.OrderBy(keySelector)];
+
+    public void MoveCamera(int OriginalID, CameraMoveOptions MoveOption)
     {
-        public Dictionary<uint, object> Data { get; set; }
-
-        public BCAMEntry()
+        int NewPos = OriginalID;
+        switch (MoveOption)
         {
-            Data = new Dictionary<uint, object>();
+            case CameraMoveOptions.UP:
+                if (OriginalID == 0)
+                    NewPos = EntryCount - 1;
+                else
+                    NewPos--;
+                break;
+            case CameraMoveOptions.DOWN:
+                if (OriginalID == EntryCount - 1)
+                    NewPos = 0;
+                else
+                    NewPos++;
+                break;
+            case CameraMoveOptions.TOP:
+                NewPos = 0;
+                break;
+            case CameraMoveOptions.BOTTOM:
+                NewPos = EntryCount - 1;
+                break;
         }
-        internal BCAMEntry(Stream BCSV, Dictionary<uint, BCAMField> fields, long StringOffset)
+        Entries.Move(OriginalID, NewPos);
+    }
+
+    public void Optimize(IReadOnlyList<uint> Hashes)
+    {
+        Fields.Clear();
+        for (int i = 0; i < Hashes.Count; i++)
         {
-            long EntryStartPosition = BCSV.Position;
-            Data = new Dictionary<uint, object>();
-            for (int i = 0; i < fields.Count; i++)
-            {
-                BCSV.Position = EntryStartPosition + fields.ElementAt(i).Value.EntryOffset;
-                switch (fields.ElementAt(i).Value.DataType)
-                {
-                    case DataTypes.INT32:
-                        int readvalue = BitConverter.ToInt32(BCSV.ReadReverse(0, 4), 0);
-                        uint Bitmask = fields.ElementAt(i).Value.Bitmask;
-                        byte Shift = fields.ElementAt(i).Value.ShiftAmount;
-                        Data.Add(fields.ElementAt(i).Key, (int)((readvalue & Bitmask) >> Shift));
-                        break;
-                    case DataTypes.UNKNOWN:
-                        Data.Add(fields.ElementAt(i).Key, null);
-                        Console.WriteLine("=== WARNING ===");
-                        Console.WriteLine("BCSV Entry is of the UNKNOWN type (0x01). This shouldn't happen.");
-                        break;
-                    case DataTypes.FLOAT:
-                        Data.Add(fields.ElementAt(i).Key, BitConverter.ToSingle(BCSV.ReadReverse(0, 4), 0));
-                        break;
-                    case DataTypes.UINT32:
-                        Data.Add(fields.ElementAt(i).Key, BitConverter.ToUInt32(BCSV.ReadReverse(0, 4), 0));
-                        break;
-                    case DataTypes.INT16:
-                        Data.Add(fields.ElementAt(i).Key, BitConverter.ToInt16(BCSV.ReadReverse(0, 2), 0));
-                        break;
-                    case DataTypes.BYTE:
-                        Data.Add(fields.ElementAt(i).Key, (byte)BCSV.ReadByte());
-                        break;
-                    case DataTypes.STRING:
-                        BCSV.Position = StringOffset + BitConverter.ToUInt32(BCSV.ReadReverse(0, 4), 0);
-                        Data.Add(fields.ElementAt(i).Key, BCSV.ReadString());
-                        break;
-                    case DataTypes.NULL:
-                        Data.Add(fields.ElementAt(i).Key, null);
-                        Console.WriteLine("=== WARNING ===");
-                        Console.WriteLine("BCSV Entry is of the NULL type (0x07). This shouldn't happen.");
-                        break;
-                }
-            }
-            BCSV.Position = EntryStartPosition;
+            int index = Array.IndexOf(PreferredHashOrder, Hashes[i]);
+            Field f = PreMadeFields[index];
+            Fields.Add(f.HashName, f);
         }
+    }
 
-        internal void Save(Stream BCSV, Dictionary<uint, BCAMField> fields, uint DataLength, List<string> Strings)
-        {
-            BitArray flagvalue = new BitArray(new int[1]);
-            long OriginalPosition = BCSV.Position;
-            BCSV.Write(new byte[DataLength], 0, (int)DataLength);
-            for (int i = 0; i < fields.Count; i++)
-            {
-                BCSV.Position = OriginalPosition + fields.ElementAt(i).Value.EntryOffset;
-                if (Data.ContainsKey(fields.ElementAt(i).Key))
-                {
-                    switch (fields.ElementAt(i).Value.DataType)
-                    {
-                        case DataTypes.INT32:
-                            if (fields.ElementAt(i).Value.Bitmask != 0xFFFFFFFF)
-                            {
-                                flagvalue[fields.ElementAt(i).Value.ShiftAmount] = (int)Data[fields.ElementAt(i).Key] == 1;
-                                int temp = flagvalue.ToInt32();
-                                BCSV.WriteReverse(BitConverter.GetBytes(temp), 0, 4);
-                            }
-                            else
-                                BCSV.WriteReverse(BitConverter.GetBytes(int.Parse(Data[fields.ElementAt(i).Key].ToString())), 0, 4);
-                            break;
-                        case DataTypes.UNKNOWN:
-                            break;
-                        case DataTypes.FLOAT:
-                            BCSV.WriteReverse(BitConverter.GetBytes((float)Data[fields.ElementAt(i).Key]), 0, 4);
-                            break;
-                        case DataTypes.UINT32:
-                            BCSV.WriteReverse(BitConverter.GetBytes((uint)Data[fields.ElementAt(i).Key]), 0, 4);
-                            break;
-                        case DataTypes.INT16:
-                            BCSV.WriteReverse(BitConverter.GetBytes((short)Data[fields.ElementAt(i).Key]), 0, 2);
-                            break;
-                        case DataTypes.BYTE:
-                            BCSV.WriteReverse(BitConverter.GetBytes((byte)Data[fields.ElementAt(i).Key]), 0, 1);
-                            break;
-                        case DataTypes.STRING:
-                            Encoding enc = Encoding.GetEncoding(932);
-                            uint StringOffset = 0;
-                            for (int j = 0; j < Strings.Count; j++)
-                            {
-                                if (Strings[j].Equals((string)Data[fields.ElementAt(i).Key]))
-                                {
-                                    BCSV.WriteReverse(BitConverter.GetBytes(StringOffset), 0, 4);
-                                    break;
-                                }
-                                StringOffset += (uint)(enc.GetBytes(Strings[j]).Length + 1);
-                            }
-                            break;
-                        case DataTypes.NULL:
-                            break;
-                    }
-                }
-            }
-            BCSV.Position = OriginalPosition + DataLength;
-        }
+    public new class Entry : BCSV.Entry
+    {
+        public const string CLIPBOARD_HEAD = "LCP";
 
-        internal void FillMissingFields(List<uint> fields)
-        {
-            for (int i = 0; i < fields.Count; i++)
-            {
-                if (!Data.ContainsKey(fields[i]))
-                {
-                    Data.Add(fields[i], CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[fields[i]]);
-
-                    if (Data[fields[i]] is bool)
-                        Data[fields[i]] = ((bool)Data[fields[i]]) ? 1 : 0;
-                }
-            }
-        }
-
-        public bool ContainsKey(uint key) => Data.ContainsKey(key);
-        
-        public bool IsOfCategory(string Category) => Identification.StartsWith(Category+":");
-        public string GetCategory() => (Identification.Length > 2 && Identification[1]==':') ? Identification.Split(':')[0] : "u";
-
-        public bool FromClipboard(string input)
-        {
-            if (!input.StartsWith("LCP|"))
-                return false;
-
-            int DataIndex = 0;
-            Dictionary<uint, object> backup = Data;
-            try
-            {
-                string[] DataSplit = input.Split('|');
-
-                Data.Clear();
-                for (int i = 1; i < DataSplit.Length; i++)
-                {
-                    string[] currentdata = DataSplit[i].Split('%');
-                    DataIndex = i;
-                    if (uint.TryParse(currentdata[0], System.Globalization.NumberStyles.HexNumber, null, out uint result))
-                        Data.Add(result, Convert.ChangeType(currentdata[1], System.Type.GetType("System." + currentdata[2], true)));
-                }
-                if (!Data.ContainsKey(0x00000D1B) && backup.ContainsKey(0x00000D1B))
-                    Data.Add(0x00000D1B, backup[0x00000D1B]);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Error Pasting at Data Set {DataIndex}: "+e.Message);
-                Data = backup;
-                return false;
-            }
-            return true;
-        }
-        public string ToClipboard()
-        {
-            string clip = "LCP";
-            for (int i = 0; i < Data.Count; i++)
-                clip += "|"+Data.ElementAt(i).Key.ToString("X8")+"%"+Data.ElementAt(i).Value.ToString()+"%"+Data.ElementAt(i).Value.GetType().ToString().Replace("System.","");
-            return clip;
-        }
-
+        #region PROPERTIES
         /// <summary>
-        /// NOT USELESS!! SMG needs it at some points
+        /// The version of the camera engine to run on
         /// </summary>
-        public int Version { get; set; }
-
+        public int Version
+        {
+            get => (int)GetDataOrCamTypeDefault(HASH_VERSION);
+            set => SetData(HASH_VERSION, value);
+        }
+        /// <summary>
+        /// The camera Identification that links it to objects in-game
+        /// </summary>
         public string Identification
         {
-            get
-            {
-                if (Data.ContainsKey(0x00000D1B))
-                    return (string)Data[0x00000D1B];
-                else
-                    return "<MISSING>";
-            }
-            set
-            {
-                if (Data.ContainsKey(0x00000D1B))
-                    Data[0x00000D1B] = value;
-                else
-                    Data.Add(0x00000D1B, value);
-            }
-        }
-        public string Type
-        {
-            get
-            {
-                if (Data.ContainsKey(0x20C58F89))
-                    return (string)Data[0x20C58F89];
-                else
-                    return "CAM_TYPE_XZ_PARA";
-            }
-            set
-            {
-                if (Data.ContainsKey(0x20C58F89))
-                    Data[0x20C58F89] = value;
-                else
-                    Data.Add(0x20C58F89, value);
-            }
-        }
-
-        public float RotationX
-        {
-            get
-            {
-                if (Data.ContainsKey(0xABC4A1CF))
-                    return (float)Data[0xABC4A1CF];
-                else
-                    return (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xABC4A1CF];
-            }
-            set
-            {
-                if (Data.ContainsKey(0xABC4A1CF))
-                {
-                    if (value == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xABC4A1CF])
-                        Data.Remove(0xABC4A1CF);
-                    else
-                        Data[0xABC4A1CF] = value;
-                }
-                else if (value != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xABC4A1CF])
-                    Data.Add(0xABC4A1CF, value);
-            }
-        }
-        public float RotationY
-        {
-            get
-            {
-                if (Data.ContainsKey(0xABC4A1CE))
-                    return (float)Data[0xABC4A1CE];
-                else
-                    return (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xABC4A1CE];
-            }
-            set
-            {
-                if (Data.ContainsKey(0xABC4A1CE))
-                {
-                    if (value == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xABC4A1CE])
-                        Data.Remove(0xABC4A1CE);
-                    else
-                        Data[0xABC4A1CE] = value;
-                }
-                else if (value != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xABC4A1CE])
-                    Data.Add(0xABC4A1CE, value);
-            }
+            get => Data.TryGetValue(HASH_ID, out object? value) ? (string)(value ?? "<UNSET>") : "<MISSING>";
+            set => SetData(HASH_ID, value);
         }
         /// <summary>
-        /// Roll
+        /// The Camera Type
         /// </summary>
-        public float RotationZ
+        public string Type
         {
-            get
-            {
-                if (Data.ContainsKey(0x0035807D))
-                    return (float)Data[0x0035807D];
-                else
-                    return (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0035807D];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x0035807D))
-                {
-                    if (value == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0035807D])
-                        Data.Remove(0x0035807D);
-                    else
-                        Data[0x0035807D] = value;
-                }
-                else if (value != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0035807D])
-                    Data.Add(0x0035807D, value);
-            }
+            get => Data.TryGetValue(HASH_CAMTYPE, out object? value) ? (string)(value ?? "CAM_TYPE_XZ_PARA") : "CAM_TYPE_XZ_PARA";
+            set => SetData(HASH_CAMTYPE, value);
         }
-        
-        public float Zoom
+
+        public float AngleB
         {
-            get
-            {
-                if (Data.ContainsKey(0x002F0DA6))
-                    return (float)Data[0x002F0DA6];
-                else
-                    return (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x002F0DA6];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x002F0DA6))
-                {
-                    if (value == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x002F0DA6])
-                        Data.Remove(0x002F0DA6);
-                    else
-                        Data[0x0002F0DA6] = value;
-                }
-                else if (value != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x002F0DA6])
-                    Data.Add(0x002F0DA6, value);
-            }
+            get => (float)GetDataOrCamTypeDefault(HASH_ANGLEB);
+            set => SetData(HASH_ANGLEB, value);
         }
-        public float FieldOfView
+
+        public float AngleA
         {
-            get
-            {
-                if (Data.ContainsKey(0x00300D4C))
-                    return (float)Data[0x00300D4C];
-                else
-                    return (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x00300D4C];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x00300D4C))
-                {
-                    if (value == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x00300D4C])
-                        Data.Remove(0x00300D4C);
-                    else
-                        Data[0x00300D4C] = value;
-                }
-                else if (value != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x00300D4C])
-                    Data.Add(0x00300D4C, value);
-            }
+            get => (float)GetDataOrCamTypeDefault(HASH_ANGLEA);
+            set => SetData(HASH_ANGLEA, value);
         }
-        
-        public int TransitionTime
+
+        public float Roll
         {
-            get
-            {
-                if (Data.ContainsKey(0xAE79D1C0))
-                    return (int)Data[0xAE79D1C0];
-                else
-                    return (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xAE79D1C0];
-            }
-            set
-            {
-                if (Data.ContainsKey(0xAE79D1C0))
-                {
-                    if (value == (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xAE79D1C0])
-                        Data.Remove(0xAE79D1C0);
-                    else
-                        Data[0xAE79D1C0] = value;
-                }
-                else if (value != (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xAE79D1C0])
-                    Data.Add(0xAE79D1C0, value);
-            }
+            get => (float)GetDataOrCamTypeDefault(HASH_ROLL);
+            set => SetData(HASH_ROLL, value);
+        }
+
+        public float Dist
+        {
+            get => (float)GetDataOrCamTypeDefault(HASH_DIST);
+            set => SetData(HASH_DIST, value);
+        }
+        public float FieldOfViewY
+        {
+            get => (float)GetDataOrCamTypeDefault(HASH_FOVY);
+            set => SetData(HASH_FOVY, value);
+        }
+
+        public int CamInt
+        {
+            get => (int)GetDataOrCamTypeDefault(HASH_CAMINT);
+            set => SetData(HASH_CAMINT, value);
         }
         /// <summary>
         /// Event value, only used by e: cameras
         /// </summary>
-        public int TransitionEndTime
+        public int CamEndInt
         {
-            get
-            {
-                if (Data.ContainsKey(0xEB66C5C3))
-                    return (int)Data[0xEB66C5C3];
-                else
-                    return (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xEB66C5C3];
-            }
-            set
-            {
-                if (Data.ContainsKey(0xEB66C5C3))
-                {
-                    if (value == (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xEB66C5C3])
-                        Data.Remove(0xEB66C5C3);
-                    else
-                        Data[0xEB66C5C3] = value;
-                }
-                else if (value != (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xEB66C5C3])
-                    Data.Add(0xEB66C5C3, value);
-            }
+            get => (int)GetDataOrCamTypeDefault(HASH_CAMENDINT);
+            set => SetData(HASH_CAMENDINT, value);
         }
-        public int TransitionGroundTime
+        public int GndInt
         {
-            get
-            {
-                if (Data.ContainsKey(0xB6004E72))
-                    return (int)Data[0xB6004E72];
-                else
-                    return (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xB6004E72];
-            }
-            set
-            {
-                if (Data.ContainsKey(0xB6004E72))
-                {
-                    if (value == (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xB6004E72])
-                        Data.Remove(0xB6004E72);
-                    else
-                        Data[0xB6004E72] = value;
-                }
-                else if (value != (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xB6004E72])
-                    Data.Add(0xB6004E72, value);
-            }
+            get => (int)GetDataOrCamTypeDefault(HASH_GNDINT);
+            set => SetData(HASH_GNDINT, value);
         }
 
         public int Num1
         {
-            get
-            {
-                if (Data.ContainsKey(0x0033C56B))
-                    return (int)Data[0x0033C56B];
-                else
-                    return (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0033C56B];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x0033C56B))
-                {
-                    if (value == (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0033C56B])
-                        Data.Remove(0x0033C56B);
-                    else
-                        Data[0x0033C56B] = value;
-                }
-                else if (value != (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0033C56B])
-                    Data.Add(0x0033C56B, value);
-            }
+            get => (int)GetDataOrCamTypeDefault(HASH_NUM1);
+            set => SetData(HASH_NUM1, value);
         }
         public int Num2
         {
-            get
-            {
-                if (Data.ContainsKey(0x0033C56C))
-                    return (int)Data[0x0033C56C];
-                else
-                    return (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0033C56C];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x0033C56C))
-                {
-                    if (value == (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0033C56C])
-                        Data.Remove(0x0033C56C);
-                    else
-                        Data[0x0033C56C] = value;
-                }
-                else if (value != (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0033C56C])
-                    Data.Add(0x0033C56C, value);
-            }
+            get => (int)GetDataOrCamTypeDefault(HASH_NUM2);
+            set => SetData(HASH_NUM2, value);
         }
         public string String
         {
-            get
-            {
-                if (Data.ContainsKey(0xCAD56011))
-                    return (string)Data[0xCAD56011];
-                else
-                    return (string)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xCAD56011];
-            }
-            set
-            {
-                if (Data.ContainsKey(0xCAD56011))
-                {
-                    if (value.Equals((string)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xCAD56011]))
-                        Data.Remove(0xCAD56011);
-                    else
-                        Data[0xCAD56011] = value;
-                }
-                else if (!value.Equals((string)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xCAD56011]))
-                    Data.Add(0xCAD56011, value);
-            }
-        }
-        
-        public float MaxY
-        {
-            get
-            {
-                if (Data.ContainsKey(0x06A54929))
-                    return (float)Data[0x06A54929];
-                else
-                    return (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x06A54929];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x06A54929))
-                {
-                    if (value == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x06A54929])
-                        Data.Remove(0x06A54929);
-                    else
-                        Data[0x06A54929] = value;
-                }
-                else if (value != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x06A54929])
-                    Data.Add(0x06A54929, value);
-            }
-        }
-        public float MinY
-        {
-            get
-            {
-                if (Data.ContainsKey(0x062675A0))
-                    return (float)Data[0x062675A0];
-                else
-                    return (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x062675A0];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x062675A0))
-                {
-                    if (value == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x062675A0])
-                        Data.Remove(0x062675A0);
-                    else
-                        Data[0x062675A0] = value;
-                }
-                else if (value != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x062675A0])
-                    Data.Add(0x062675A0, value);
-            }
+            get => (string)GetDataOrCamTypeDefault(HASH_STRING);
+            set => SetData(HASH_STRING, value);
         }
 
-        public int GroundMoveDelay
+        public float UPlay
         {
-            get
-            {
-                if (Data.ContainsKey(0xD26F6AA9))
-                    return (int)Data[0xD26F6AA9];
-                else
-                    return (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xD26F6AA9];
-            }
-            set
-            {
-                if (Data.ContainsKey(0xD26F6AA9))
-                {
-                    if (value == (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xD26F6AA9])
-                        Data.Remove(0xD26F6AA9);
-                    else
-                        Data[0xD26F6AA9] = value;
-                }
-                else if (value != (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xD26F6AA9])
-                    Data.Add(0xD26F6AA9, value);
-            }
+            get => (float)GetDataOrCamTypeDefault(HASH_UPLAY);
+            set => SetData(HASH_UPLAY, value);
         }
-        public int AirMoveDelay
+        public float LPlay
         {
-            get
-            {
-                if (Data.ContainsKey(0x93AECC0B))
-                    return (int)Data[0x93AECC0B];
-                else
-                    return (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x93AECC0B];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x93AECC0B))
-                {
-                    if (value == (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x93AECC0B])
-                        Data.Remove(0x93AECC0B);
-                    else
-                        Data[0x93AECC0B] = value;
-                }
-                else if (value != (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x93AECC0B])
-                    Data.Add(0x93AECC0B, value);
-            }
+            get => (float)GetDataOrCamTypeDefault(HASH_LPLAY);
+            set => SetData(HASH_LPLAY, value);
+        }
+
+        public int PushDelay
+        {
+            get => (int)GetDataOrCamTypeDefault(HASH_PUSHDELAY);
+            set => SetData(HASH_PUSHDELAY, value);
+        }
+        public int PushDelayLow
+        {
+            get => (int)GetDataOrCamTypeDefault(HASH_PUSHDELAYLOW);
+            set => SetData(HASH_PUSHDELAYLOW, value);
         }
         public int UDown
         {
-            get
-            {
-                if (Data.ContainsKey(0x069FE297))
-                    return (int)Data[0x069FE297];
-                else
-                    return (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x069FE297];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x069FE297))
-                {
-                    if (value == (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x069FE297])
-                        Data.Remove(0x069FE297);
-                    else
-                        Data[0x069FE297] = value;
-                }
-                else if (value != (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x069FE297])
-                    Data.Add(0x069FE297, value);
-            }
+            get => (int)GetDataOrCamTypeDefault(HASH_UDOWN);
+            set => SetData(HASH_UDOWN, value);
         }
 
         public float LookOffset
         {
-            get
-            {
-                if (Data.ContainsKey(0x145863FF))
-                    return (float)Data[0x145863FF];
-                else
-                    return (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x145863FF];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x145863FF))
-                {
-                    if (value == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x145863FF])
-                        Data.Remove(0x145863FF);
-                    else
-                        Data[0x145863FF] = value;
-                }
-                else if (value != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x145863FF])
-                    Data.Add(0x145863FF, value);
-            }
+            get => (float)GetDataOrCamTypeDefault(HASH_LOFFSET);
+            set => SetData(HASH_LOFFSET, value);
         }
         public float LookOffsetVertical
         {
-            get
-            {
-                if (Data.ContainsKey(0x76B41C57))
-                    return (float)Data[0x76B41C57];
-                else
-                    return (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x76B41C57];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x76B41C57))
-                {
-                    if (value == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x76B41C57])
-                        Data.Remove(0x76B41C57);
-                    else
-                        Data[0x76B41C57] = value;
-                }
-                else if (value != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x76B41C57])
-                    Data.Add(0x76B41C57, value);
-            }
+            get => (float)GetDataOrCamTypeDefault(HASH_LOFFSETV);
+            set => SetData(HASH_LOFFSETV, value);
         }
         public float UpperBorder
         {
-            get
-            {
-                if (Data.ContainsKey(0x06A558A2))
-                    return (float)Data[0x06A558A2];
-                else
-                    return (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x06A558A2];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x06A558A2))
-                {
-                    if (value == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x06A558A2])
-                        Data.Remove(0x06A558A2);
-                    else
-                        Data[0x06A558A2] = value;
-                }
-                else if (value != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x06A558A2])
-                    Data.Add(0x06A558A2, value);
-            }
+            get => (float)GetDataOrCamTypeDefault(HASH_UPPER);
+            set => SetData(HASH_UPPER, value);
         }
         public float LowerBorder
         {
-            get
-            {
-                if (Data.ContainsKey(0x06262B01))
-                    return (float)Data[0x06262B01];
-                else
-                    return (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x06262B01];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x06262B01))
-                {
-                    if (value == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x06262B01])
-                        Data.Remove(0x06262B01);
-                    else
-                        Data[0x06262B01] = value;
-                }
-                else if (value != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x06262B01])
-                    Data.Add(0x06262B01, value);
-            }
+            get => (float)GetDataOrCamTypeDefault(HASH_LOWER);
+            set => SetData(HASH_LOWER, value);
         }
 
         /// <summary>
@@ -1290,1037 +293,1104 @@ namespace Hack.io.BCAM
         /// </summary>
         public int EventFrames
         {
-            get
-            {
-                if (Data.ContainsKey(0x05C676D0))
-                    return (int)Data[0x05C676D0];
-                else
-                    return (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x05C676D0];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x05C676D0))
-                {
-                    if (value == (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x05C676D0])
-                        Data.Remove(0x05C676D0);
-                    else
-                        Data[0x05C676D0] = value;
-                }
-                else if (value != (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x05C676D0])
-                    Data.Add(0x05C676D0, value);
-            }
+            get => (int)GetDataOrCamTypeDefault(HASH_EVFRM);
+            set => SetData(HASH_EVFRM, value);
         }
         /// <summary>
         /// Event value, only used by e: cameras
         /// </summary>
         public int EventPriority
         {
-            get
-            {
-                if (Data.ContainsKey(0x730D4555))
-                    return (int)Data[0x730D4555];
-                else
-                    return (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x730D4555];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x730D4555))
-                {
-                    if (value == (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x730D4555])
-                        Data.Remove(0x730D4555);
-                    else
-                        Data[0x730D4555] = value;
-                }
-                else if (value != (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x730D4555])
-                    Data.Add(0x730D4555, value);
-            }
+            get => (int)GetDataOrCamTypeDefault(HASH_EVPRIORITY);
+            set => SetData(HASH_EVPRIORITY, value);
         }
 
-        public Vector3<float> FixPointOffset
+        public Vector3<float> WOffset
         {
-            get
-            {
-                return new Vector3<float>(
-                    Data.ContainsKey(0xBEC02B34) ? (float)Data[0xBEC02B34] : (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xBEC02B34],
-                    Data.ContainsKey(0xBEC02B35) ? (float)Data[0xBEC02B35] : (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xBEC02B35],
-                    Data.ContainsKey(0xBEC02B36) ? (float)Data[0xBEC02B36] : (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xBEC02B36]);
-            }
+            get => new(WOffsetX, WOffsetY, WOffsetZ);
             set
             {
-                if (Data.ContainsKey(0xBEC02B34))
-                {
-                    if (value.XValue == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xBEC02B34])
-                        Data.Remove(0xBEC02B34);
-                    else
-                        Data[0xBEC02B34] = value.XValue;
-                }
-                else if (value.XValue != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xBEC02B34])
-                    Data.Add(0xBEC02B34, value.XValue);
-
-                if (Data.ContainsKey(0xBEC02B35))
-                {
-                    if (value.YValue == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xBEC02B35])
-                        Data.Remove(0xBEC02B35);
-                    else
-                        Data[0xBEC02B35] = value.YValue;
-                }
-                else if (value.YValue != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xBEC02B35])
-                    Data.Add(0xBEC02B35, value.YValue);
-
-                if (Data.ContainsKey(0xBEC02B36))
-                {
-                    if (value.ZValue == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xBEC02B36])
-                        Data.Remove(0xBEC02B36);
-                    else
-                        Data[0xBEC02B36] = value.ZValue;
-                }
-                else if (value.ZValue != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xBEC02B36])
-                    Data.Add(0xBEC02B36, value.ZValue);
+                WOffsetX = value.XValue;
+                WOffsetY = value.YValue;
+                WOffsetZ = value.ZValue;
             }
         }
-        public Vector3<float> WorldPointOffset
+        public float WOffsetX
         {
-            get
-            {
-                return new Vector3<float>(
-                    Data.ContainsKey(0x31CB1323) ? (float)Data[0x31CB1323] : (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x31CB1323],
-                    Data.ContainsKey(0x31CB1324) ? (float)Data[0x31CB1324] : (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x31CB1324],
-                    Data.ContainsKey(0x31CB1325) ? (float)Data[0x31CB1325] : (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x31CB1325]);
-            }
-            set
-            {
-                if (Data.ContainsKey(0x31CB1323))
-                {
-                    if (value.XValue == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x31CB1323])
-                        Data.Remove(0x31CB1323);
-                    else
-                        Data[0x31CB1323] = value.XValue;
-                }
-                else if (value.XValue != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x31CB1323])
-                    Data.Add(0x31CB1323, value.XValue);
-
-                if (Data.ContainsKey(0x31CB1324))
-                {
-                    if (value.YValue == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x31CB1324])
-                        Data.Remove(0x31CB1324);
-                    else
-                        Data[0x31CB1324] = value.YValue;
-                }
-                else if (value.YValue != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x31CB1324])
-                    Data.Add(0x31CB1324, value.YValue);
-
-                if (Data.ContainsKey(0x31CB1325))
-                {
-                    if (value.ZValue == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x31CB1325])
-                        Data.Remove(0x31CB1325);
-                    else
-                        Data[0x31CB1325] = value.ZValue;
-                }
-                else if (value.ZValue != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x31CB1325])
-                    Data.Add(0x31CB1325, value.ZValue);
-            }
+            get => (float)GetDataOrCamTypeDefault(HASH_WOFFSET_X);
+            set => SetData(HASH_WOFFSET_X, value);
         }
-        public Vector3<float> PlayerOffset
+        public float WOffsetY
         {
-            get
-            {
-                return new Vector3<float>(
-                    Data.ContainsKey(0xAC52894B) ? (float)Data[0xAC52894B] : (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xAC52894B],
-                    Data.ContainsKey(0xAC52894C) ? (float)Data[0xAC52894C] : (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xAC52894C],
-                    Data.ContainsKey(0xAC52894D) ? (float)Data[0xAC52894D] : (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xAC52894D]);
-            }
+            get => (float)GetDataOrCamTypeDefault(HASH_WOFFSET_Y);
+            set => SetData(HASH_WOFFSET_Y, value);
+        }
+        public float WOffsetZ
+        {
+            get => (float)GetDataOrCamTypeDefault(HASH_WOFFSET_Z);
+            set => SetData(HASH_WOFFSET_Z, value);
+        }
+
+        public Vector3<float> WPoint
+        {
+            get => new(WPointX, WPointY, WPointZ);
             set
             {
-                if (Data.ContainsKey(0xAC52894B))
-                {
-                    if (value.XValue == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xAC52894B])
-                        Data.Remove(0xAC52894B);
-                    else
-                        Data[0xAC52894B] = value.XValue;
-                }
-                else if (value.XValue != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xAC52894B])
-                    Data.Add(0xAC52894B, value.XValue);
-
-                if (Data.ContainsKey(0xAC52894C))
-                {
-                    if (value.YValue == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xAC52894C])
-                        Data.Remove(0xAC52894C);
-                    else
-                        Data[0xAC52894C] = value.YValue;
-                }
-                else if (value.YValue != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xAC52894C])
-                    Data.Add(0xAC52894C, value.YValue);
-
-                if (Data.ContainsKey(0xAC52894D))
-                {
-                    if (value.ZValue == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xAC52894D])
-                        Data.Remove(0xAC52894D);
-                    else
-                        Data[0xAC52894D] = value.ZValue;
-                }
-                else if (value.ZValue != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xAC52894D])
-                    Data.Add(0xAC52894D, value.ZValue);
+                WPointX = value.XValue;
+                WPointY = value.YValue;
+                WPointZ = value.ZValue;
             }
         }
+        public float WPointX
+        {
+            get => (float)GetDataOrCamTypeDefault(HASH_WPOINT_X);
+            set => SetData(HASH_WPOINT_X, value);
+        }
+        public float WPointY
+        {
+            get => (float)GetDataOrCamTypeDefault(HASH_WPOINT_Y);
+            set => SetData(HASH_WPOINT_Y, value);
+        }
+        public float WPointZ
+        {
+            get => (float)GetDataOrCamTypeDefault(HASH_WPOINT_Z);
+            set => SetData(HASH_WPOINT_Z, value);
+        }
+
+        public Vector3<float> Axis
+        {
+            get => new(AxisX, AxisY, AxisZ);
+            set
+            {
+                AxisX = value.XValue;
+                AxisY = value.YValue;
+                AxisZ = value.ZValue;
+            }
+        }
+        public float AxisX
+        {
+            get => (float)GetDataOrCamTypeDefault(HASH_AXIS_X);
+            set => SetData(HASH_AXIS_X, value);
+        }
+        public float AxisY
+        {
+            get => (float)GetDataOrCamTypeDefault(HASH_AXIS_Y);
+            set => SetData(HASH_AXIS_Y, value);
+        }
+        public float AxisZ
+        {
+            get => (float)GetDataOrCamTypeDefault(HASH_AXIS_Z);
+            set => SetData(HASH_AXIS_Z, value);
+        }
+
         public Vector3<float> VerticalPanAxis
         {
-            get
-            {
-                return new Vector3<float>(
-                    Data.ContainsKey(0x3B5CB472) ? (float)Data[0x3B5CB472] : (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x3B5CB472],
-                    Data.ContainsKey(0x3B5CB473) ? (float)Data[0x3B5CB473] : (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x3B5CB473],
-                    Data.ContainsKey(0x3B5CB474) ? (float)Data[0x3B5CB474] : (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x3B5CB474]);
-            }
+            get => new(VPanAxisX, VPanAxisY, VPanAxisZ);
             set
             {
-                if (Data.ContainsKey(0x3B5CB472))
-                {
-                    if (value.XValue == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x3B5CB472])
-                        Data.Remove(0x3B5CB472);
-                    else
-                        Data[0x3B5CB472] = value.XValue;
-                }
-                else if (value.XValue != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x3B5CB472])
-                    Data.Add(0x3B5CB472, value.XValue);
+                VPanAxisX = value.XValue;
+                VPanAxisY = value.YValue;
+                VPanAxisZ = value.ZValue;
+            }
+        }
+        public float VPanAxisX
+        {
+            get => (float)GetDataOrCamTypeDefault(HASH_VPANAXIS_X);
+            set => SetData(HASH_VPANAXIS_X, value);
+        }
+        public float VPanAxisY
+        {
+            get => (float)GetDataOrCamTypeDefault(HASH_VPANAXIS_Y);
+            set => SetData(HASH_VPANAXIS_Y, value);
+        }
+        public float VPanAxisZ
+        {
+            get => (float)GetDataOrCamTypeDefault(HASH_VPANAXIS_Z);
+            set => SetData(HASH_VPANAXIS_Z, value);
+        }
 
-                if (Data.ContainsKey(0x3B5CB473))
-                {
-                    if (value.YValue == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x3B5CB473])
-                        Data.Remove(0x3B5CB473);
-                    else
-                        Data[0x3B5CB473] = value.YValue;
-                }
-                else if (value.YValue != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x3B5CB473])
-                    Data.Add(0x3B5CB473, value.YValue);
+        public Vector3<float> Up
+        {
+            get => new(UpX, UpY, UpZ);
+            set
+            {
+                UpX = value.XValue;
+                UpY = value.YValue;
+                UpZ = value.ZValue;
+            }
+        }
+        public float UpX
+        {
+            get => (float)GetDataOrCamTypeDefault(HASH_UP_X);
+            set => SetData(HASH_UP_X, value);
+        }
+        public float UpY
+        {
+            get => (float)GetDataOrCamTypeDefault(HASH_UP_Y);
+            set => SetData(HASH_UP_Y, value);
+        }
+        public float UpZ
+        {
+            get => (float)GetDataOrCamTypeDefault(HASH_UP_Z);
+            set => SetData(HASH_UP_Z, value);
+        }
 
-                if (Data.ContainsKey(0x3B5CB474))
-                {
-                    if (value.ZValue == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x3B5CB474])
-                        Data.Remove(0x3B5CB474);
-                    else
-                        Data[0x3B5CB474] = value.ZValue;
-                }
-                else if (value.ZValue != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x3B5CB474])
-                    Data.Add(0x3B5CB474, value.ZValue);
-            }
-        }
-        public Vector3<float> UpAxis
+        public int NoReset
         {
-            get
-            {
-                return new Vector3<float>(
-                    Data.ContainsKey(0x0036D9C5) ? (float)Data[0x0036D9C5] : (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0036D9C5],
-                    Data.ContainsKey(0x0036D9C6) ? (float)Data[0x0036D9C6] : (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0036D9C6],
-                    Data.ContainsKey(0x0036D9C7) ? (float)Data[0x0036D9C7] : (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0036D9C7]);
-            }
-            set
-            {
-                if (Data.ContainsKey(0x0036D9C5))
-                {
-                    if (value.XValue == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0036D9C5])
-                        Data.Remove(0x0036D9C5);
-                    else
-                        Data[0x0036D9C5] = value.XValue;
-                }
-                else if (value.XValue != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0036D9C5])
-                    Data.Add(0x0036D9C5, value.XValue);
+            get => (int)GetDataOrCamTypeDefault(HASH_FLAG_NORESET);
+            set => SetData(HASH_FLAG_NORESET, value);
+        }
+        public int NoFieldOfViewY
+        {
+            get => (int)GetDataOrCamTypeDefault(HASH_FLAG_NOFOVY);
+            set => SetData(HASH_FLAG_NOFOVY, value);
+        }
+        public int LookOffsetErpOff
+        {
+            get => (int)GetDataOrCamTypeDefault(HASH_FLAG_LOFSERPOFF);
+            set => SetData(HASH_FLAG_LOFSERPOFF, value);
+        }
+        public int AntiBlurOff
+        {
+            get => (int)GetDataOrCamTypeDefault(HASH_FLAG_ANTIBLUROFF);
+            set => SetData(HASH_FLAG_ANTIBLUROFF, value);
+        }
+        public int CollisionOff
+        {
+            get => (int)GetDataOrCamTypeDefault(HASH_FLAG_COLLISIONOFF);
+            set => SetData(HASH_FLAG_COLLISIONOFF, value);
+        }
+        public int SubjectiveOff
+        {
+            get => (int)GetDataOrCamTypeDefault(HASH_FLAG_SUBJECTIVEOFF);
+            set => SetData(HASH_FLAG_SUBJECTIVEOFF, value);
+        }
 
-                if (Data.ContainsKey(0x0036D9C6))
-                {
-                    if (value.YValue == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0036D9C6])
-                        Data.Remove(0x0036D9C6);
-                    else
-                        Data[0x0036D9C6] = value.YValue;
-                }
-                else if (value.YValue != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0036D9C6])
-                    Data.Add(0x0036D9C6, value.YValue);
+        public int GFlagEndErpFrame
+        {
+            get => (int)GetDataOrCamTypeDefault(HASH_GFLAG_ENABLEENDERPFRAME);
+            set => SetData(HASH_GFLAG_ENABLEENDERPFRAME, value);
+        }
 
-                if (Data.ContainsKey(0x0036D9C7))
-                {
-                    if (value.ZValue == (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0036D9C7])
-                        Data.Remove(0x0036D9C7);
-                    else
-                        Data[0x0036D9C7] = value.ZValue;
-                }
-                else if (value.ZValue != (float)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x0036D9C7])
-                    Data.Add(0x0036D9C7, value.ZValue);
-            }
-        }
-        
-        public bool DisableReset
+        public int GFlagThrough
         {
-            get
-            {
-                if (Data.ContainsKey(0x41E363AC))
-                    return (int)Data[0x41E363AC] > 0;
-                else
-                    return (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x41E363AC];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x41E363AC))
-                {
-                    if (value == (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x41E363AC])
-                        Data.Remove(0x41E363AC);
-                    else
-                        Data[0x41E363AC] = value ? 1 : 0;
-                }
-                else if (value != (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x41E363AC])
-                    Data.Add(0x41E363AC, value ? 1 : 0);
-            }
+            get => (int)GetDataOrCamTypeDefault(HASH_GFLAG_THRU);
+            set => SetData(HASH_GFLAG_THRU, value);
         }
-        public bool EnableFoV
-        {
-            get
-            {
-                if (Data.ContainsKey(0x9F02074F))
-                    return (int)Data[0x9F02074F] > 0;
-                else
-                    return (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x9F02074F];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x9F02074F))
-                {
-                    if (value == (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x9F02074F])
-                        Data.Remove(0x9F02074F);
-                    else
-                        Data[0x9F02074F] = value ? 1 : 0;
-                }
-                else if (value != (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x9F02074F])
-                    Data.Add(0x9F02074F, value ? 1 : 0);
-            }
-        }
-        public bool StaticLookOffset
-        {
-            get
-            {
-                if (Data.ContainsKey(0x82D5627E))
-                    return (int)Data[0x82D5627E] > 0;
-                else
-                    return (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x82D5627E];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x82D5627E))
-                {
-                    if (value == (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x82D5627E])
-                        Data.Remove(0x82D5627E);
-                    else
-                        Data[0x82D5627E] = value ? 1 : 0;
-                }
-                else if (value != (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x82D5627E])
-                    Data.Add(0x82D5627E, value ? 1 : 0);
-            }
-        }
-        public bool DisableAntiBlur
-        {
-            get
-            {
-                if (Data.ContainsKey(0xE2044E84))
-                    return (int)Data[0xE2044E84] > 0;
-                else
-                    return (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xE2044E84];
-            }
-            set
-            {
-                if (Data.ContainsKey(0xE2044E84))
-                {
-                    if (value == (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xE2044E84])
-                        Data.Remove(0xE2044E84);
-                    else
-                        Data[0xE2044E84] = value ? 1 : 0;
-                }
-                else if (value != (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xE2044E84])
-                    Data.Add(0xE2044E84, value ? 1 : 0);
-            }
-        }
-        public bool DisableCollision
-        {
-            get
-            {
-                if (Data.ContainsKey(0x521E5C3F))
-                    return (int)Data[0x521E5C3F] > 0;
-                else
-                    return (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x521E5C3F];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x521E5C3F))
-                {
-                    if (value == (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x521E5C3F])
-                        Data.Remove(0x521E5C3F);
-                    else
-                        Data[0x521E5C3F] = value ? 1 : 0;
-                }
-                else if (value != (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x521E5C3F])
-                    Data.Add(0x521E5C3F, value ? 1 : 0);
-            }
-        }
-        public bool DisableFirstPerson
-        {
-            get
-            {
-                if (Data.ContainsKey(0xBB74D6C1))
-                    return (int)Data[0xBB74D6C1] > 0;
-                else
-                    return (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xBB74D6C1];
-            }
-            set
-            {
-                if (Data.ContainsKey(0xBB74D6C1))
-                {
-                    if (value == (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xBB74D6C1])
-                        Data.Remove(0xBB74D6C1);
-                    else
-                        Data[0xBB74D6C1] = value ? 1 : 0;
-                }
-                else if (value != (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xBB74D6C1])
-                    Data.Add(0xBB74D6C1, value ? 1 : 0);
-            }
-        }
-        /// <summary>
-        /// Game Flag, only used by g: cameras
-        /// </summary>
-        public bool GFlagEndErpFrame
-        {
-            get
-            {
-                if (Data.ContainsKey(0xDA484167))
-                    return (int)Data[0xDA484167] > 0;
-                else
-                    return (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xDA484167];
-            }
-            set
-            {
-                if (Data.ContainsKey(0xDA484167))
-                {
-                    if (value == (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xDA484167])
-                        Data.Remove(0xDA484167);
-                    else
-                        Data[0xDA484167] = value ? 1 : 0;
-                }
-                else if (value != (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xDA484167])
-                    Data.Add(0xDA484167, value ? 1 : 0);
-            }
-        }
-        /// <summary>
-        /// Game Flag, only used by g: cameras
-        /// </summary>
-        public bool GFlagThrough
-        {
-            get
-            {
-                if (Data.ContainsKey(0xED8DD072))
-                    return (int)Data[0xED8DD072] > 0;
-                else
-                    return (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xED8DD072];
-            }
-            set
-            {
-                if (Data.ContainsKey(0xED8DD072))
-                {
-                    if (value == (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xED8DD072])
-                        Data.Remove(0xED8DD072);
-                    else
-                        Data[0xED8DD072] = value ? 1 : 0;
-                }
-                else if (value != (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0xED8DD072])
-                    Data.Add(0xED8DD072, value ? 1 : 0);
-            }
-        }
-        /// <summary>
-        /// Only used by g: cameras
-        /// </summary>
+
         public int GFlagEndTime
         {
-            get
-            {
-                if (Data.ContainsKey(0x67D981E8))
-                    return (int)Data[0x67D981E8];
-                else
-                    return (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x67D981E8];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x67D981E8))
-                {
-                    if (value == (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x67D981E8])
-                        Data.Remove(0x67D981E8);
-                    else
-                        Data[0x67D981E8] = value;
-                }
-                else if (value != (int)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x67D981E8])
-                    Data.Add(0x67D981E8, value);
-            }
+            get => (int)GetDataOrCamTypeDefault(HASH_GFLAG_CAMENDINT);
+            set => SetData(HASH_GFLAG_CAMENDINT, value);
         }
-        public bool EnableVerticalPanAxis
+        public int VPanAxisUse
         {
-            get
-            {
-                if (Data.ContainsKey(0x26C8C3C0))
-                    return (int)Data[0x26C8C3C0] > 0;
-                else
-                    return (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x26C8C3C0];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x26C8C3C0))
-                {
-                    if (value == (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x26C8C3C0])
-                        Data.Remove(0x26C8C3C0);
-                    else
-                        Data[0x26C8C3C0] = value ? 1 : 0;
-                }
-                else if (value != (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x26C8C3C0])
-                    Data.Add(0x26C8C3C0, value ? 1 : 0);
-            }
+            get => (int)GetDataOrCamTypeDefault(HASH_VPANUSE);
+            set => SetData(HASH_VPANUSE, value);
         }
         /// <summary>
         /// Event Flag, only used by e: cameras
         /// </summary>
-        public bool EventUseTransitionTime
+        public int EventUseTransitionTime
         {
-            get
-            {
-                if (Data.ContainsKey(0x1BCD52AA))
-                    return (int)Data[0x1BCD52AA] > 0;
-                else
-                    return (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x1BCD52AA];
-            }
-            set
-            {
-                if (Data.ContainsKey(0x1BCD52AA))
-                {
-                    if (value == (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x1BCD52AA])
-                        Data.Remove(0x1BCD52AA);
-                    else
-                        Data[0x1BCD52AA] = value ? 1 : 0;
-                }
-                else if (value != (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x1BCD52AA])
-                    Data.Add(0x1BCD52AA, value ? 1 : 0);
-            }
+            get => (int)GetDataOrCamTypeDefault(HASH_EFLAG_ENABLEERPFRAME);
+            set => SetData(HASH_EFLAG_ENABLEERPFRAME, value);
         }
         /// <summary>
         /// Event Flag, only used by e: cameras
         /// </summary>
-        public bool EventUseTransitionEndTime
+        public int EventUseTransitionEndTime
         {
-            get
+            get => (int)GetDataOrCamTypeDefault(HASH_EFLAG_ENABLEENDERPFRAME);
+            set => SetData(HASH_EFLAG_ENABLEENDERPFRAME, value);
+        }
+        #endregion
+
+        public uint[] ContainedHashes => Data.Keys.ToArray();
+
+        public Entry()
+        {
+        }
+
+        public object GetDataOrCamTypeDefault(uint Hash)
+        {
+            if (Data.TryGetValue(Hash, out object? obj) && obj is not null)
+                return obj;
+
+#pragma warning disable CS8603 // Possible null reference return.
+            return GetDefaultValue(Hash);
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public static object? GetDefaultValue(uint Hash)
+        {
+            if (DEFAULT_CAMERA_SETTINGS.TryGetValue(Hash, out Dictionary<uint, object>? DefaultSettings) && DefaultSettings != null)
             {
-                if (Data.ContainsKey(0x45E50EE5))
-                    return (int)Data[0x45E50EE5] > 0;
+                int DEFAULTS_VERSION = Program.Settings.IsUseSMG1Defaults ? DEFAULT_VERSION_SMG1 : DEFAULT_VERSION_SMG2;
+                if (DefaultSettings.TryGetValue((uint)DEFAULTS_VERSION, out object? value) && value != null)
+                    return value;
+                return DefaultSettings[0];
+            }
+            return null;
+        }
+
+        private void SetData(uint Hash, object valueToSet)
+        {
+            object? DEFAULT_VALUE = GetDefaultValue(Hash);
+            if (!Data.TryAdd(Hash, valueToSet))
+            {
+                if (DEFAULT_VALUE is not null && valueToSet.Equals(DEFAULT_VALUE) && Hash != HASH_VERSION && Hash != HASH_ID && Hash != HASH_CAMTYPE)
+                    Data.Remove(Hash);
                 else
-                    return (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x45E50EE5];
+                    Data[Hash] = valueToSet;
             }
-            set
+        }
+
+        public void OptimizeForCamType()
+        {
+            for (int i = 0; i < PreferredHashOrder.Length; i++)
             {
-                if (Data.ContainsKey(0x45E50EE5))
+                switch (HashDataTypes[i])
                 {
-                    if (value == (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x45E50EE5])
-                        Data.Remove(0x45E50EE5);
-                    else
-                        Data[0x45E50EE5] = value ? 1 : 0;
+                    case DataTypes.INT32:
+                        CalcInt32(PreferredHashOrder[i]);
+                        break;
+                    case DataTypes.FLOAT:
+                        CalcSingle(PreferredHashOrder[i]);
+                        break;
+                    case DataTypes.STRING:
+                        CalcString(PreferredHashOrder[i]);
+                        break;
+                    default:
+                        throw new Exception();
                 }
-                else if (value != (bool)CameraDefaults.Defaults[CameraDefaults.Defaults.ContainsKey(Type) ? Type : "CAM_TYPE_XZ_PARA"].DefaultValues[0x45E50EE5])
-                    Data.Add(0x45E50EE5, value ? 1 : 0);
+            }
+
+            //Verify that all Vectors have all their X, Y, and Z fields present.
+            VerifyVector(BCAM.HASH_WOFFSET_X, BCAM.HASH_WOFFSET_Y, BCAM.HASH_WOFFSET_Z);
+            VerifyVector(BCAM.HASH_WPOINT_X, BCAM.HASH_WPOINT_Y, BCAM.HASH_WPOINT_Z);
+            VerifyVector(BCAM.HASH_AXIS_X, BCAM.HASH_AXIS_Y, BCAM.HASH_AXIS_Z);
+            VerifyVector(BCAM.HASH_VPANAXIS_X, BCAM.HASH_VPANAXIS_Y, BCAM.HASH_VPANAXIS_Z);
+            VerifyVector(BCAM.HASH_UP_X, BCAM.HASH_UP_Y, BCAM.HASH_UP_Z);
+
+
+            void CalcInt32(uint Hash)
+            {
+                if (Data.ContainsKey(Hash))
+                    SetData(Hash, (int)GetDataOrCamTypeDefault(Hash));
+            }
+            void CalcSingle(uint Hash)
+            {
+                if (Data.ContainsKey(Hash))
+                    SetData(Hash, (float)GetDataOrCamTypeDefault(Hash));
+            }
+            void CalcString(uint Hash)
+            {
+                if (Data.ContainsKey(Hash))
+                    SetData(Hash, (string)GetDataOrCamTypeDefault(Hash));
+            }
+
+            void VerifyVector(uint XHash, uint YHash, uint ZHash)
+            {
+                bool HasX = Data.ContainsKey(XHash);
+                bool HasY = Data.ContainsKey(YHash);
+                bool HasZ = Data.ContainsKey(ZHash);
+                if (!HasX && !HasY && !HasZ)
+                    return;
+
+                if (!HasX)
+                    SetData(XHash, (float)GetDataOrCamTypeDefault(XHash));
+                if (!HasY)
+                    SetData(YHash, (float)GetDataOrCamTypeDefault(YHash));
+                if (!HasZ)
+                    SetData(ZHash, (float)GetDataOrCamTypeDefault(ZHash));
             }
         }
-
-
-        public static bool operator ==(BCAMEntry Left, BCAMEntry Right) => Left.Equals(Right);
-        public static bool operator !=(BCAMEntry Left, BCAMEntry Right) => !Left.Equals(Right);
-        /// <summary>
-        /// Auto-Generated
-        /// </summary>
-        /// <param name="obj">Object to compare to</param>
-        /// <returns></returns>
-        public override bool Equals(object obj)
+    
+        public static Entry CreateDefaultCamera()
         {
-            return obj is BCAMEntry entry &&
-                   EqualityComparer<Dictionary<uint, object>>.Default.Equals(Data, entry.Data) &&
-                   IsOfCategory(entry.GetCategory()) &&
-                   Identification == entry.Identification &&
-                   Type == entry.Type &&
-                   RotationX == entry.RotationX &&
-                   RotationY == entry.RotationY &&
-                   RotationZ == entry.RotationZ &&
-                   Zoom == entry.Zoom &&
-                   FieldOfView == entry.FieldOfView &&
-                   TransitionTime == entry.TransitionTime &&
-                   TransitionEndTime == entry.TransitionEndTime &&
-                   TransitionGroundTime == entry.TransitionGroundTime &&
-                   Num1 == entry.Num1 &&
-                   Num2 == entry.Num2 &&
-                   String == entry.String &&
-                   MaxY == entry.MaxY &&
-                   MinY == entry.MinY &&
-                   GroundMoveDelay == entry.GroundMoveDelay &&
-                   AirMoveDelay == entry.AirMoveDelay &&
-                   UDown == entry.UDown &&
-                   LookOffset == entry.LookOffset &&
-                   LookOffsetVertical == entry.LookOffsetVertical &&
-                   UpperBorder == entry.UpperBorder &&
-                   LowerBorder == entry.LowerBorder &&
-                   EventFrames == entry.EventFrames &&
-                   EventPriority == entry.EventPriority &&
-                   EqualityComparer<Vector3<float>>.Default.Equals(FixPointOffset, entry.FixPointOffset) &&
-                   EqualityComparer<Vector3<float>>.Default.Equals(WorldPointOffset, entry.WorldPointOffset) &&
-                   EqualityComparer<Vector3<float>>.Default.Equals(PlayerOffset, entry.PlayerOffset) &&
-                   EqualityComparer<Vector3<float>>.Default.Equals(VerticalPanAxis, entry.VerticalPanAxis) &&
-                   EqualityComparer<Vector3<float>>.Default.Equals(UpAxis, entry.UpAxis) &&
-                   DisableReset == entry.DisableReset &&
-                   EnableFoV == entry.EnableFoV &&
-                   StaticLookOffset == entry.StaticLookOffset &&
-                   DisableAntiBlur == entry.DisableAntiBlur &&
-                   DisableCollision == entry.DisableCollision &&
-                   DisableFirstPerson == entry.DisableFirstPerson &&
-                   GFlagEndErpFrame == entry.GFlagEndErpFrame &&
-                   GFlagThrough == entry.GFlagThrough &&
-                   GFlagEndTime == entry.GFlagEndTime &&
-                   EnableVerticalPanAxis == entry.EnableVerticalPanAxis &&
-                   EventUseTransitionTime == entry.EventUseTransitionTime &&
-                   EventUseTransitionEndTime == entry.EventUseTransitionEndTime;
+            Entry result = new()
+            {
+                Version = Program.Settings.IsUseSMG1Defaults ? DEFAULT_VERSION_SMG1 : DEFAULT_VERSION_SMG2
+            };
+            for (int i = 0; i < PreferredHashOrder.Length; i++)
+            {
+                object? defaultvalue = GetDefaultValue(PreferredHashOrder[i]);
+                if (defaultvalue is not null)
+                    result.SetData(PreferredHashOrder[i], defaultvalue);
+            }
+            return result;
         }
-        /// <summary>
-        /// Auto-Generated
-        /// </summary>
-        /// <returns></returns>
-        public override int GetHashCode()
+    
+        public static Entry CloneCameraFull(Entry source)
         {
-            var hashCode = 1520949657;
-            hashCode = hashCode * -1521134295 + EqualityComparer<Dictionary<uint, object>>.Default.GetHashCode(Data);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Identification);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Type);
-            hashCode = hashCode * -1521134295 + RotationX.GetHashCode();
-            hashCode = hashCode * -1521134295 + RotationY.GetHashCode();
-            hashCode = hashCode * -1521134295 + RotationZ.GetHashCode();
-            hashCode = hashCode * -1521134295 + Zoom.GetHashCode();
-            hashCode = hashCode * -1521134295 + FieldOfView.GetHashCode();
-            hashCode = hashCode * -1521134295 + TransitionTime.GetHashCode();
-            hashCode = hashCode * -1521134295 + TransitionEndTime.GetHashCode();
-            hashCode = hashCode * -1521134295 + TransitionGroundTime.GetHashCode();
-            hashCode = hashCode * -1521134295 + Num1.GetHashCode();
-            hashCode = hashCode * -1521134295 + Num2.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(String);
-            hashCode = hashCode * -1521134295 + MaxY.GetHashCode();
-            hashCode = hashCode * -1521134295 + MinY.GetHashCode();
-            hashCode = hashCode * -1521134295 + GroundMoveDelay.GetHashCode();
-            hashCode = hashCode * -1521134295 + AirMoveDelay.GetHashCode();
-            hashCode = hashCode * -1521134295 + UDown.GetHashCode();
-            hashCode = hashCode * -1521134295 + LookOffset.GetHashCode();
-            hashCode = hashCode * -1521134295 + LookOffsetVertical.GetHashCode();
-            hashCode = hashCode * -1521134295 + UpperBorder.GetHashCode();
-            hashCode = hashCode * -1521134295 + LowerBorder.GetHashCode();
-            hashCode = hashCode * -1521134295 + EventFrames.GetHashCode();
-            hashCode = hashCode * -1521134295 + EventPriority.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<Vector3<float>>.Default.GetHashCode(FixPointOffset);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Vector3<float>>.Default.GetHashCode(WorldPointOffset);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Vector3<float>>.Default.GetHashCode(PlayerOffset);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Vector3<float>>.Default.GetHashCode(VerticalPanAxis);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Vector3<float>>.Default.GetHashCode(UpAxis);
-            hashCode = hashCode * -1521134295 + DisableReset.GetHashCode();
-            hashCode = hashCode * -1521134295 + EnableFoV.GetHashCode();
-            hashCode = hashCode * -1521134295 + StaticLookOffset.GetHashCode();
-            hashCode = hashCode * -1521134295 + DisableAntiBlur.GetHashCode();
-            hashCode = hashCode * -1521134295 + DisableCollision.GetHashCode();
-            hashCode = hashCode * -1521134295 + DisableFirstPerson.GetHashCode();
-            hashCode = hashCode * -1521134295 + GFlagEndErpFrame.GetHashCode();
-            hashCode = hashCode * -1521134295 + GFlagThrough.GetHashCode();
-            hashCode = hashCode * -1521134295 + GFlagEndTime.GetHashCode();
-            hashCode = hashCode * -1521134295 + EnableVerticalPanAxis.GetHashCode();
-            hashCode = hashCode * -1521134295 + EventUseTransitionTime.GetHashCode();
-            hashCode = hashCode * -1521134295 + EventUseTransitionEndTime.GetHashCode();
-            return hashCode;
+            Entry result = new();
+            for (int i = 0; i < PreferredHashOrder.Length; i++)
+            {
+                if (source.Data.TryGetValue(PreferredHashOrder[i], out object? v))
+                {
+                    result.TryAdd(PreferredHashOrder[i], v);
+                }
+                else
+                {
+                    object? defaultvalue = GetDefaultValue(PreferredHashOrder[i]);
+                    if (defaultvalue is not null)
+                        result.SetData(PreferredHashOrder[i], defaultvalue);
+                }
+            }
+            return result;
         }
-        /// <summary>
-        /// Identification - Data: DataCount
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString() => Identification + " - Data: " + Data.Count;
     }
 
-    public enum DataTypes : byte
+    public static readonly uint[] PreferredHashOrder = [
+        #region General
+        HASH_VERSION, //Version
+        HASH_ID, //ID
+        HASH_CAMTYPE, //Type
+
+        HASH_STRING, //string
+        HASH_ANGLEB, //RotationX
+        HASH_ANGLEA, //RotationY
+        HASH_ROLL, //RotationZ
+        HASH_DIST, //Zoom
+        HASH_FOVY, //Field of View
+        HASH_CAMINT, //Transition Time
+        HASH_CAMENDINT, //End Transition Time
+        HASH_GNDINT, //Ground Speed.....Does literally nothing. Only different in like, 8 files between both games.
+        HASH_NUM1, //num1 [Various things]
+        HASH_NUM2, //num2 [Various things]
+        HASH_UPLAY, //MaxY
+        HASH_LPLAY, //MinY
+        HASH_PUSHDELAY, //GroundStarMoveDelay
+        HASH_PUSHDELAYLOW, //AirStartMoveDelay
+        HASH_UDOWN, //udown...does literally nothing...?
+        HASH_LOFFSET, //Front Zoom
+        HASH_LOFFSETV , //Height Zoom
+        HASH_UPPER, //Upper Border
+        HASH_LOWER, //Lower Border
+        HASH_EVFRM, //Event Frames
+        HASH_EVPRIORITY, //Event Priority
+        #endregion
+
+        #region Coordinates
+        HASH_WOFFSET_X, //Fixpoint Offset X
+        HASH_WOFFSET_Y, //Fixpoint Offset Y
+        HASH_WOFFSET_Z, //Fixpoint Offset Z
+        //--------------------------------------------------------------------------------------------------
+        HASH_WPOINT_X, //Worldpoint Offset X
+        HASH_WPOINT_Y, //Worldpoint Offset Y
+        HASH_WPOINT_Z, //Worldpoint Offset Z
+        //--------------------------------------------------------------------------------------------------
+        HASH_AXIS_X, //Player Offset X
+        HASH_AXIS_Y, //Player Offset Y
+        HASH_AXIS_Z, //Player Offset Z
+        //--------------------------------------------------------------------------------------------------
+        HASH_VPANAXIS_X, //Verticle Pan Axis X
+        HASH_VPANAXIS_Y, //Verticle Pan Axis Y
+        HASH_VPANAXIS_Z, //Verticle Pan Axis Z
+        //--------------------------------------------------------------------------------------------------
+        HASH_UP_X, //Up Axis X
+        HASH_UP_Y, //Up Axis Y
+        HASH_UP_Z, //Up Axis Z
+        #endregion
+
+        #region Flags
+        HASH_FLAG_NORESET, //DisableReset
+        HASH_FLAG_NOFOVY, //Enable Field of View
+        HASH_FLAG_LOFSERPOFF, //Enable Sharp Zoom
+        HASH_FLAG_ANTIBLUROFF, //Disable Anti-blur
+        HASH_FLAG_COLLISIONOFF, //Disable Collision
+        HASH_FLAG_SUBJECTIVEOFF, //Disable First Person
+        HASH_GFLAG_ENABLEENDERPFRAME, //GroupFlagEndErpFrame
+        HASH_GFLAG_THRU, //GroupFlagThrough
+        HASH_GFLAG_CAMENDINT, //GroupFlagEndTransitionSpeed
+        HASH_VPANUSE, //Use Verticle Pan Axis
+        HASH_EFLAG_ENABLEENDERPFRAME, //Event Use Transition
+        HASH_EFLAG_ENABLEERPFRAME //Event Use End Transition
+        #endregion
+    ];
+    private static readonly DataTypes[] HashDataTypes = [
+            DataTypes.INT32,
+            DataTypes.STRING,
+            DataTypes.STRING,
+            DataTypes.STRING,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.INT32,
+            DataTypes.INT32,
+
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+            DataTypes.FLOAT,
+
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.INT32,
+            DataTypes.INT32,
+        ];
+    private static List<Field>? mPreMadeFields = null;
+    private static List<Field> PreMadeFields
     {
-        INT32 = 0,
-        UNKNOWN = 1,
-        FLOAT = 2,
-        UINT32 = 3,
-        INT16 = 4,
-        BYTE = 5,
-        STRING = 6,
-        NULL = 7
+        get
+        {
+            //Initially I was going to cache this
+            //But that ended up breaking things so I made it regenerate it each time...
+            //if (mPreMadeFields is null)
+            {
+                mPreMadeFields = [];
+                for (int i = 0; i < PreferredHashOrder.Length; i++)
+                    mPreMadeFields.Add(new Field() { AutoRecalc = true, HashName = PreferredHashOrder[i], DataType = HashDataTypes[i] });
+            }
+            return mPreMadeFields;
+        }
     }
-
-    public static class BCAMEx
+    /// <summary>
+    /// The Enumerator of Camera Types
+    /// </summary>
+    public enum CameraType
     {
-        public static string GetTranslatedName(this BCAMEntry entry)
-        {
-            string Final = "";
-            string Original = entry.Data[0x00000D1B].ToString();
-            if (Original.StartsWith("c:"))
-            {
-                if (short.TryParse(Original.Split(':')[1], System.Globalization.NumberStyles.HexNumber, null, out short result))
-                {
-                    Final += $"Camera Area {(Settings.Default.IsUseHexID ? result.ToString("X").PadLeft(Settings.Default.IsUseLongID ? 4:0, '0') : result.ToString().PadLeft(Settings.Default.IsUseLongID ? 4 : 0, '0'))}";
-                }
-                else
-                {
-                    Final = Original.Replace("c:", "Camera Area ");
-                }
-            }
-            else if (Original.StartsWith("s:"))
-            {
-                if (short.TryParse(Original.Split(':')[1], System.Globalization.NumberStyles.HexNumber, null, out short result))
-                {
-                    Final += $"Spawn Point {(Settings.Default.IsUseHexID ? result.ToString("X").PadLeft(Settings.Default.IsUseLongID ? 4 : 0, '0') : result.ToString().PadLeft(Settings.Default.IsUseLongID ? 4 : 0, '0'))}";
-                }
-                else
-                {
-                    Final = Original.Replace("s:", "Spawn Point ");
-                }
-            }
-            else if (Original.StartsWith("e:"))
-            {
-                string val = Original.Replace('[', '<').Replace(']', '>'); //Regex is so dumb
-                Match m = Regex.Match(val, @"^e:\S+?<\S+?>$", RegexOptions.IgnoreCase);
-                if (m.Success)
-                    Final += "Demo: "+Original.Replace("e:","");
-                else if (Regex.IsMatch(Original, @"e:.*\s\d-\S"))
-                {
-                    Final = Original;
-
-                    //Warp pods have a very....interesting pattern to them...
-                    string[] data = Original.Split();
-                    if (data.Length != 2)
-                        goto Exit;
-                    string[] values = data[1].Split('-');
-                    if (values.Length != 2)
-                        goto Exit;
-                    Final = $"Event: Warp Pod (Group {values[0]}, Arg0 = {(values[1][0]-'A')})";
-                }
-                else
-                { 
-                    string targetkey = string.Concat(Original.Split(':')[1].Where(IsNonDigit));
-                    Final += Events.ContainsKey(targetkey) ? "Event: "+Original.Substring(2).Replace(targetkey, Events[targetkey]+" ").Replace("番目", "th") : Original;
-                }
-            Exit:;
-            }
-            else if (Original.StartsWith("o:"))
-            {
-                if (OtherEvents.ContainsKey(Original.Split(':')[1]))
-                    Final += "Other: " + OtherEvents[Original.Split(':')[1]];
-                else
-                    Final = Original.Replace("o:", "Other: ");
-            }
-            else if (Original.StartsWith("g:"))
-            {
-                Final = Original.Replace("g:", "Group: ");
-            }
-            else
-                Final = "Invalid ID";
-
-            return Final;
-        }
-        public static bool TryGetEventKey(this BCAMEntry entry, out string TargetKey)
-        {
-            try
-            {
-                TargetKey = string.Concat(entry.Identification.Split(':')[1].Where(IsNonDigit));
-            }
-            catch (Exception)
-            {
-                TargetKey = "";
-                return false;
-            }
-            return true;
-        }
-        public static bool TryGetEventNum(this BCAMEntry entry, out int ID)
-        {
-            ID = 0;
-            string[] IDValues = entry.Identification.Split(':');
-            string TargetNo = string.Concat(IDValues.Length == 4 ? IDValues[2].Where(char.IsDigit): IDValues[1].Where(char.IsDigit));
-            if (TargetNo.Length > 0 && int.TryParse(TargetNo, out ID))
-            {
-                return true;
-            }
-            return false;
-        }
-        public static int GetEventNum(this BCAMEntry entry)
-        {
-            if (entry.TryGetEventNum(out int ID))
-                return ID;
-            else
-                return -1;
-        }
-        public static bool TryGetCameraNum(this BCAMEntry entry, out short ID) => short.TryParse(entry.Identification.Split(':')[1], out ID);
-        public static short GetCameraNum(this BCAMEntry entry)
-        {
-            if (entry.TryGetCameraNum(out short ID))
-                return ID;
-            else
-                return -1;
-        }
-
-        public static bool IsNonDigit(char c) => !(c >= 0x30 && c <= 0x39);
-
-        public static string RemoveDigits(this string str) => string.Concat(str.Where(IsNonDigit));
-        
-        public static float RefineAngle(this float angle)
-        {
-            if (angle < -3.14159f)
-                while (angle < -3.14159f)
-                    angle += 6.28319f;
-            else if (angle > 3.14159f)
-                while (angle > 3.14159f)
-                    angle -= 6.28319f;
-            return angle;
-        }
-        /// <summary>
-        /// Converts a Radian to a Degree
-        /// </summary>
-        /// <param name="angle">Radian angle</param>
-        /// <returns>Degree Angle</returns>
-        public static float RadianToDegree(this float angle)
-        {
-            return (float)(angle * (180.0 / Math.PI));
-        }
-        /// <summary>
-        /// Converts a Degree to a Radian
-        /// </summary>
-        /// <param name="angle">Degree Angle</param>
-        /// <returns>Radian Angle</returns>
-        public static float DegreeToRadian(this float angle)
-        {
-            return (float)(Math.PI * angle / 180.0);
-        }
-
-        public static int ToInt32(this BitArray array)
-        {
-            if (array.Length > 32)
-                throw new ArgumentException("Argument length shall be at most 32 bits.");
-
-            int[] Finalarray = new int[1];
-            array.CopyTo(Finalarray, 0);
-            return Finalarray[0];
-        }
-
-        /// <summary>
-        /// e: cameras
-        /// </summary>
-        public static Dictionary<string, EventData> Events = new Dictionary<string, EventData>()
-        {
-            { "シナリオスターター", new EventData("Scenario Starter", true, true) },
-            { "スーパースピンドライバー固有出現イベント用", new EventData("Launch Star Appearance", true, false) },
-            { "スーパースピンドライバー", new EventData("Launch Star", true, true) },
-            { "スピンドライバ固有出現イベント用", new EventData("Sling Star Appearance", true, false) },
-            { "スピンドライバ", new EventData("Sling Star", true, true) },
-            { "グリーンスーパースピンドライバー固有出現イベント用", new EventData("Green Launch Star Appearance", true, false) },
-            { "グリーンスーパースピンドライバー", new EventData("Green Launch Star", true, true)},
-            { "ピンクスーパースピンドライバー固有出現イベント用", new EventData("Pink Launch Star Appearance", true, false) },
-            { "ピンクスーパースピンドライバー", new EventData("Pink Launch Star", true, true)},
-            { "Gキャプチャーターゲット固有", new EventData("Pull Star Appearance", true, false) },
-            { "グランドスター固有", new EventData("Grand Star Appearance", true, false) },
-            { "パワースター固有", new EventData("Power Star Appearance", true, false) },
-            { "グリーンスター固有", new EventData("Green Star Appearance", true, false) },
-            { "パワースター出現ポイント固有", new EventData("Power Star Appear Point", true, false) },
-            { "チコ集め固有集めデモカメラ", new EventData("Silver Star Completion", true, false) },
-            { "簡易デモ実行固有簡易デモ", new EventData("Simple Demo Executor", true, false) },
-            { "鍵スイッチ固有", new EventData("Key Switch Appearence", true, false) },
-            { "カプセルケージ固有", new EventData("Capsule Cage Opening", true, false) },
-            { "ゴロ岩カバー檻固有", new EventData("Capsule Cage (Alt) Opening", true, false) },
-            { "土管固有出現", new EventData("Warp Pipe", true, false) },
-            { "ウォータープレッシャー固有", new EventData("Bubble Shooter", true, false) },
-            { "ポール固有", new EventData("Pole", true, false) },
-            { "ポール（２方向）固有", new EventData("Pole 2 Way", true, false) },
-            { "ポール（モデル無し）固有", new EventData("Pole (No Model)", true, false) },
-            { "ポール（鉄骨）固有", new EventData("Square Pole", true, false) },
-            { "ポール(モデル無し鉄骨)固有", new EventData("Square Pole (No Model)", true, false) },
-            { "ポール（木Ａ）固有", new EventData("Pole Tree A", true, false) },
-            { "ポール（木B）固有", new EventData("Pole Tree B", true, false) },
-            { "移動用砲台固有", new EventData("Player Cannon", true, false) },
-            { "１ＵＰキノコ固有", new EventData("1-UP Appearence", true, false) },
-            { "？コイン固有", new EventData("?-Coin Collection", true, false) },
-            { "伸び植物固有出現デモ", new EventData("Sproutle Vine Appearance", true, false) },
-            { "伸び植物固有掴まり", new EventData("Sproutle Vine", true, false) },
-            { "つるスライダー固有滑り", new EventData("Sprauto Vine", true, false) },
-            { "つる花固有掴まり", new EventData("Creeper Plant", true, false) },
-            { "空中ブランコ固有", new EventData("Trapeze Vine", true, false) },
-            { "音符の妖精固有", new EventData("Note Fairy Appearance", true, false) },
-            { "インフェルノジェネレータ固有出現デモカメラ", new EventData("Cosmic Clones Appearance", true, false) },
-            { "ブラックホール固有", new EventData("Black Hole Death", true, false) },
-            { "ブラックホール[キューブ指定]固有", new EventData("Black Hole (Cube) Death", true, false) },
-            { "ジャンプビーマー", new EventData("Spring Beamer", true, true) },
-            { "ジャンプガーダー", new EventData("Guard Beamer", true, true) },
-            { "バネベーゴマン", new EventData("Spring Topman", true, true) },
-            { "隠れバネベーゴマン", new EventData("Hiding Spring Topman", true, true) },
-            { "モンテ固有", new EventData("Chuckster Pianta", true, false) },
-            { "アイテムドリル固有", new EventData("Spin Drill Usage", true, false) },
-            { "ハラペココインチコ固有飛行", new EventData("Coin Hungry Luma", true, false) },
-            { "チューブスライダー固有滑り", new EventData("Tube Slider", true, false) },
-            { "チューブスライダー固有飛び出し", new EventData("Tube Slider Exit", true, false) },
-            { "プチポーター固有基点でワープイン", new EventData("Minigame Teleporter (Prepare to Warp)", true, false) },
-            { "プチポーター固有ワープ点でワープアウト", new EventData("Minigame Teleporter (Arrive at Destination)", true, false) },
-            { "プチポーター固有ワープ点でワープイン", new EventData("Minigame Teleporter (Prepare return warp)", true, false) },
-            { "プチポーター固有基点でワープアウト", new EventData("Minigame Teleporter (Arrive from returning)", true, false) },
-
-            { "ワープカメラ (GroupID)-(The ASCII character Arg0+65 represents)", new EventData("Warp Pod Template", false, false) },
-
-            { "看板固有会話", new EventData("Message: Signboard", true, false) },
-            { "でか看板固有会話", new EventData("Message: Big Signboard", true, false) },
-            { "ピーチ固有会話", new EventData("Message: Peach", true, false) },
-            { "キノピオ固有会話", new EventData("Message: Toad", true, false) },
-            { "郵便屋さんキノピオ固有注目会話", new EventData("Message: Mailtoad", true, false) },
-            { "銀行屋さんキノピオ固有注目会話", new EventData("Message: Banktoad", true, false) },
-            { "ウサギ固有会話", new EventData("Message: Star Bunny", true, false) },
-            { "ロゼッタ固有会話", new EventData("Message: Rosalina", true, false) },
-            { "マイスター固有会話", new EventData("Message: Lubba", true, false) },
-            { "チコ固有会話", new EventData("Message: Luma", true, false) },
-            { "でかチコ固有会話", new EventData("Message: Big Luma", true, false) },
-            { "よろず屋チコ固有独自会話", new EventData("Message: Luma Shop", true, false) },
-            { "ハニークイーン固有会話", new EventData("Message: Queen Bee", true, false) },
-            { "ハニービー固有会話", new EventData("Message: Honeybee", true, false) },
-            { "ペンギン仙人固有会話", new EventData("Message: Penguin Elder", true, false) },
-            { "ペンギンコーチ固有会話", new EventData("Message: Penguin Coach", true, false) },
-            { "ペンギン固有会話", new EventData("Message: Penguin", true, false) },
-            { "パマタリアン固有会話", new EventData("Message: Gearmo", true, false) },
-            { "パマタリアンハンター固有会話", new EventData("Message: Gearmo Hunter", true, false) },
-            { "赤ボム兵固有会話", new EventData("Message: Bob-omb Buddy", true, false) },
-            { "モンテ固有会話", new EventData("Message: Pianta", true, false) },
-            { "ピーチャン固有会話", new EventData("Message: Jibberjay", true, false) },
-            { "モック固有会話", new EventData("Message: Whittle", true, false) },
-            { "さすらいの遊び人(通常会話)固有会話", new EventData("Message: The Chimp (NPC)", true, false) },
-
-
-            { "引き戻し", new EventData("Pull Back Area", false, false) },
-            { "水上フォロー", new EventData("Water Follow", false, false) },
-            { "水中フォロー", new EventData("Underwater Follow", false, false) },
-            { "水中プラネット", new EventData("Underwater Planet", false, false) },
-            { "フーファイターカメラ", new EventData("Foo Fighter Camera", false, false) },
-
-            { "DemoName[CameraPartName]", new EventData("Demo Camera Template", false, false) },
-            { "g:ObjectName:CameraID:0", new EventData("Collision Camera Template", false, false) },
-        };
-        /// <summary>
-        /// o: cameras
-        /// </summary>
-        public static Dictionary<string, EventData> OtherEvents = new Dictionary<string, EventData>()
-        {
-            { "デフォルト水面カメラ", new EventData("Default Water Surface", false, false) },
-            { "デフォルト水中カメラ", new EventData("Default Underwater", false, false) },
-            { "デフォルトフーファイターカメラ", new EventData("Default Flying Mario", false, false) },
-            { "スタートカメラ", new EventData("Default Spawn Point", false, false) },
-            { "デフォルトカメラ", new EventData("Default Camera", false, false) }
-        };
-
-
-        private static short CalculateNextValidID(List<short> CurrentShorts)
-        {
-            CurrentShorts.Sort();
-            short target = 0;
-            for (int i = 0; i < CurrentShorts.Count; i++)
-            {
-                if (target != CurrentShorts[i])
-                    break;
-                target++;
-            }
-            return target;
-        }
-        private static int CalculateNextValidID(List<int> CurrentInts)
-        {
-            CurrentInts.Sort();
-            int target = 0;
-            for (int i = 0; i < CurrentInts.Count; i++)
-            {
-                if (target != CurrentInts[i])
-                    break;
-                target++;
-            }
-            return target;
-        }
-
-        private static List<short> GetSpecificList(string id, BCAM Cameras)
-        {
-            List<short> CurrentShorts = new List<short>();
-            for (int i = 0; i < Cameras.EntryCount; i++)
-                if (Cameras[i].Identification.StartsWith($"{id}:") && short.TryParse(Cameras[i].Identification.Split(':')[1], System.Globalization.NumberStyles.HexNumber, null, out short result))
-                    CurrentShorts.Add(result);
-            return CurrentShorts;
-        }
-        private static List<int> GetSpecificList(string id, BCAM Cameras, EventData Event)
-        {
-            List<int> CurrentInts = new List<int>();
-            for (int i = 0; i < Cameras.EntryCount; i++)
-            {
-                if (Cameras[i].Identification.StartsWith($"{id}:"))
-                {
-                    string ID = string.Concat(Cameras[i].Identification.Split(':')[1].Where(IsNonDigit));
-                    if (Event.English.Equals(Events[ID].English))
-                    {
-                        string[] IDParts = Cameras[i].Identification.Split(':');
-                        if (IDParts.Length == 4)
-                            ID = string.Concat(Cameras[i].Identification.Split(':')[2]);
-                        else
-                            ID = string.Concat(Cameras[i].Identification.Replace($"{id}:", "").Where(char.IsNumber));
-                        if (int.TryParse(ID, System.Globalization.NumberStyles.HexNumber, null, out int result))
-                            CurrentInts.Add(result);
-                    }
-                }
-            }
-            return CurrentInts.Count == 0 ? new List<int>() { -1 } : CurrentInts;
-        }
-
-        public static short CalculateNextCameraArea(BCAM Cameras) => CalculateNextValidID(GetSpecificList("c", Cameras));
-        public static short CalculateNextStart(BCAM Cameras) => CalculateNextValidID(GetSpecificList("s", Cameras));
-        public static int CalculateNextEvent(BCAM Cameras, EventData Event) => CalculateNextValidID(GetSpecificList("e", Cameras, Event));
-
-        public static void MoveCamera(this BCAM bcam, int OriginalID, CameraMoveOptions MoveOption)
-        {
-            int NewPos = OriginalID;
-            switch (MoveOption)
-            {
-                case CameraMoveOptions.UP:
-                    if (OriginalID == 0)
-                        NewPos = bcam.EntryCount - 1;
-                    else
-                        NewPos--;
-                    break;
-                case CameraMoveOptions.DOWN:
-                    if (OriginalID == bcam.EntryCount - 1)
-                        NewPos = 0;
-                    else
-                        NewPos++;
-                    break;
-                case CameraMoveOptions.TOP:
-                    NewPos = 0;
-                    break;
-                case CameraMoveOptions.BOTTOM:
-                    NewPos = bcam.EntryCount - 1;
-                    break;
-            }
-            bcam.Entries.Move(OriginalID, NewPos);
-        }
-
-        public enum CameraMoveOptions
-        {
-            /// <summary>
-            /// Move up 1
-            /// </summary>
-            UP,
-            /// <summary>
-            /// Move down 1
-            /// </summary>
-            DOWN,
-            /// <summary>
-            /// Move to the Top
-            /// </summary>
-            TOP,
-            /// <summary>
-            /// Move to the Bottom
-            /// </summary>
-            BOTTOM
-        }
+        CAM_TYPE_2D_SLIDE, //Slides 4 ways only. (Not forward or backward)
+        CAM_TYPE_ANIM,
+        CAM_TYPE_BEHIND_DEBUG,
+        CAM_TYPE_BLACK_HOLE,
+        CAM_TYPE_BOSS_DONKETSU,
+        CAM_TYPE_CHARMED_FIX,
+        CAM_TYPE_CHARMED_VECREG,
+        CAM_TYPE_CHARMED_VECREG_TOWER,
+        CAM_TYPE_CUBE_PLANET, //Allows the camera to rotate to fit the current gravity
+        CAM_TYPE_DEAD,
+        CAM_TYPE_DONKETSU_TEST,
+        CAM_TYPE_DPD,
+        CAM_TYPE_EYEPOS_FIX, //Moves the camera to a fixed location
+        CAM_TYPE_EYEPOS_FIX_THERE, //Freezes the camera on place - Only rotates until freed
+        CAM_TYPE_EYE_FIXED_THERE_TEST,
+        CAM_TYPE_FOLLOW,
+        CAM_TYPE_FOO_FIGHTER, //Red Star Related
+        CAM_TYPE_FOO_FIGHTER_PLANET, //Red Star Related
+        CAM_TYPE_FREEZE,
+        CAM_TYPE_FRONT_AND_BACK,
+        CAM_TYPE_GROUND,
+        CAM_TYPE_ICECUBE_PLANET,
+        CAM_TYPE_INNER_CYLINDER,
+        CAM_TYPE_INWARD_SPHERE,
+        CAM_TYPE_INWARD_TOWER, //Moves around a fixpoint so the fixpoint X & Z pos is never visible (Unconfirmed)
+        CAM_TYPE_INWARD_TOWER_TEST,
+        CAM_TYPE_MEDIAN_PLANET,
+        CAM_TYPE_MEDIAN_TOWER,
+        CAM_TYPE_MTXREG_PARALLEL,
+        CAM_TYPE_OBJ_PARALLEL, //Moves based on Mario's position. Usually used for Flying
+        CAM_TYPE_POINT_FIX,
+        CAM_TYPE_RACE_FOLLOW,
+        CAM_TYPE_RAIL_DEMO,
+        CAM_TYPE_RAIL_FOLLOW,
+        CAM_TYPE_RAIL_WATCH,
+        CAM_TYPE_SLIDER,
+        CAM_TYPE_SPHERE_TRUNDLE,
+        CAM_TYPE_SPIRAL_DEMO,
+        CAM_TYPE_SUBJECTIVE,
+        CAM_TYPE_TALK, //NPC Camera
+        CAM_TYPE_TOWER, //Moves around a fixpoint so the fixpoint X & Z pos is always visible
+        CAM_TYPE_TOWER_POS,
+        CAM_TYPE_TRIPOD_PLANET,
+        CAM_TYPE_TRUNDLE,
+        CAM_TYPE_TWISTED_PASSAGE,
+        CAM_TYPE_WATER_FOLLOW,
+        CAM_TYPE_WATER_PLANET,
+        CAM_TYPE_WATER_PLANET_BOSS,
+        CAM_TYPE_WONDER_PLANET,
+        CAM_TYPE_XZ_PARA //The most basic camera ever.
     }
+}
+
+public static partial class BCAMUtility
+{
+    #region DEFAULTS
+    //These are global for all cameras
+    public const int DEFAULT_VERSION_SMG1 = 196630;
+    public const int DEFAULT_VERSION_SMG2 = 196631;
+    public const string DEFAULT_ID = "";
+    public const string DEFAULT_CAMTYPE = "";
+    // 0 = Applies for all camera versions
+    public static readonly Dictionary<uint, Dictionary<uint, object>> DEFAULT_CAMERA_SETTINGS = new()
+    {
+        {
+            BCAM.HASH_STRING, new()
+            {
+                { 0, "" }
+            }
+        },
+        {
+            BCAM.HASH_ANGLEB, new()
+            {
+                { 0, 0.3f }
+            }
+        },
+        {
+            BCAM.HASH_ANGLEA, new()
+            {
+                { 0, 0.0f }
+            }
+        },
+        {
+            BCAM.HASH_ROLL, new()
+            {
+                { 0, 0.0f }
+            }
+        },
+        {
+            BCAM.HASH_DIST, new()
+            {
+                { 0, 1200.0f }
+            }
+        },
+        {
+            BCAM.HASH_FOVY, new()
+            {
+                { 0, 45.0f }
+            }
+        },
+        {
+            BCAM.HASH_CAMINT, new()
+            {
+                { 0, 120 }
+            }
+        },
+        {
+            BCAM.HASH_CAMENDINT, new()
+            {
+                { 0, 120 }
+            }
+        },
+        {
+            BCAM.HASH_GNDINT, new()
+            {
+                { 0, 160 }
+            }
+        },
+        {
+            BCAM.HASH_NUM1, new()
+            {
+                { 0, 0 },
+                { DEFAULT_VERSION_SMG1, 0 },
+                { DEFAULT_VERSION_SMG2, 1 },
+            }
+        },
+        {
+            BCAM.HASH_NUM2, new()
+            {
+                { 0, 0 }
+            }
+        },
+        {
+            BCAM.HASH_UPLAY, new()
+            {
+                { 0, 300.0f }
+            }
+        },
+        {
+            BCAM.HASH_LPLAY, new()
+            {
+                { 0, 800.0f }
+            }
+        },
+        {
+            BCAM.HASH_PUSHDELAY, new()
+            {
+                { 0, 120 }
+            }
+        },
+        {
+            BCAM.HASH_PUSHDELAYLOW, new()
+            {
+                { 0, 120 }
+            }
+        },
+        {
+            BCAM.HASH_UDOWN, new()
+            {
+                { 0, 120 }
+            }
+        },
+        {
+            BCAM.HASH_LOFFSET, new()
+            {
+                { 0, 0.0f }
+            }
+        },
+        {
+            BCAM.HASH_LOFFSETV, new()
+            {
+                { 0, 0.0f }
+            }
+        },
+        {
+            BCAM.HASH_UPPER, new()
+            {
+                { 0, 0.3f }
+            }
+        },
+        {
+            BCAM.HASH_LOWER, new()
+            {
+                { 0, 0.1f }
+            }
+        },
+        {
+            BCAM.HASH_EVFRM, new()
+            {
+                { 0, 0 }
+            }
+        },
+        {
+            BCAM.HASH_EVPRIORITY, new()
+            {
+                { 0, 1 }
+            }
+        },
+        {
+            BCAM.HASH_WOFFSET_X, new()
+            {
+                { 0, 0.0f }
+            }
+        },
+        {
+            BCAM.HASH_WOFFSET_Y, new()
+            {
+                { 0, 100.0f },
+                { DEFAULT_VERSION_SMG1, 100.0f },
+                { DEFAULT_VERSION_SMG2,   0.0f },
+            }
+        },
+        {
+            BCAM.HASH_WOFFSET_Z, new()
+            {
+                { 0, 0.0f }
+            }
+        },
+        {
+            BCAM.HASH_WPOINT_X, new()
+            {
+                { 0, 0.0f }
+            }
+        },
+        {
+            BCAM.HASH_WPOINT_Y, new()
+            {
+                { 0, 0.0f }
+            }
+        },
+        {
+            BCAM.HASH_WPOINT_Z, new()
+            {
+                { 0, 0.0f }
+            }
+        },
+        {
+            BCAM.HASH_AXIS_X, new()
+            {
+                { 0, 0.0f }
+            }
+        },
+        {
+            BCAM.HASH_AXIS_Y, new()
+            {
+                { 0, 1.0f }
+            }
+        },
+        {
+            BCAM.HASH_AXIS_Z, new()
+            {
+                { 0, 0.0f }
+            }
+        },
+        {
+            BCAM.HASH_VPANAXIS_X, new()
+            {
+                { 0, 0.0f }
+            }
+        },
+        {
+            BCAM.HASH_VPANAXIS_Y, new()
+            {
+                { 0, 1.0f }
+            }
+        },
+        {
+            BCAM.HASH_VPANAXIS_Z, new()
+            {
+                { 0, 0.0f }
+            }
+        },
+        {
+            BCAM.HASH_UP_X, new()
+            {
+                { 0, 0.0f }
+            }
+        },
+        {
+            BCAM.HASH_UP_Y, new()
+            {
+                { 0, 0.0f },
+                { DEFAULT_VERSION_SMG1, 0.0f },
+                { DEFAULT_VERSION_SMG2, 1.0f },
+            }
+        },
+        {
+            BCAM.HASH_UP_Z, new()
+            {
+                { 0, 0.0f }
+            }
+        },
+        {
+            BCAM.HASH_FLAG_NORESET, new()
+            {
+                { 0, 0 }
+            }
+        },
+        {
+            BCAM.HASH_FLAG_NOFOVY, new()
+            {
+                { 0, 0 }
+            }
+        },
+        {
+            BCAM.HASH_FLAG_LOFSERPOFF, new()
+            {
+                { 0, 0 }
+            }
+        },
+        {
+            BCAM.HASH_FLAG_ANTIBLUROFF, new()
+            {
+                { 0, 0 }
+            }
+        },
+        {
+            BCAM.HASH_FLAG_COLLISIONOFF, new()
+            {
+                { 0, 0 }
+            }
+        },
+        {
+            BCAM.HASH_FLAG_SUBJECTIVEOFF, new()
+            {
+                { 0, 0 }
+            }
+        },
+        {
+            BCAM.HASH_GFLAG_ENABLEENDERPFRAME, new()
+            {
+                { 0, 0 }
+            }
+        },
+        {
+            BCAM.HASH_GFLAG_THRU, new()
+            {
+                { 0, 0 }
+            }
+        },
+        {
+            BCAM.HASH_GFLAG_CAMENDINT, new()
+            {
+                { 0, 120 }
+            }
+        },
+        {
+            BCAM.HASH_VPANUSE, new()
+            {
+                { 0, 1 }
+            }
+        },
+        {
+            BCAM.HASH_EFLAG_ENABLEENDERPFRAME, new()
+            {
+                { 0, 0 }
+            }
+        },
+        {
+            BCAM.HASH_EFLAG_ENABLEERPFRAME, new()
+            {
+                { 0, 0 }
+            }
+        },
+    };
+    #endregion
+
+    public enum CameraMoveOptions
+    {
+        /// <summary>
+        /// Move up 1
+        /// </summary>
+        UP,
+        /// <summary>
+        /// Move down 1
+        /// </summary>
+        DOWN,
+        /// <summary>
+        /// Move to the Top
+        /// </summary>
+        TOP,
+        /// <summary>
+        /// Move to the Bottom
+        /// </summary>
+        BOTTOM
+    }
+
+    //public class CameraDefaults
+    //{
+    //    public readonly static Dictionary<string, CameraDefaults> Defaults = new()
+    //    {
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_XZ_PARA", new CameraDefaults(AngleA:0, AngleB:0, Dist:3000f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_WONDER_PLANET", new CameraDefaults(AxisX:500.0f, AxisY:2000.0f, AngleA:0.7853982f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_TOWER", new CameraDefaults(WPointX:0, WPointY:0, WPointZ:0, AxisX:0, AxisY:1.0f, AxisZ:0, AngleA:0, AngleB:0, Dist:2000.0f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_TOWER_POS", new CameraDefaults(WPointX:0, WPointY:0, WPointZ:0, AxisX:0, AxisY:1.0f, AxisZ:0, AngleA:0, AngleB:0, UpX:1000.0f, UpY: 0.5f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_INWARD_TOWER", new CameraDefaults(WPointX:0, WPointY:0, WPointZ:0, AxisX:0, AxisY:1, AxisZ:0, AngleA:0, AngleB:0, Dist:2000.0f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_INWARD_SPHERE", new CameraDefaults(Dist:1500.0f, AngleA:500.0f, AngleB:300.0f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_POINT_FIX", new CameraDefaults() },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_EYEPOS_FIX", new CameraDefaults() },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_EYEPOS_FIX_THERE", new CameraDefaults() },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_TRUNDLE", new CameraDefaults(WPointX:0, WPointY:0, WPointZ:0, AxisX:1.0f, AxisY:0, AxisZ:0, Dist:2000.0f, AngleA:0, AngleB:0, UpX:0) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_SPHERE_TRUNDLE", new CameraDefaults(DEFAULT_VERSION_SMG2) }, //SMG2 ONLY
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_INNER_CYLINDER", new CameraDefaults(WPointX:0, WPointY:0, WPointZ:0, AxisX:0, AxisY:0, AxisZ:0, AngleA:0, AngleB:0, Dist:0) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_CUBE_PLANET", new CameraDefaults(Dist:3000.0f, AngleA:0.5235988f, AngleB:0.35f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_CHARMED_FIX", new CameraDefaults(AxisX:0, AxisY:0, AxisZ:0, UpX:0, UpY:1, UpZ:0, WPointX:0, WPointY:0, WPointZ:1000.0f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_CHARMED_VECREG", new CameraDefaults(String:"", Dist:1000.0f, AxisX:0, AxisY:0, AxisZ:0, AngleA:0.5f, AngleB:0.02f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_CHARMED_VECREG_TOWER", new CameraDefaults() },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_MEDIAN_PLANET", new CameraDefaults(String:"", AxisX:1200.0f, AxisY:3000.0f, AngleA:0.7853982f, AngleB:0.0f, Dist:2000.0f, AxisZ: 0.2f, WPointX:0.5f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_MEDIAN_TOWER", new CameraDefaults(String:"", WPointX:0, WPointY:0, WPointZ:0, AxisX:0, AxisY:1, AxisZ:0, AngleA:0.5235988f, UpX:1200.0f, UpY:0, UpZ:0.5f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_FOLLOW", new CameraDefaults(AxisX:1200.0f, AxisY:300.0f, AngleA:0.17453294f, AngleB:0.34906587f, Dist:0.15f, num1:1) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_RACE_FOLLOW", new CameraDefaults(WPointX:500.0f, WPointY:1200.0f, AngleA:0.2617994f, num1:0, WPointZ:0) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_WATER_FOLLOW", new CameraDefaults(AxisY:300.0f, AxisX:1200.0f, Dist:0.01f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_WATER_PLANET", new CameraDefaults(AxisX:500.0f, AxisY:2000.0f, AngleA:0.7853982f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_WATER_PLANET_BOSS", new CameraDefaults(AxisY:300.0f, AxisX:1200.0f, Dist:0.01f, num1:0, WPointX:0, WPointY:0, WPointZ:0, AxisZ:0, UpY:0, UpX:0, UpZ:0) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_TRIPOD_PLANET", new CameraDefaults(AxisX:0, AxisY:1, AxisZ:0, WPointX:0, WPointY:0, WPointZ:0, AngleA:0, AngleB:0, Dist:1000.0f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_TRIPOD_BOSS", new CameraDefaults(DEFAULT_VERSION_SMG1, UpZ:0) }, //SMG1 ONLY
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_TRIPOD_BOSS_JOINT", new CameraDefaults(DEFAULT_VERSION_SMG1, AngleB:0, AngleA:0, Dist:3000.0f, num1:0) }, //SMG1 ONLY
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_CHARMED_TRIPOD_BOSS", new CameraDefaults(DEFAULT_VERSION_SMG1, num1:-1, UpX:0, UpY:1, UpZ:0, WPointX:0, WPointY:0, WPointZ:1000.0f, AxisX:0, AxisY:0) }, //SMG1 ONLY
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_FOO_FIGHTER", new CameraDefaults(AxisY:300.0f, AxisX:1200.0f, Dist:0.03f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_FOO_FIGHTER_PLANET", new CameraDefaults(AxisX:500.0f, AxisY:2000.0f, AngleA:0.7853982f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_RAIL_WATCH", new CameraDefaults(num2:0, AxisX:0, Dist:1200.0f, AngleA:0) },
+    //        //==================================================================================================================================================================
+    //        //Num1 is cut in half. 0xAAAABBBB (num1 >> 16) and (num1 & 0x0000FFFF)
+    //        { "CAM_TYPE_RAIL_DEMO", new CameraDefaults() },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_RAIL_FOLLOW", new CameraDefaults(Dist:0, WPointX:30.0f, WPointY:0.35f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_OBJ_PARALLEL", new CameraDefaults(AngleA:0, AngleB:0, Dist:3000.0f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_MTXREG_PARALLEL", new CameraDefaults(String:"", AngleB:0, AngleA:0, Dist:1000.0f, WPointX:0, WPointY:0, WPointZ:0) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_SLIDER", new CameraDefaults(AngleB:0.5235988f, AngleA:0, Dist:3000.0f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_2D_SLIDE", new CameraDefaults(AxisX:1, AxisY:0, AxisZ:0, UpX:0, UpY:1, UpZ:0, WPointX:0, WPointY:0, WPointZ:0, AngleA:0, Dist:1000.0f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_GROUND", new CameraDefaults(AngleA:0, AngleB:0, Dist:1000.0f, UpX:0, UpY:1, UpZ:0) },
+    //        //==================================================================================================================================================================
+    //        //Num1 is cut in half. 0x003C0000 => 0x003c and 0x0000 separately
+    //        { "CAM_TYPE_SPIRAL_DEMO", new CameraDefaults(num1:0x003C0000, num2:0, WPointZ:1000.0f, AxisZ:1000.0f, WPointX:0, AxisX:0) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_TWISTED_PASSAGE", new CameraDefaults(AxisX:500.0f, AxisY:1300.0f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_FRONT_AND_BACK", new CameraDefaults(WPointX:0, WPointY:0, WPointZ:0, AxisX:0, AxisY:1, AxisZ:0, AngleA:0, AngleB:0, Dist:1200.0f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_FREEZE", new CameraDefaults(DEFAULT_VERSION_SMG2) }, //SMG2 ONLY
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_TALK", new CameraDefaults(WPointX:0, WPointY:0, WPointZ:0, UpX:0, UpY:1, UpZ:0, AxisX:120.0f, AxisY:450.0f) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_ANIM", new CameraDefaults() },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_DEAD", new CameraDefaults(Dist:0.5f, num1:0, num2:0) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_BLACK_HOLE", new CameraDefaults(WPointX:0, WPointY:0, WPointZ:0, AxisX:0, AxisY:0, AxisZ:0) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_DPD", new CameraDefaults(num1:0, Dist:0, FovY:40, AngleA:1.5707964f, AngleB:1.5707964f, WPointZ:0, WPointX:0.05f, WPointY:0.99f, num2:0, UpX:0) },
+    //        //==================================================================================================================================================================
+    //        { "CAM_TYPE_SUBJECTIVE", new CameraDefaults() },
+    //        //==================================================================================================================================================================
+    //    };
+
+    //    internal CameraDefaults(
+    //        int version = DEFAULT_VERSION_SMG2,
+    //        float AngleB = DEFAULT_ANGLEB,
+    //        float AngleA = DEFAULT_ANGLEA,
+    //        float Roll = DEFAULT_ROLL,
+    //        float Dist = DEFAULT_DIST,
+    //        float FovY = DEFAULT_FOVY,
+    //        int CamInt = DEFAULT_CAMINT,
+    //        int CamEndInt = DEFAULT_CAMENDINT,
+    //        int GndInt = DEFAULT_GNDINT,
+    //        int num1 = DEFAULT_NUM1,
+    //        int num2 = DEFAULT_NUM2,
+    //        string String = DEFAULT_STRING,
+    //        float UPlay = DEFAULT_UPLAY,
+    //        float LPlay = DEFAULT_LPLAY,
+    //        int PushDelay = DEFAULT_PUSHDELAY,
+    //        int PushDelayLow = DEFAULT_PUSHDELAYLOW,
+    //        int udown = DEFAULT_UDOWN,
+    //        float lookoffset = DEFAULT_LOFFSET,
+    //        float lookoffsety = DEFAULT_LOFFSETV,
+    //        float upperborder = DEFAULT_UPPER,
+    //        float lowerborder = DEFAULT_LOWER,
+    //        int evframes = DEFAULT_EVFRM,
+    //        int evpriority = DEFAULT_EVPRIORITY,
+    //        float WOffsetX = DEFAULT_WOFFSET_X,
+    //        float WOffsetY = DEFAULT_WOFFSET_Y,
+    //        float WOffsetZ = DEFAULT_WOFFSET_Z,
+    //        float WPointX = DEFAULT_WPOINT_X,
+    //        float WPointY = DEFAULT_WPOINT_Y,
+    //        float WPointZ = DEFAULT_WPOINT_Z,
+    //        float AxisX = DEFAULT_AXIS_X,
+    //        float AxisY = DEFAULT_AXIS_Y,
+    //        float AxisZ = DEFAULT_AXIS_Z,
+    //        float VPanAxisX = DEFAULT_VPANAXIS_X,
+    //        float VPanAxisY = DEFAULT_VPANAXIS_Y,
+    //        float VPanAxisZ = DEFAULT_VPANAXIS_Z,
+    //        float UpX = DEFAULT_UP_X,
+    //        float UpY = DEFAULT_UP_Y,
+    //        float UpZ = DEFAULT_UP_Z,
+    //        int disablereset = DEFAULT_FLAG_NORESET,
+    //        int enablefov = DEFAULT_FLAG_NOFOVY,
+    //        int staticlookoffset = DEFAULT_FLAG_LOFSERPOFF,
+    //        int disableantiblur = DEFAULT_FLAG_ANTIBLUROFF,
+    //        int disablecollision = DEFAULT_FLAG_COLLISIONOFF,
+    //        int disablefirstperson = DEFAULT_FLAG_SUBJECTIVEOFF,
+    //        int Gflagenderpframe = DEFAULT_GFLAG_ENABLEENDERPFRAME,
+    //        int Gflagthrough = DEFAULT_GFLAG_THRU,
+    //        int Gflagendtime = DEFAULT_GFLAG_CAMENDINT,
+    //        int useverticalpanaxis = DEFAULT_VPANUSE,
+    //        int eventuseendtime = DEFAULT_EFLAG_ENABLEENDERPFRAME,
+    //        int eventusetime = DEFAULT_EFLAG_ENABLEERPFRAME) => DefaultValues = new()
+    //        {
+    //            { BCAM.HASH_VERSION, version },
+    //            { BCAM.HASH_ANGLEB, AngleB },
+    //            { BCAM.HASH_ANGLEA, AngleA },
+    //            { BCAM.HASH_ROLL, Roll },
+    //            { BCAM.HASH_DIST, Dist },
+    //            { BCAM.HASH_FOVY, FovY },
+    //            { BCAM.HASH_CAMINT, CamInt },
+    //            { BCAM.HASH_CAMENDINT, CamEndInt },
+    //            { BCAM.HASH_GNDINT, GndInt },
+    //            { BCAM.HASH_NUM1, num1 },
+    //            { BCAM.HASH_NUM2, num2 },
+    //            { BCAM.HASH_STRING, String },
+    //            { BCAM.HASH_UPLAY, UPlay },
+    //            { BCAM.HASH_LPLAY, LPlay },
+    //            { BCAM.HASH_PUSHDELAY, PushDelay },
+    //            { BCAM.HASH_PUSHDELAYLOW, PushDelayLow },
+    //            { BCAM.HASH_UDOWN, udown },
+    //            { BCAM.HASH_LOFFSET, lookoffset },
+    //            { BCAM.HASH_LOFFSETV, lookoffsety },
+    //            { BCAM.HASH_UPPER, upperborder },
+    //            { BCAM.HASH_LOWER, lowerborder },
+    //            { BCAM.HASH_EVFRM, evframes },
+    //            { BCAM.HASH_EVPRIORITY, evpriority },
+
+    //            { BCAM.HASH_WOFFSET_X, WOffsetX },
+    //            { BCAM.HASH_WOFFSET_Y, WOffsetY },
+    //            { BCAM.HASH_WOFFSET_Z, WOffsetZ },
+    //            { BCAM.HASH_WPOINT_X, WPointX },
+    //            { BCAM.HASH_WPOINT_Y, WPointY },
+    //            { BCAM.HASH_WPOINT_Z, WPointZ },
+    //            { BCAM.HASH_AXIS_X, AxisX },
+    //            { BCAM.HASH_AXIS_Y, AxisY },
+    //            { BCAM.HASH_AXIS_Z, AxisZ },
+    //            { BCAM.HASH_VPANAXIS_X, VPanAxisX },
+    //            { BCAM.HASH_VPANAXIS_Y, VPanAxisY },
+    //            { BCAM.HASH_VPANAXIS_Z, VPanAxisZ },
+    //            { BCAM.HASH_UP_X, UpX },
+    //            { BCAM.HASH_UP_Y, UpY },
+    //            { BCAM.HASH_UP_Z, UpZ },
+
+    //            { BCAM.HASH_FLAG_NORESET, disablereset },
+    //            { BCAM.HASH_FLAG_NOFOVY, enablefov },
+    //            { BCAM.HASH_FLAG_LOFSERPOFF, staticlookoffset },
+    //            { BCAM.HASH_FLAG_ANTIBLUROFF, disableantiblur },
+    //            { BCAM.HASH_FLAG_COLLISIONOFF, disablecollision },
+    //            { BCAM.HASH_FLAG_SUBJECTIVEOFF, disablefirstperson },
+    //            { BCAM.HASH_GFLAG_ENABLEENDERPFRAME, Gflagenderpframe },
+    //            { BCAM.HASH_GFLAG_THRU, Gflagthrough },
+    //            { BCAM.HASH_GFLAG_CAMENDINT, Gflagendtime },
+    //            { BCAM.HASH_VPANUSE, useverticalpanaxis },
+    //            { BCAM.HASH_EFLAG_ENABLEENDERPFRAME, eventusetime },
+    //            { BCAM.HASH_EFLAG_ENABLEERPFRAME, eventuseendtime }
+    //        };
+
+    //    internal readonly Dictionary<uint, object> DefaultValues;
+
+    //    public static object GetCamTypeDefault(uint Hash, string Type)
+    //    {
+    //        if (!CameraDefaults.Defaults.TryGetValue(Type, out CameraDefaults? Defaults))
+    //            Defaults = CameraDefaults.Defaults["CAM_TYPE_XZ_PARA"];
+    //        return Defaults.DefaultValues[Hash];
+    //    }
+    //}
 
     public class EventData
     {
@@ -2333,7 +1403,7 @@ namespace Hack.io.BCAM
             English = "Undefined";
             NeedsSubID = false;
         }
-        public EventData(string s,bool needsid, bool needssubid)
+        public EventData(string s, bool needsid, bool needssubid)
         {
             English = s;
             NeedsID = needsid;
@@ -2342,118 +1412,265 @@ namespace Hack.io.BCAM
 
         public static implicit operator string(EventData x) => x.English;
         public override string ToString() => English;
-    }
 
-    public class CameraDefaults
-    {
-        public static Dictionary<string, CameraDefaults> Defaults = new Dictionary<string, CameraDefaults>()
+        /// <summary>
+        /// e: cameras
+        /// </summary>
+        public readonly static Dictionary<string, EventData> Events = new()
         {
-            //==================================================================================================================================================================
-            { "CAM_TYPE_XZ_PARA", new CameraDefaults(196631, 0.2984513f, 0f, 0f, 1200f, 45f, 100, 100, 160, 1, 0, "", 300f, 800f, 120, 120, 120, 0f, 0f, 0.30f, 0.10f, 0, 0,
-                new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,1,0), new Vector3<float>(0,1,0),
-                false, false, false, false, false, false, false, false, 0, true, false, false) },
-            //==================================================================================================================================================================
-            { "CAM_TYPE_EYEPOS_FIX_THERE", new CameraDefaults(196631, 0.0f, 0f, 0f, 0f, 45f, 100, 100, 160, 1, 0, "", 0f, 0f, 0, 0, 120, 0f, 0f, 0.0f, 0.0f, 0, 0,
-                new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,1,0),
-                false, false, false, false, false, false, false, false, 0, false, false, false) },
-            //==================================================================================================================================================================
-            { "CAM_TYPE_WONDER_PLANET", new CameraDefaults(196631, 0.0f, 0f, 0f, 0f, 45f, 100, 100, 160, 1, 0, "", 300f, 800f, 120, 120, 120, 0f, 0f, 0.3f, 0.1f, 0, 0,
-                new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0,0),
-                false, false, false, false, false, false, false, false, 0, false, false, false) },
-            //==================================================================================================================================================================
-            { "CAM_TYPE_POINT_FIX", new CameraDefaults(196631, 0.0f, 0.0f, 0f, 1200f, 45f, 100, 100, 160, 0, 0, "", 300f, 800f, 120, 120, 120, 0f, 0f, 0.0f, 0.0f, 0, 0,
-                new Vector3<float>(0,0,0), new Vector3<float>(0,0,0), new Vector3<float>(0,0.99989913f,0), new Vector3<float>(0,0,0), new Vector3<float>(0,1,0),
-                false, false, false, false, false, false, false, false, 0, false, false, false) },
-            //==================================================================================================================================================================
+            { "シナリオスターター", new("Scenario Starter", true, true) },
+
+            { "スーパースピンドライバー固有出現イベント用", new("Launch Star Appearance", true, false) },
+            { "スーパースピンドライバー", new("Launch Star", true, true) },
+
+            { "スピンドライバ固有出現イベント用", new("Sling Star Appearance", true, false) },
+            { "スピンドライバ", new("Sling Star", true, true) },
+
+            { "グリーンスーパースピンドライバー固有出現イベント用", new("Green Launch Star Appearance", true, false) },
+            { "グリーンスーパースピンドライバー", new("Green Launch Star", true, true)},
+
+            { "ピンクスーパースピンドライバー固有出現イベント用", new("Pink Launch Star Appearance", true, false) },
+            { "ピンクスーパースピンドライバー", new("Pink Launch Star", true, true)},
+
+            { "Gキャプチャーターゲット固有", new("Pull Star Appearance", true, false) },
+
+            { "グランドスター固有", new("Grand Star Appearance", true, false) },
+            { "パワースター固有", new("Power Star Appearance", true, false) },
+            { "グリーンスター固有", new("Green Star Appearance", true, false) },
+            { "パワースター出現ポイント固有", new("Power Star Appear Point", true, false) },
+
+            { "チコ集め固有集めデモカメラ", new("Silver Star Completion", true, false) },
+            { "簡易デモ実行固有簡易デモ", new("Simple Demo Executor", true, false) },
+            { "鍵スイッチ固有", new("Key Switch Appearence", true, false) },
+            { "カプセルケージ固有", new("Capsule Cage Opening", true, false) },
+            { "ゴロ岩カバー檻固有", new("Capsule Cage (Alt) Opening", true, false) },
+            { "土管固有出現", new("Warp Pipe", true, false) },
+            { "土管（水中用）固有出現", new("Warp Pipe (In Water)", true, false) },
+            { "ウォータープレッシャー固有", new("Bubble Shooter", true, false) },
+
+            { "ポール固有", new("Pole", true, false) },
+            { "ポール（２方向）固有", new("Pole 2 Way", true, false) },
+            { "ポール（モデル無し）固有", new("Pole (No Model)", true, false) },
+            { "ポール（鉄骨）固有", new("Square Pole", true, false) },
+            { "ポール(モデル無し鉄骨)固有", new("Square Pole (No Model)", true, false) },
+            { "ポール（木Ａ）固有", new("Pole Tree A", true, false) },
+            { "ポール（木B）固有", new("Pole Tree B", true, false) },
+
+            { "移動用砲台固有", new("Player Cannon", true, false) },
+            { "１ＵＰキノコ固有", new("1-UP Appearence", true, false) },
+            { "？コイン固有", new("?-Coin Collection", true, false) },
+
+            { "伸び植物固有出現デモ", new("Sproutle Vine Appearance", true, false) },
+            { "伸び植物固有掴まり", new("Sproutle Vine", true, false) },
+            { "つるスライダー固有滑り", new("Sprauto Vine", true, false) },
+            { "つる花固有掴まり", new("Creeper Plant", true, false) },
+            { "空中ブランコ固有", new("Trapeze Vine", true, false) },
+            { "スイングロープ固有", new("Swinging Vine", true, false) },
+
+            { "音符の妖精固有", new("Note Fairy Appearance", true, false) },
+            { "インフェルノジェネレータ固有出現デモカメラ", new("Cosmic Clones Appearance", true, false) },
+            { "ブラックホール固有", new("Black Hole Death", true, false) },
+            { "ブラックホール[キューブ指定]固有", new("Black Hole (Cube) Death", true, false) },
+            { "ジャンプビーマー", new("Spring Beamer", true, true) },
+            { "ジャンプガーダー", new("Guard Beamer", true, true) },
+            { "バネベーゴマン", new("Spring Topman", true, true) },
+            { "隠れバネベーゴマン", new("Hiding Spring Topman", true, true) },
+            { "モンテ固有", new("Chuckster Pianta", true, false) },
+            { "アイテムドリル固有", new("Spin Drill Usage", true, false) },
+            { "グライバード固有死亡", new("Fluzzard Death", true, false) },
+
+            { "ゴーストマリオ固有", new("Cosmic Race (unknown usage)", true, false) },
+            { "ゴーストマリオ固有レース開始1", new("Cosmic Race Appearance", true, false) },
+            { "ゴーストマリオ固有レース開始2", new("Cosmic Race Staredown", true, false) },
+            { "ゴーストマリオ固有レース開始3", new("Cosmic Race Countdown", true, false) },
+            { "ゴーストマリオ固有レース終了", new("Cosmic Race Losing Camera", true, false) },
+
+            { "ハラペココインチコ固有飛行", new("[SMG2] Coin Hungry Luma Flight", true, false) },
+            { "ハラペコスターピースチコ固有変身", new("[SMG2] Starbit Hungry Luma Transformation", true, false) },
+            { "ハラペコスターピースチコ固有飛行", new("[SMG2] Starbit Hungry Luma Flight", true, false) },
+
+            { "チューブスライダー固有滑り", new("Tube Slider", true, false) },
+            { "チューブスライダー固有飛び出し", new("Tube Slider Exit", true, false) },
+            { "プチポーター固有基点でワープイン", new("Minigame Teleporter (Prepare to Warp)", true, false) },
+            { "プチポーター固有ワープ点でワープアウト", new("Minigame Teleporter (Arrive at Destination)", true, false) },
+            { "プチポーター固有ワープ点でワープイン", new("Minigame Teleporter (Prepare return warp)", true, false) },
+            { "プチポーター固有基点でワープアウト", new("Minigame Teleporter (Arrive from returning)", true, false) },
+
+            { "ワープカメラ (GroupID)-(The ASCII character ObjArg0+65 represents)", new("Warp Pod Template", false, false) },
+
+            { "看板固有会話", new("Message: Signboard", true, false) },
+            { "でか看板固有会話", new("Message: Big Signboard", true, false) },
+            { "ピーチ固有会話", new("Message: Peach", true, false) },
+            { "キノピオ固有会話", new("Message: Toad", true, false) },
+            { "郵便屋さんキノピオ固有注目会話", new("Message: Mailtoad", true, false) },
+            { "銀行屋さんキノピオ固有注目会話", new("Message: Banktoad", true, false) },
+            { "ウサギ固有会話", new("Message: Star Bunny", true, false) },
+            { "ロゼッタ固有会話", new("Message: Rosalina", true, false) },
+            { "マイスター固有会話", new("Message: Lubba", true, false) },
+            { "チコ固有会話", new("Message: Luma", true, false) },
+            { "でかチコ固有会話", new("Message: Big Luma", true, false) },
+            { "よろず屋チコ固有独自会話", new("Message: Luma Shop", true, false) },
+            { "ハニークイーン固有会話", new("Message: Queen Bee", true, false) },
+            { "ハニービー固有会話", new("Message: Honeybee", true, false) },
+            { "ペンギン仙人固有会話", new("Message: Penguin Elder", true, false) },
+            { "ペンギンコーチ固有会話", new("Message: Penguin Coach", true, false) },
+            { "ペンギン固有会話", new("Message: Penguin", true, false) },
+            { "パマタリアン固有会話", new("Message: Gearmo", true, false) },
+            { "パマタリアンハンター固有会話", new("Message: Gearmo Hunter", true, false) },
+            { "赤ボム兵固有会話", new("Message: Bob-omb Buddy", true, false) },
+            { "モンテ固有会話", new("Message: Pianta", true, false) },
+            { "ピーチャン固有会話", new("Message: Jibberjay", true, false) },
+            { "モック固有会話", new("Message: Whittle", true, false) },
+            { "さすらいの遊び人(通常会話)固有会話", new("Message: The Chimp (NPC)", true, false) },
+
+
+            { "引き戻し", new("Pull Back Area", false, false) },
+            { "水上フォロー", new("Water Follow", false, false) },
+            { "水中フォロー", new("Underwater Follow", false, false) },
+            { "水中プラネット", new("Underwater Planet", false, false) },
+            { "フーファイターカメラ", new("Foo Fighter Camera", false, false) },
+
+            { "DemoName[CameraPartName]", new("Demo Camera Template", false, false) },
+            { "g:ObjectName:CameraID:0", new("Collision Camera Template", false, false) },
         };
-
-        internal CameraDefaults(int version, float XRot, float YRot, float ZRot, float zoom, float fov, int time, int endtime, int gndtime, int num1, int num2, string str, float maxY, float minY,
-            int gndmovedelay, int airmovedelay, int udown, float lookoffset, float lookoffsety, float upperborder, float lowerborder, int evframes, int evpriority,
-            Vector3<float> fixpointoffset, Vector3<float> worldpointoffset, Vector3<float> playeroffset, Vector3<float> verticalpanaxis, Vector3<float> upaxis,
-            bool disablereset, bool enablefov, bool staticlookoffset, bool disableantiblur, bool disablecollision, bool disablefirstperson, bool Gflagenderpframe, bool Gflagthrough, int Gflagendtime,
-            bool useverticalpanaxis, bool eventuseendtime, bool eventusetime) => DefaultValues = new Dictionary<uint, object>
-            {
-                { 0x14F51CD8, version },
-                { 0xABC4A1CF, XRot },
-                { 0xABC4A1CE, YRot },
-                { 0x0035807D, ZRot },
-                { 0x002F0DA6, zoom },
-                { 0x00300D4C, fov },
-                { 0xAE79D1C0, time },
-                { 0xEB66C5C3, endtime },
-                { 0xB6004E72, gndtime },
-                { 0x0033C56B, num1 },
-                { 0x0033C56C, num2 },
-                { 0xCAD56011, str },
-                { 0x06A54929, maxY },
-                { 0x062675A0, minY },
-                { 0xD26F6AA9, gndmovedelay },
-                { 0x93AECC0B, airmovedelay },
-                { 0x069FE297, udown },
-                { 0x145863FF, lookoffset },
-                { 0x76B41C57, lookoffsety },
-                { 0x06A558A2, upperborder },
-                { 0x06262B01, lowerborder },
-                { 0x05C676D0, evframes },
-                { 0x730D4555, evpriority },
-
-                { 0xBEC02B34, fixpointoffset.XValue },
-                { 0xBEC02B35, fixpointoffset.YValue },
-                { 0xBEC02B36, fixpointoffset.ZValue },
-                { 0x31CB1323, worldpointoffset.XValue },
-                { 0x31CB1324, worldpointoffset.YValue },
-                { 0x31CB1325, worldpointoffset.ZValue },
-                { 0xAC52894B, playeroffset.XValue },
-                { 0xAC52894C, playeroffset.YValue },
-                { 0xAC52894D, playeroffset.ZValue },
-                { 0x3B5CB472, verticalpanaxis.XValue },
-                { 0x3B5CB473, verticalpanaxis.YValue },
-                { 0x3B5CB474, verticalpanaxis.ZValue },
-                { 0x0036D9C5, upaxis.XValue },
-                { 0x0036D9C6, upaxis.YValue },
-                { 0x0036D9C7, upaxis.ZValue },
-
-                { 0x41E363AC, disablereset },
-                { 0x9F02074F, enablefov },
-                { 0x82D5627E, staticlookoffset },
-                { 0xE2044E84, disableantiblur },
-                { 0x521E5C3F, disablecollision },
-                { 0xBB74D6C1, disablefirstperson },
-                { 0xDA484167, Gflagenderpframe },
-                { 0xED8DD072, Gflagthrough },
-                { 0x67D981E8, Gflagendtime },
-                { 0x26C8C3C0, useverticalpanaxis },
-                { 0x45E50EE5, eventusetime },
-                { 0x1BCD52AA, eventuseendtime }
-            };
-
-        public Dictionary<uint, object> DefaultValues;
-
-        public static Dictionary<uint, DataTypes> DefaultTypes = null;
-
-        public static void InitDataTypeList()
+        /// <summary>
+        /// o: cameras
+        /// </summary>
+        public readonly static Dictionary<string, EventData> OtherEvents = new()
         {
-            if (DefaultTypes != null)
-                return;
+            { "デフォルト水面カメラ", new("Default Water Surface", false, false) },
+            { "デフォルト水中カメラ", new("Default Underwater", false, false) },
+            { "デフォルトフーファイターカメラ", new("Default Flying Mario", false, false) },
+            { "スタートカメラ", new("Default Spawn Point", false, false) },
+            { "デフォルトカメラ", new("Default Camera", false, false) }
+        };
+    }
 
-            DefaultTypes = new Dictionary<uint, DataTypes>();
-            for (int i = 0; i < BCAM.PreferredHashOrder.Length; i++)
+    public static string GetTranslatedName(this BCAM.Entry entry)
+    {
+        string INVALID = "Invalid ID";
+        string Original = entry.Identification.ToString();
+        string[] OriginalParts = Original.Split(':');
+        if (TryMakeNumberName("c:", "Camera Area", out string NewString))
+            return NewString;
+
+        if (TryMakeNumberName("s:", "Spawn Point", out NewString))
+            return NewString;
+
+        if (TryMakeEventName("e:", out NewString))
+            return NewString;
+
+        if (TryMakeEventName("o:", out NewString))
+            return NewString;
+
+        if (Original.StartsWith("g:"))
+            return Original.Replace("g:", "Group: ");
+
+        return (
+            string.IsNullOrWhiteSpace(NewString) &&
+            !Original.StartsWith("c:") &&
+            !Original.StartsWith("s:") &&
+            !Original.StartsWith("e:") &&
+            !Original.StartsWith("o:")) ? INVALID : Original;
+
+        bool TryMakeNumberName(string StartsWith, string Translated, out string result)
+        {
+            result = string.Empty;
+            if (!Original.StartsWith(StartsWith))
+                return false;
+
+            if (OriginalParts.Length < 2)
+                return false;
+
+            result = $"{Translated} ";
+            if (short.TryParse(OriginalParts[1], System.Globalization.NumberStyles.HexNumber, null, out short readshort))
             {
-                DefaultTypes.Add(BCAM.PreferredHashOrder[i], BCAM.HashDataTypes[i]);
+                bool UseLong = Program.Settings.IsUseLongId;
+                short Abs = Math.Abs(readshort);
+                result += $"{(readshort < 0 ? "-":"")}{(Program.Settings.IsUseHexId ? Abs.ToString("X").PadLeft(UseLong ? 4 : 0, '0') : Abs.ToString().PadLeft(UseLong ? 4 : 0, '0'))}";
             }
+
+            return true;
         }
-
-        public static implicit operator BCAMEntry(CameraDefaults x)
+    
+        bool TryMakeEventName(string StartsWith, out string result)
         {
-            BCAMEntry output = new BCAMEntry();
-            for (int i = 0; i < x.DefaultValues.Count; i++)
+            result = string.Empty;
+            if (!Original.StartsWith(StartsWith))
+                return false;
+
+            if (OriginalParts.Length < 2)
+                return false;
+
+            if (DemoCameraRegex().IsMatch(Original))
             {
-                if (x.DefaultValues.ElementAt(i).Value is bool)
-                    output.Data.Add(x.DefaultValues.ElementAt(i).Key, (bool)x.DefaultValues.ElementAt(i).Value ? 1 : 0);
-                else
-                    output.Data.Add(x.DefaultValues.ElementAt(i).Key, x.DefaultValues.ElementAt(i).Value);
+                result = $"Demo: {Original[2..]}";
+                return true;
             }
-            return output;
+
+            if (WarpPodCameraRegex().IsMatch(Original))
+            {
+                result = Original;
+
+                //Warp pods have a very....interesting pattern to them...
+                string[] data = Original.Split();
+                if (data.Length != 2)
+                    goto Exit;
+                string[] values = data[1].Split('-');
+                if (values.Length != 2)
+                    goto Exit;
+                result = $"Event: Warp Pod (Group {values[0]}, Arg0 = {values[1][0] - 'A'})";
+                return true;
+            }
+            Exit:
+
+            string KeyNoLast3Numbers = OriginalParts[1][..^3];
+            if (EventData.Events.TryGetValue(KeyNoLast3Numbers, out EventData? Evt))
+            {
+                result = $"Event {Original[2..].Replace(KeyNoLast3Numbers, Evt + " ").Replace("番目", "th")}";
+                return true;
+            }
+
+            string targetkey = string.Concat(OriginalParts[1].Where(IsNonDigit));
+            if(EventData.Events.TryGetValue(targetkey, out Evt))
+            {
+                result = $"Event {Original[2..].Replace(targetkey, Evt + " ").Replace("番目", "th")}";
+                return true;
+            }
+
+            if (EventData.OtherEvents.TryGetValue(targetkey, out Evt))
+            {
+                result = $"Other: {Evt}";
+                return true;
+            }
+
+            return false;
         }
     }
+
+    public static ushort GetNextOpenShortNumber(BCAM cameras, string type)
+    {
+        List<ushort> UsedShorts = [];
+        for (int i = 0; i < cameras.EntryCount; i++)
+        {
+            BCAM.Entry Current = cameras[i];
+            string[] split = Current.Identification.Split(':');
+            if (Current.Identification.StartsWith(type) && ushort.TryParse(split[1], System.Globalization.NumberStyles.HexNumber, null, out ushort result))
+                UsedShorts.Add(result);
+        }
+        UsedShorts.Sort();
+        for (ushort i = 0; i < UsedShorts.Count; i++)
+        {
+            if (i != UsedShorts[i])
+                return i;
+        }
+        return (ushort)UsedShorts.Count;
+    }
+
+    public static bool IsNonDigit(char c) => !(c >= 0x30 && c <= 0x39);
+
+    [GeneratedRegex(@"e:\S+?\[\S+?\]")]
+    private static partial Regex DemoCameraRegex();
+    [GeneratedRegex(@"e:.*\s\d-\S")]
+    private static partial Regex WarpPodCameraRegex();
 }

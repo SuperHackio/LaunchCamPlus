@@ -1,106 +1,99 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using LaunchCamPlus.Properties;
 
-namespace LaunchCamPlus
+namespace LaunchCamPlus;
+
+public partial class SplashForm : Form
 {
-    public partial class SplashForm : Form
-    {
-        public SplashForm(int L, bool loop = false)
-        {
-            InitializeComponent();
-            Size = Properties.Settings.Default.SplashSize;
-            CenterToScreen();
-            timer = new Timer();
-            timer.Tick += Timer_Tick;
-            timer.Interval = 1000;
-            timer.Start();
-            loadtime = L;
-            Loop = loop;
-        }
+    private static string SPLASH_PATH => Program.GetFromAppPath("Splash");
+    private int Time = 0;
+    private readonly int loadtime = 0;
+    private readonly bool Loop = false;
 
-        private void Timer_Tick(object sender, EventArgs e)
+    public SplashForm(int Length, bool loop = false)
+    {
+        InitializeComponent();
+        Size = Program.Settings.SplashSize;
+        CenterToScreen();
+        SplashTimer.Start();
+        loadtime = Length;
+        Loop = loop;
+    }
+
+    private Bitmap GetSplash()
+    {
+        Random RNG = new();
+        if (!Directory.Exists(SPLASH_PATH))
+            return RenderSplash(Width, Height, Resources.DefaultSplash, Resources.LCPCanvas);
+
+        string[] SplashOptions = Directory.GetFiles(SPLASH_PATH, "*.png", SearchOption.AllDirectories);
+        string Selection = Select();
+
+        Bitmap bitmap = new(Selection);
+        Bitmap Final = RenderSplash(Width, Height, bitmap, Resources.LCPCanvas);
+        bitmap.Dispose();
+
+        return Final;
+
+        string Select()
         {
-            time++;
-            if (time > loadtime)
+            if (SplashOptions.Length == 1)
+                return SplashOptions[0];
+
+            byte limit = 0;
+            string Selection = SplashOptions[0];
+            while (limit < 5)
             {
-                time = 0;
-                if (Loop)
+                int value = RNG.Next(0, SplashOptions.Length);
+                Selection = SplashOptions[value];
+                if (!Selection.Equals(Program.Settings.LastSplash))
+                    break;
+            }
+            return Selection;
+        }
+    }
+
+    public static Bitmap RenderSplash(int width, int height, params Bitmap[] Bitmaps)
+    {
+        Bitmap result = new(width, height);
+        using (Graphics g = Graphics.FromImage(result))
+        {
+            for (int i = 0; i < Bitmaps.Length; i++)
+                g.DrawImage(Bitmaps[i], 0, 0, width, height);
+            g.Dispose();
+        }
+        return result;
+    }
+
+    private void SplashTimer_Tick(object sender, EventArgs e)
+    {
+        Time++;
+        if (Time > loadtime)
+        {
+            Time = 0;
+            if (Loop)
+                Invalidate();
+            else
+            {
+                if (!Program.IsProgramReady)
+                {
                     Invalidate();
+                    GC.Collect();
+                }
                 else
                 {
-                    if (!Program.IsProgramReady)
-                    {
-                        Invalidate();
-                        ElapsedTicks++;
-                    }
-                    else
-                    {
-                        timer.Stop();
-                        Close();
-                    }
+                    SplashTimer.Stop();
+                    Close();
                 }
             }
         }
+    }
 
-        Timer timer;
-        
-        int time = 0;
-        int loadtime = 0;
-        bool Loop = false;
-        int ElapsedTicks;
+    private void SplashForm_Paint(object sender, PaintEventArgs e)
+    {
+        Graphics g = e.Graphics;
 
-        private void SplashForm_Paint(object sender, PaintEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            string[] Splashes = Directory.Exists(Program.GetFromAppPath("Splash")) ? Directory.GetFiles(Program.GetFromAppPath("Splash"), "*.png", SearchOption.AllDirectories) : new string[0];
-            if (Splashes.Length == 0)
-            {
-                Bitmap Default = new Bitmap(Properties.Resources.DefaultSplash);
-                Default = ResizeBitmap(Default, Width, Height);
-                g.DrawImage(Default, 0, 0);
-                return;
-            }
-            if (Splashes.Length > 1)
-            {
-                List<string> temp = Splashes.ToList();
-                temp.Remove(Properties.Settings.Default.PreviousSplash);
-                Splashes = temp.ToArray();
-            }
-
-            int ran = new Random().Next(0, Splashes.Length);
-            Properties.Settings.Default.PreviousSplash = Splashes[ran];
-            Properties.Settings.Default.Save();
-            Bitmap ChosenImage = new Bitmap(Splashes[ran]);
-            Bitmap b = ResizeBitmap(ChosenImage, Width, Height);
-            ChosenImage.Dispose();
-            g.DrawImage(b, 0, 0);
-            b.Dispose();
-
-            Bitmap OriginalLogo = new Bitmap(Properties.Resources.LCPCanvas);
-            Bitmap Logo = ResizeBitmap(OriginalLogo, Width, Height);
-            OriginalLogo.Dispose();
-            g.DrawImage(Logo, 0, 0);
-            Logo.Dispose();
-            GC.Collect();
-        }
-
-        public Bitmap ResizeBitmap(Bitmap bmp, int width, int height)
-        {
-            Bitmap result = new Bitmap(width, height);
-            using (Graphics g = Graphics.FromImage(result))
-            {
-                g.DrawImage(bmp, 0, 0, width, height);
-                g.Dispose();
-            }
-            return result;
-        }
+        Bitmap Splash = GetSplash();
+        g.DrawImage(Splash, 0, 0);
+        Splash.Dispose();
     }
 }

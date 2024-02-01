@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,85 +118,121 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ReorganizeLight" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ReorganizeLight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="LCPLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\LCPLogo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Save As" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Save As.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Reorganize" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Reoganize.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="MoveCameraTop" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\MoveCameraTop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="WikiPageLight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\WikiPageLight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="MoveCameraDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\MoveCameraDown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="LCPLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LCPLogo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="MoveCameraBottom" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\MoveCameraBottom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="LCPCanvas" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\LCPCanvas.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IssuePage" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\IssuePage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="AssistantLight" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\AssistantLight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="LinearOut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LinearOut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="AddCamera" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AddCamera.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="WikiPageLight" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\WikiPageLight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Save_As" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Save As.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="DefaultSplash" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\DefaultSplash.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Save_File" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Save File.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Icon_Settings" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Icon_Settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="MoveCameraUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\MoveCameraUp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IssuePageLight" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\IssuePageLight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ReleasesPage" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ReleasesPage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Export_Preset" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Export Preset.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Assistant" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Assistant.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="WikiPage" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\WikiPage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ReleasesPageLight" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ReleasesPageLight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="CheveronArrowL" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\CheveronArrowL.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Save File" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Save File.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CheveronArrowR" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CheveronArrowR.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Icon_Open" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Icon_Open.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="LinearAll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LinearAll.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Export Preset" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export Preset.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="FlatOut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\FlatOut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ReleasesPage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ReleasesPage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CheveronArrowL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CheveronArrowL.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LinearBoth" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LinearBoth.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LCPCanvas" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LCPCanvas.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MoveCameraBottom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MoveCameraBottom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ReleasesPageLight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ReleasesPageLight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Paste" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Paste.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LinearIn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LinearIn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ReorganizeLight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ReorganizeLight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="New" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\New.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MoveCameraDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MoveCameraDown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MoveCameraUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MoveCameraUp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="WikiPage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\WikiPage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DefaultSplash" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DefaultSplash.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="FlatAll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\FlatAll.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IssuePageLight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IssuePageLight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Icon_Settings" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icon_Settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MoveCameraTop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MoveCameraTop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="PresetBankRoot" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PresetBankRoot.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Icon_Open" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icon_Open.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IssuePage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IssuePage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Preset" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Preset.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="FlatIn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\FlatIn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AssistantLight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AssistantLight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="FlatBoth" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\FlatBoth.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
