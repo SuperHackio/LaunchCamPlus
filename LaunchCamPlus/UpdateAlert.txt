@@ -1,14 +1,1 @@
 ﻿2.5.0.0
-
-#Required
-#Notes
-- Updated to .NET 8.0
-- Fixed Unique Editors from deleting
-  data while switching between them
-  (though data may be changed when switching)
-- Copy Paste now forces US Numbers across the globe
-- The secret feature returns!
-- 2 new splash screens (feat. Neo Mario Galaxy)
-- The UI was completely overhauled
-- New settings format
-- Fixed a localization bug (hopefully...)
