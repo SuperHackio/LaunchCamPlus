@@ -1443,7 +1443,7 @@ public static partial class BCAMUtility
             { "簡易デモ実行固有簡易デモ", new("Simple Demo Executor", true, false) },
             { "鍵スイッチ固有", new("Key Switch Appearence", true, false) },
             { "カプセルケージ固有", new("Capsule Cage Opening", true, false) },
-            { "ゴロ岩カバー檻固有", new("Capsule Cage (Alt) Opening", true, false) },
+            { "ゴロ岩カバー檻固有", new("Metal Capsule Cage Opening", true, false) },
             { "土管固有出現", new("Warp Pipe", true, false) },
             { "土管（水中用）固有出現", new("Warp Pipe (In Water)", true, false) },
             { "ウォータープレッシャー固有", new("Bubble Shooter", true, false) },

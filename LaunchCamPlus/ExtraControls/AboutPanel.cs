@@ -6,7 +6,7 @@ public partial class AboutPanel : UserControl, IReloadTheme
     {
         InitializeComponent();
         SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-        VersionLabel.Text = $"LCP V{Application.ProductVersion}";
+        VersionLabel.Text = $"LCP V{Program.ApplicationVersion}";
 #if DEBUG
         UpdateTextLabel.Text = Program.UpdateInfo?.ToString() ?? "- Launch Cam Plus is in DEBUG mode";
 #else

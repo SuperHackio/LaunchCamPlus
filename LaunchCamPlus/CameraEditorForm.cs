@@ -42,7 +42,7 @@ public partial class CameraEditorForm : Form, IReloadTheme
     {
         InitializeComponent();
         CenterToScreen();
-        Text = Application.ProductName + " - " + Application.ProductVersion;
+        Text = Application.ProductName + " - " + Program.ApplicationVersion;
         CameraListBox.SetDoubleBuffered();
         MainSplitContainer.Panel1.SetDoubleBuffered();
         MainSplitContainer.Panel2.SetDoubleBuffered();
@@ -1136,11 +1136,11 @@ public partial class CameraEditorForm : Form, IReloadTheme
     #endregion
 
     #region Help
-    private void WikiToolStripMenuItem_Click(object sender, EventArgs e) => Process.Start("https://github.com/SuperHackio/LaunchCamPlus/wiki");
+    private void WikiToolStripMenuItem_Click(object sender, EventArgs e) => Program.OpenLinkInBrowser("https://github.com/SuperHackio/LaunchCamPlus/wiki");
 
-    private void IssuesToolStripMenuItem_Click(object sender, EventArgs e) => Process.Start("https://github.com/SuperHackio/LaunchCamPlus/issues");
+    private void IssuesToolStripMenuItem_Click(object sender, EventArgs e) => Program.OpenLinkInBrowser("https://github.com/SuperHackio/LaunchCamPlus/issues");
 
-    private void GithubReleasesToolStripMenuItem_Click(object sender, EventArgs e) => Process.Start("https://github.com/SuperHackio/LaunchCamPlus/releases");
+    private void GithubReleasesToolStripMenuItem_Click(object sender, EventArgs e) => Program.OpenLinkInBrowser("https://github.com/SuperHackio/LaunchCamPlus/releases");
 
     private void AboutToolStripMenuItem_Click(object sender, EventArgs e) => ChangePanel(PreBufferedAbout, -1);
     #endregion

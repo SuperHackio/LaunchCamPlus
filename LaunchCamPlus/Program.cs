@@ -40,7 +40,7 @@ internal static class Program
         // Prevents floats being written to the .dae with commas instead of periods on European systems.
         CultureInfo.CurrentCulture = new("", false);
 
-        Console.Title = Application.ProductName + " " + Application.ProductVersion + " - Console";
+        Console.Title = Application.ProductName + " " + ApplicationVersion + " - Console";
         Console.WriteLine("Initilizing...");
         Console.WriteLine();
         Console.WriteLine("Preparing the Splash...");
@@ -151,7 +151,7 @@ internal static class Program
         {
             Version = new(Data[0]);
 
-            Notes = new();
+            Notes = [];
             bool IsStarted = false;
             for (int i = 1; i < Data.Length; i++)
             {
@@ -170,8 +170,16 @@ internal static class Program
 
         public readonly bool IsNewer()
         {
-            Version Local = new(Application.ProductVersion);
-            return Local.CompareTo(Version) < 0;
+            try
+            {
+                string version = ApplicationVersion;
+                Version Local = new(version);
+                return Local.CompareTo(Version) < 0;
+            }
+            catch
+            {
+                return true;
+            }
         }
 
         public override readonly string ToString()
@@ -188,6 +196,19 @@ internal static class Program
                 """;
         }
     }
+
+    // Microsoft made a change that broke my old system :(
+    public static string ApplicationVersion
+    {
+        get
+        {
+            string ver = Application.ProductVersion;
+            string[] WhyMicrosoft = ver.Split('+');
+            return WhyMicrosoft[0];
+        }
+    }
+
+    public static void OpenLinkInBrowser(string url) => Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
 }
 
 public static class ControlEx
