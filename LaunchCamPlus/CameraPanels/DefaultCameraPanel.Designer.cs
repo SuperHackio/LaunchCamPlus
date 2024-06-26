@@ -246,6 +246,7 @@
             // 
             FovYColourNumericUpDown.BorderColor = Color.FromArgb(200, 200, 200);
             FovYColourNumericUpDown.DecimalPlaces = 3;
+            FovYColourNumericUpDown.Enabled = false;
             FovYColourNumericUpDown.Font = new Font("Microsoft Sans Serif", 8.25F);
             FovYColourNumericUpDown.Location = new Point(66, 164);
             FovYColourNumericUpDown.Margin = new Padding(3, 1, 3, 1);

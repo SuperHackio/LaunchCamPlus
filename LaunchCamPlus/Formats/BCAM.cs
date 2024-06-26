@@ -1,12 +1,7 @@
 ﻿using Hack.io.BCSV;
 using Hack.io.Utility;
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using System.Security.Policy;
 using System.Text.RegularExpressions;
 using static LaunchCamPlus.Formats.BCAMUtility;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LaunchCamPlus.Formats;
 
@@ -1467,6 +1462,8 @@ public static partial class BCAMUtility
             { "空中ブランコ固有", new("Trapeze Vine", true, false) },
             { "スイングロープ固有", new("Swinging Vine", true, false) },
 
+            { "ポイハナ固有", new("Cataquack Launch", true, false) },
+
             { "音符の妖精固有", new("Note Fairy Appearance", true, false) },
             { "インフェルノジェネレータ固有出現デモカメラ", new("Cosmic Clones Appearance", true, false) },
             { "ブラックホール固有", new("Black Hole Death", true, false) },
@@ -1648,27 +1645,85 @@ public static partial class BCAMUtility
         }
     }
 
-    public static ushort GetNextOpenShortNumber(BCAM cameras, string type)
+    /// <summary>
+    /// Only for c: and s:
+    /// </summary>
+    /// <param name="cameras"></param>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static ushort GetNextOpenShortNumber(BCAM cameras, Regex type)
     {
         List<ushort> UsedShorts = [];
-        for (int i = 0; i < cameras.EntryCount; i++)
+        IEnumerable<BCAM.Entry> ShortNumberCameras = GetEnumeratorOfCameraType(cameras, type);
+        foreach (BCAM.Entry item in ShortNumberCameras)
         {
-            BCAM.Entry Current = cameras[i];
-            string[] split = Current.Identification.Split(':');
-            if (Current.Identification.StartsWith(type) && ushort.TryParse(split[1], System.Globalization.NumberStyles.HexNumber, null, out ushort result))
+            string[] split = item.Identification.Split(':');
+            // No need to check length as the Regex would've failed if it didn't have a ':' in it.
+            if (ushort.TryParse(split[1], System.Globalization.NumberStyles.HexNumber, null, out ushort result))
                 UsedShorts.Add(result);
         }
         UsedShorts.Sort();
-        for (ushort i = 0; i < UsedShorts.Count; i++)
+        int i = 0;
+        for (; i < UsedShorts.Count; i++)
         {
             if (i != UsedShorts[i])
-                return i;
+                break;
         }
-        return (ushort)UsedShorts.Count;
+        return (ushort)i;
+    }
+
+    public static int GetNextOpenEventNumber(BCAM cameras, Regex type)
+    {
+        List<int> UsedValues = [];
+        IEnumerable<BCAM.Entry> EventCameraList = GetEnumeratorOfCameraType(cameras, type);
+        foreach (BCAM.Entry item in EventCameraList)
+        {
+            Match m = EventNoPartIDRegex().Match(item.Identification);
+            if (m.Success && int.TryParse(m.Groups[1].Value, out int NoPartID))
+            {
+                UsedValues.Add(NoPartID);
+                continue;
+            }
+
+            m = EventWithPartIDRegex().Match(item.Identification);
+            if (m.Success && int.TryParse(m.Groups[1].Value, out int WithPartID))
+            {
+                UsedValues.Add(WithPartID);
+                continue;
+            }
+        }
+        UsedValues.Sort();
+        int i = 0;
+        for (; i < UsedValues.Count; i++)
+        {
+            if (i != UsedValues[i])
+                break;
+        }
+        return (ushort)i;
+    }
+
+    public static IEnumerable<BCAM.Entry> GetEnumeratorOfCameraType(BCAM cameras, Regex type)
+    {
+        for (int i = 0; i < cameras.EntryCount; i++)
+        {
+            BCAM.Entry e = cameras[i];
+            if (type.IsMatch(e.Identification))
+                yield return e;
+        }
     }
 
     public static bool IsNonDigit(char c) => !(c >= 0x30 && c <= 0x39);
 
+    [GeneratedRegex(@"c:[0-9a-f]{4}")]
+    public static partial Regex CameraAreaIDRegex();
+    [GeneratedRegex(@"s:[0-9a-f]{4}")]
+    public static partial Regex StartIDRegex();
+    public static Regex CreateEventIDRegex(string EventID, bool IsMultiPart) => IsMultiPart ? new(@$"e:{EventID}:[0-9]{{3}}:[0-9]{{2}}番目") : new(@$"e:{EventID}[0-9]{{3}}");
+
+    [GeneratedRegex(@"e:\S+?([0-9]{3})")]
+    private static partial Regex EventNoPartIDRegex();
+    [GeneratedRegex(@"e:\S+?:([0-9]{3}):[0-9]{2}番目")]
+    private static partial Regex EventWithPartIDRegex();
     [GeneratedRegex(@"e:\S+?\[\S+?\]")]
     private static partial Regex DemoCameraRegex();
     [GeneratedRegex(@"e:.*\s\d-\S")]

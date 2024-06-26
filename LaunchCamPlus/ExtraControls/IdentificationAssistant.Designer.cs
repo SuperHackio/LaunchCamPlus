@@ -107,6 +107,7 @@
             // 
             SubCamIDNumericUpDown.Anchor = AnchorStyles.Top;
             SubCamIDNumericUpDown.BorderColor = Color.FromArgb(200, 200, 200);
+            SubCamIDNumericUpDown.Enabled = false;
             SubCamIDNumericUpDown.Location = new Point(309, 58);
             SubCamIDNumericUpDown.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
             SubCamIDNumericUpDown.Name = "SubCamIDNumericUpDown";
@@ -129,6 +130,7 @@
             EventComboBox.Anchor = AnchorStyles.Top;
             EventComboBox.BorderColor = Color.FromArgb(200, 200, 200);
             EventComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            EventComboBox.Enabled = false;
             EventComboBox.FlatStyle = FlatStyle.Flat;
             EventComboBox.FormattingEnabled = true;
             EventComboBox.Location = new Point(309, 31);
@@ -187,7 +189,7 @@
             Controls.Add(ApplyButton);
             Controls.Add(IDTextBox);
             Controls.Add(IDLabel);
-            Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Microsoft Sans Serif", 8.25F);
             MinimumSize = new Size(660, 83);
             Name = "IdentificationAssistant";
             Size = new Size(660, 83);

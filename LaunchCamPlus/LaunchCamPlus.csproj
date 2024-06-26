@@ -11,12 +11,12 @@
     <IsPublishable>False</IsPublishable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Title>Launch Cam Plus</Title>
-    <Version>2.5.0.0</Version>
+    <Version>2.5.1.0</Version>
     <Authors>Super Hackio</Authors>
     <Company>Super Hackio Incorporated</Company>
     <Product>Launch Cam Plus</Product>
     <Description>SMG1/2 Camera Editor</Description>
-    <Copyright>Copyright © Super Hackio Incorporated 2018-2023</Copyright>
+    <Copyright>Copyright © Super Hackio Incorporated 2018-2024</Copyright>
     <PackageProjectUrl>https://github.com/SuperHackio/LaunchCamPlus</PackageProjectUrl>
   </PropertyGroup>
 
@@ -33,6 +33,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="CameraPanels\InwardTowerCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="CameraPanels\InwardSphereCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="CameraPanels\EyePosFixCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="CameraPanels\FrontAndBackCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="CameraPanels\TowerPosCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="CameraPanels\WonderPlanetCameraPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -40,6 +55,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="CameraPanels\FollowCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="CameraPanels\PointFixCameraPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">

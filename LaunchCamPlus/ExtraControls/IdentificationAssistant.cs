@@ -1,5 +1,6 @@
 ﻿using LaunchCamPlus.ExtraControls;
 using LaunchCamPlus.Formats;
+using System.Text.RegularExpressions;
 
 namespace LaunchCamPlus
 {
@@ -118,13 +119,20 @@ namespace LaunchCamPlus
             switch (CategoryComboBox.SelectedIndex)
             {
                 case 0:
-                    CamIDNumericUpDown.Value = BCAMUtility.GetNextOpenShortNumber(x.Cameras, "c:");
+                    CamIDNumericUpDown.Value = BCAMUtility.GetNextOpenShortNumber(x.Cameras, BCAMUtility.CameraAreaIDRegex());
                     break;
                 case 1:
-                    CamIDNumericUpDown.Value = BCAMUtility.GetNextOpenShortNumber(x.Cameras, "s:");
+                    CamIDNumericUpDown.Value = BCAMUtility.GetNextOpenShortNumber(x.Cameras, BCAMUtility.StartIDRegex());
                     break;
                 case 2:
-                    //CamIDNumericUpDown.Value = BCAMUtility.CalculateNextEvent(((CameraEditorForm)ParentForm).Cameras, BCAMUtility.EventData.Events[EventComboBox.SelectedValue.ToString()]);
+                    if (EventComboBox.SelectedValue is null)
+                        break;
+                    string? why = EventComboBox.SelectedValue.ToString();
+                    if (why is null)
+                        break;
+                    BCAMUtility.EventData evt = BCAMUtility.EventData.Events[why];
+                    Regex EventRegex = BCAMUtility.CreateEventIDRegex(why, evt.NeedsSubID);
+                    CamIDNumericUpDown.Value = BCAMUtility.GetNextOpenEventNumber(x.Cameras, EventRegex);
                     break;
                 default:
                     break;
