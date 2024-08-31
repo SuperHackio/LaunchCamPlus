@@ -11,13 +11,14 @@
     <IsPublishable>False</IsPublishable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Title>Launch Cam Plus</Title>
-    <Version>2.5.1.0</Version>
+    <Version>2.5.2.0</Version>
     <Authors>Super Hackio</Authors>
     <Company>Super Hackio Incorporated</Company>
     <Product>Launch Cam Plus</Product>
     <Description>SMG1/2 Camera Editor</Description>
     <Copyright>Copyright © Super Hackio Incorporated 2018-2024</Copyright>
     <PackageProjectUrl>https://github.com/SuperHackio/LaunchCamPlus</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SuperHackio/LaunchCamPlus</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

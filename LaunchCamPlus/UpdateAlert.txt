@@ -1,1 +1,10 @@
-﻿2.5.0.0
+﻿2.5.2.0
+#required
+
+- Added more Unique Editors
+  - CAM_TYPE_POINT_FIX
+  - CAM_TYPE_EYEPOS_FIX
+  - CAM_TYPE_EYEPOS_FIX_THERE
+  - CAM_TYPE_CUBE_PLANET
+  - CAM_TYPE_FRONT_AND_BACK
+- Fix the "Get New Number" button in the Identification Assistant
