@@ -191,7 +191,7 @@ internal static class Program
             return
                 $"""
                 ---- Release information ----
-                Launch Cam Plus Version {Version.Major}.{Version.Minor}.{Version.MajorRevision}.{Version.Build}{v}
+                Launch Cam Plus Version {Version.Major}.{Version.Minor}.{Version.Build}.{Version.MinorRevision}{v}
                 -----------------------------
                 """;
         }
