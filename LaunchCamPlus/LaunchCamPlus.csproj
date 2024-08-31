@@ -33,6 +33,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="CameraPanels\CubePlanetCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="CameraPanels\EyePosFixThereCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="CameraPanels\InwardTowerCameraPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>

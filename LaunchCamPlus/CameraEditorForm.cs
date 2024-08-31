@@ -67,7 +67,9 @@ public partial class CameraEditorForm : Form, IReloadTheme
                 { "CAM_TYPE_WONDER_PLANET", new WonderPlanetCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_POINT_FIX", new PointFixCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_EYEPOS_FIX", new EyePosFixCameraPanel() { Dock = DockStyle.Fill } },
+                { "CAM_TYPE_EYEPOS_FIX_THERE", new EyePosFixThereCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_FRONT_AND_BACK", new FrontAndBackCameraPanel() { Dock = DockStyle.Fill } },
+                { "CAM_TYPE_CUBE_PLANET", new CubePlanetCameraPanel() { Dock = DockStyle.Fill } },
             };
 
         if (args.Length > 0)

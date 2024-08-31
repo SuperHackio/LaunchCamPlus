@@ -1,6 +1,6 @@
 ﻿namespace LaunchCamPlus.CameraPanels
 {
-    partial class EyePosFixCameraPanel
+    partial class EyePosFixThereCameraPanel
     {
         /// <summary> 
         /// Required designer variable.
@@ -45,7 +45,6 @@
             NoResetCheckBox = new CheckBox();
             BehaviourGroupBox = new GroupBox();
             Num1CheckBox = new CheckBox();
-            WPointVector3NumericUpDown = new ExtraControls.Vector3NumericUpDown();
             UpVector3NumericUpDown = new ExtraControls.Vector3NumericUpDown();
             CameraHeightArrange = new ExtraControls.CameraHeightControl();
             ((System.ComponentModel.ISupportInitialize)VersionColourNumericUpDown).BeginInit();
@@ -242,16 +241,6 @@
             Num1CheckBox.Text = "Keep Upright";
             Num1CheckBox.UseVisualStyleBackColor = true;
             // 
-            // WPointVector3NumericUpDown
-            // 
-            WPointVector3NumericUpDown.Location = new Point(157, 144);
-            WPointVector3NumericUpDown.Margin = new Padding(3, 0, 3, 0);
-            WPointVector3NumericUpDown.MinimumSize = new Size(70, 85);
-            WPointVector3NumericUpDown.Name = "WPointVector3NumericUpDown";
-            WPointVector3NumericUpDown.Size = new Size(136, 85);
-            WPointVector3NumericUpDown.TabIndex = 93;
-            WPointVector3NumericUpDown.Text = "Camera Position";
-            // 
             // UpVector3NumericUpDown
             // 
             UpVector3NumericUpDown.Location = new Point(157, 229);
@@ -269,13 +258,12 @@
             CameraHeightArrange.Size = new Size(291, 97);
             CameraHeightArrange.TabIndex = 95;
             // 
-            // EyePosFixCameraPanel
+            // EyePosFixThereCameraPanel
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(CameraHeightArrange);
             Controls.Add(UpVector3NumericUpDown);
-            Controls.Add(WPointVector3NumericUpDown);
             Controls.Add(BehaviourGroupBox);
             Controls.Add(WOffsetVector3NumericUpDown);
             Controls.Add(CameraVariant);
@@ -289,7 +277,7 @@
             Controls.Add(RollLabel);
             Controls.Add(StringLabel);
             Controls.Add(StringColourTextBox);
-            Name = "EyePosFixCameraPanel";
+            Name = "EyePosFixThereCameraPanel";
             Controls.SetChildIndex(StringColourTextBox, 0);
             Controls.SetChildIndex(StringLabel, 0);
             Controls.SetChildIndex(RollLabel, 0);
@@ -303,7 +291,6 @@
             Controls.SetChildIndex(CameraVariant, 0);
             Controls.SetChildIndex(WOffsetVector3NumericUpDown, 0);
             Controls.SetChildIndex(BehaviourGroupBox, 0);
-            Controls.SetChildIndex(WPointVector3NumericUpDown, 0);
             Controls.SetChildIndex(UpVector3NumericUpDown, 0);
             Controls.SetChildIndex(CameraHeightArrange, 0);
             ((System.ComponentModel.ISupportInitialize)VersionColourNumericUpDown).EndInit();
@@ -332,7 +319,6 @@
         private CheckBox CollisionOffCheckBox;
         private CheckBox NoResetCheckBox;
         private GroupBox BehaviourGroupBox;
-        private ExtraControls.Vector3NumericUpDown WPointVector3NumericUpDown;
         private ExtraControls.Vector3NumericUpDown UpVector3NumericUpDown;
         private CheckBox Num1CheckBox;
         private ExtraControls.CameraHeightControl CameraHeightArrange;

@@ -3,9 +3,9 @@ using LaunchCamPlus.Formats;
 
 namespace LaunchCamPlus.CameraPanels;
 
-public partial class EyePosFixCameraPanel : CameraPanelBase
+public partial class EyePosFixThereCameraPanel : CameraPanelBase
 {
-    public EyePosFixCameraPanel()
+    public EyePosFixThereCameraPanel()
     {
         InitializeComponent();
         OnCameraIdChange += CameraVariant.SetStatus;
@@ -23,7 +23,7 @@ public partial class EyePosFixCameraPanel : CameraPanelBase
         //DistColourNumericUpDown.Value = (decimal)Entry.Dist;
         FovYColourNumericUpDown.Value = (decimal)Entry.FieldOfViewY;
         WOffsetVector3NumericUpDown.LoadVector3(Entry.WOffset);
-        WPointVector3NumericUpDown.LoadVector3(Entry.WPoint);
+        //WPointVector3NumericUpDown.LoadVector3(Entry.WPoint);
         UpVector3NumericUpDown.LoadVector3(Entry.Up);
 
         Num1CheckBox.Checked = Entry.Num1 != 1;
@@ -51,7 +51,7 @@ public partial class EyePosFixCameraPanel : CameraPanelBase
         //Item.Dist = (float)DistColourNumericUpDown.Value;
         Item.FieldOfViewY = (float)FovYColourNumericUpDown.Value;
         Item.WOffset = WOffsetVector3NumericUpDown.GetVector3();
-        Item.WPoint = WPointVector3NumericUpDown.GetVector3();
+        //Item.WPoint = WPointVector3NumericUpDown.GetVector3();
         Item.Up = UpVector3NumericUpDown.GetVector3();
 
         Item.Num1 = !Num1CheckBox.Checked ? 1 : 0;
