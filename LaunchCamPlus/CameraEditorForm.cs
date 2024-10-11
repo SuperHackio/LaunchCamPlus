@@ -70,6 +70,7 @@ public partial class CameraEditorForm : Form, IReloadTheme
                 { "CAM_TYPE_EYEPOS_FIX_THERE", new EyePosFixThereCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_FRONT_AND_BACK", new FrontAndBackCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_CUBE_PLANET", new CubePlanetCameraPanel() { Dock = DockStyle.Fill } },
+                { "CAM_TYPE_CHARMED_FIX", new CharmedFixCameraPanel() { Dock = DockStyle.Fill } },
             };
 
         if (args.Length > 0)

@@ -37,6 +37,9 @@
     <Compile Update="CameraPanels\CubePlanetCameraPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="CameraPanels\CharmedFixCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="CameraPanels\EyePosFixThereCameraPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
