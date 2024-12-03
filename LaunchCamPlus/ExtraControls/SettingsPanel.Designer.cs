@@ -40,12 +40,12 @@
             UseHexCheckBox = new CheckBox();
             DarkModeCheckBox = new CheckBox();
             InternalSettingsGroupBox = new GroupBox();
+            IsUseSMG1DefaultsCheckBox = new CheckBox();
             EnforceCompressCheckbox = new CheckBox();
             YAZ0CheckBox = new CheckBox();
             FunSettingsGroupBox = new GroupBox();
             ShowSplashButton = new Button();
             NoticeLabel = new Label();
-            IsUseSMG1DefaultsCheckBox = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)LogoPictureBox).BeginInit();
             VisualSettingsGroupBox.SuspendLayout();
             InternalSettingsGroupBox.SuspendLayout();
@@ -194,6 +194,18 @@
             InternalSettingsGroupBox.TabStop = false;
             InternalSettingsGroupBox.Text = "Internals";
             // 
+            // IsUseSMG1DefaultsCheckBox
+            // 
+            IsUseSMG1DefaultsCheckBox.AutoSize = true;
+            IsUseSMG1DefaultsCheckBox.Font = new Font("Microsoft Sans Serif", 10F);
+            IsUseSMG1DefaultsCheckBox.Location = new Point(6, 52);
+            IsUseSMG1DefaultsCheckBox.Name = "IsUseSMG1DefaultsCheckBox";
+            IsUseSMG1DefaultsCheckBox.Size = new Size(204, 21);
+            IsUseSMG1DefaultsCheckBox.TabIndex = 2;
+            IsUseSMG1DefaultsCheckBox.Text = "Use SMG1 Camera Defaults";
+            IsUseSMG1DefaultsCheckBox.UseVisualStyleBackColor = true;
+            IsUseSMG1DefaultsCheckBox.CheckedChanged += IsUseSMG1DefaultsCheckBox_CheckedChanged;
+            // 
             // EnforceCompressCheckbox
             // 
             EnforceCompressCheckbox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -249,22 +261,9 @@
             NoticeLabel.Font = new Font("Microsoft Sans Serif", 8.25F);
             NoticeLabel.Location = new Point(9, 274);
             NoticeLabel.Name = "NoticeLabel";
-            NoticeLabel.Size = new Size(368, 78);
+            NoticeLabel.Size = new Size(428, 78);
             NoticeLabel.TabIndex = 5;
             NoticeLabel.Text = resources.GetString("NoticeLabel.Text");
-            // 
-            // IsUseSMG1DefaultsCheckBox
-            // 
-            IsUseSMG1DefaultsCheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            IsUseSMG1DefaultsCheckBox.AutoSize = true;
-            IsUseSMG1DefaultsCheckBox.Font = new Font("Microsoft Sans Serif", 10F);
-            IsUseSMG1DefaultsCheckBox.Location = new Point(6, 52);
-            IsUseSMG1DefaultsCheckBox.Name = "IsUseSMG1DefaultsCheckBox";
-            IsUseSMG1DefaultsCheckBox.Size = new Size(204, 21);
-            IsUseSMG1DefaultsCheckBox.TabIndex = 2;
-            IsUseSMG1DefaultsCheckBox.Text = "Use SMG1 Camera Defaults";
-            IsUseSMG1DefaultsCheckBox.UseVisualStyleBackColor = true;
-            IsUseSMG1DefaultsCheckBox.CheckedChanged += IsUseSMG1DefaultsCheckBox_CheckedChanged;
             // 
             // SettingsPanel
             // 

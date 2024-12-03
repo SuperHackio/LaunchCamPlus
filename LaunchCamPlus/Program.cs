@@ -219,7 +219,7 @@ public static class ControlEx
         // set instance non-public property with name "DoubleBuffered" to true
         typeof(Control).InvokeMember("DoubleBuffered",
             BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
-            null, control, new object[] { true });
+            null, control, [true]);
     }
 
     public static void ReloadTheme(Control control)

@@ -70,6 +70,9 @@
     <Compile Update="CameraPanels\PointFixCameraPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="CameraPanels\SpiralDemoCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

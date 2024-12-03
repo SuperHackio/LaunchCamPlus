@@ -80,6 +80,7 @@
             // 
             // DataListBox
             // 
+            DataListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             DataListBox.FormattingEnabled = true;
             DataListBox.IntegralHeight = false;
             DataListBox.ItemHeight = 13;
@@ -92,6 +93,7 @@
             // 
             // CANMSettingsGroupBox
             // 
+            CANMSettingsGroupBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             CANMSettingsGroupBox.Controls.Add(label5);
             CANMSettingsGroupBox.Controls.Add(CANMLengthColourNumericUpDown);
             CANMSettingsGroupBox.Location = new Point(238, 391);
@@ -112,6 +114,7 @@
             // 
             // CANMLengthColourNumericUpDown
             // 
+            CANMLengthColourNumericUpDown.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             CANMLengthColourNumericUpDown.BorderColor = Color.FromArgb(200, 200, 200);
             CANMLengthColourNumericUpDown.Location = new Point(99, 18);
             CANMLengthColourNumericUpDown.Margin = new Padding(3, 2, 3, 2);
@@ -125,6 +128,7 @@
             // 
             // CANMKeyFrameGroupBox
             // 
+            CANMKeyFrameGroupBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             CANMKeyFrameGroupBox.Controls.Add(label4);
             CANMKeyFrameGroupBox.Controls.Add(label3);
             CANMKeyFrameGroupBox.Controls.Add(label2);
@@ -178,6 +182,7 @@
             // 
             // KeyframeOutColourNumericUpDown
             // 
+            KeyframeOutColourNumericUpDown.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             KeyframeOutColourNumericUpDown.BorderColor = Color.FromArgb(200, 200, 200);
             KeyframeOutColourNumericUpDown.DecimalPlaces = 4;
             KeyframeOutColourNumericUpDown.Location = new Point(99, 91);
@@ -191,6 +196,7 @@
             // 
             // KeyframeInColourNumericUpDown
             // 
+            KeyframeInColourNumericUpDown.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             KeyframeInColourNumericUpDown.BorderColor = Color.FromArgb(200, 200, 200);
             KeyframeInColourNumericUpDown.DecimalPlaces = 4;
             KeyframeInColourNumericUpDown.Location = new Point(99, 67);
@@ -204,6 +210,7 @@
             // 
             // KeyframeValueColourNumericUpDown
             // 
+            KeyframeValueColourNumericUpDown.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             KeyframeValueColourNumericUpDown.BorderColor = Color.FromArgb(200, 200, 200);
             KeyframeValueColourNumericUpDown.DecimalPlaces = 4;
             KeyframeValueColourNumericUpDown.Location = new Point(99, 43);
@@ -217,6 +224,7 @@
             // 
             // KeyframeTimeColourNumericUpDown
             // 
+            KeyframeTimeColourNumericUpDown.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             KeyframeTimeColourNumericUpDown.BorderColor = Color.FromArgb(200, 200, 200);
             KeyframeTimeColourNumericUpDown.Location = new Point(99, 19);
             KeyframeTimeColourNumericUpDown.Margin = new Padding(3, 2, 3, 2);
@@ -311,6 +319,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             groupBox1.Controls.Add(KeyframeSetBothLinearButton);
             groupBox1.Controls.Add(KeyframeSetBothZeroButton);
             groupBox1.Location = new Point(238, 338);
@@ -322,6 +331,7 @@
             // 
             // groupBox2
             // 
+            groupBox2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             groupBox2.Controls.Add(KeyframeSetInLinearButton);
             groupBox2.Controls.Add(KeyframeSetInZeroButton);
             groupBox2.Location = new Point(304, 338);
@@ -333,6 +343,7 @@
             // 
             // groupBox3
             // 
+            groupBox3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             groupBox3.Controls.Add(KeyframeSetOutZeroButton);
             groupBox3.Controls.Add(KeyframeSetOutLinearButton);
             groupBox3.Location = new Point(370, 338);

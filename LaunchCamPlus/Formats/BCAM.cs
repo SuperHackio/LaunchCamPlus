@@ -501,7 +501,7 @@ public class BCAM : BCSV
         }
         #endregion
 
-        public uint[] ContainedHashes => Data.Keys.ToArray();
+        public uint[] ContainedHashes => [.. Data.Keys];
 
         public Entry()
         {
@@ -1619,14 +1619,19 @@ public static partial class BCAMUtility
                 result = $"Event: Warp Pod (Group {values[0]}, Arg0 = {values[1][0] - 'A'})";
                 return true;
             }
-            Exit:
+        Exit:
 
-            string KeyNoLast3Numbers = OriginalParts[1][..^3];
-            if (EventData.Events.TryGetValue(KeyNoLast3Numbers, out EventData? Evt))
+            EventData? Evt;
+            if (OriginalParts[1].Length >= 3)
             {
-                result = $"Event {Original[2..].Replace(KeyNoLast3Numbers, Evt + " ").Replace("番目", "th")}";
-                return true;
+                string KeyNoLast3Numbers = OriginalParts[1][..^3];
+                if (EventData.Events.TryGetValue(KeyNoLast3Numbers, out Evt))
+                {
+                    result = $"Event {Original[2..].Replace(KeyNoLast3Numbers, Evt + " ").Replace("番目", "th")}";
+                    return true;
+                }
             }
+
 
             string targetkey = string.Concat(OriginalParts[1].Where(IsNonDigit));
             if(EventData.Events.TryGetValue(targetkey, out Evt))

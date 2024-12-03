@@ -117,12 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="NoticeLabel.Text" xml:space="preserve">
-    <value>Having trouble figuring out what values do what? Try enabling Unique Editors!
-
-Unique Editors will re-arrange the data for each camera type
-to provide a unique editing experience
-(for the camera types that are implemented, anyways)
-This will label what values do what with a consistent naming scheme per functional value.</value>
-  </data>
 </root>

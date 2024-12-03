@@ -21,6 +21,7 @@ If you want one of your presets to be included with LCP, open a new issue and at
 
 # Other Information
 As of Launch Cam Plus Pre-release 2.3.8.0, Launch Cam Plus has an Update Notification that will turn the "About" button GREEN if an update is availible. If you see an update is ready, please download it as soon as you can.
+> *Note: LCP Versions prior to 2.5.0.0 cannot recieve update notifications anymore. If your LCP version is less than 2.5.0.0, please update as soon as you can.*
 
 
 <br><br>
