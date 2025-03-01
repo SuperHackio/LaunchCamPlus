@@ -57,6 +57,7 @@ namespace LaunchCamPlus.ExtraControls
             DataListBox.SelectedIndex = NewSelected;
 
             CANMJ3dTrackControl.SingleTangent = Track.UseSingleSlope;
+            CANMJ3dTrackControl.DrawTangents = !IsFullFrames;
             KeyframeInColourNumericUpDown.Enabled = !IsFullFrames;
             KeyframeOutColourNumericUpDown.Enabled = !CANMJ3dTrackControl.SingleTangent && !IsFullFrames;
             //KeyframeSetBothLinearButton.Enabled = !CANMJ3dTrackControl.SingleTangent;

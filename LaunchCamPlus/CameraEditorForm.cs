@@ -824,6 +824,9 @@ public partial class CameraEditorForm : Form, IReloadTheme
 
         string SlopeType(int x)
         {
+            if (KeyframeCamera.IsFullFrames)
+                return "(Full-Frame)";
+
             return KeyframeCamera[(CANM.TrackSelection)x].UseSingleSlope ? " (Symmetric)" : " (Piece-wise)";
         }
     }

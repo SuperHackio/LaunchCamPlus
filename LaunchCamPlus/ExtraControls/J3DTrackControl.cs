@@ -1,6 +1,4 @@
 ﻿using Hack.io.Utility;
-using System.Numerics;
-using System.Runtime.Intrinsics.Arm;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace LaunchCamPlus.ExtraControls;
@@ -39,6 +37,7 @@ public partial class J3DTrackControl : UserControl
 
     public SplineType Spline { get; set; } = SplineType.HERMITE;
     public bool SingleTangent { get; set; } = false;
+    public bool DrawTangents { get; set; } = true;
 
     public List<DataPoint> Points;
     public List<int> HighlightPoints;
@@ -202,7 +201,8 @@ public partial class J3DTrackControl : UserControl
             if (CurrentOutgoingY is float.NaN)
                 CurrentOutgoingY = 0;
 
-            g.DrawLine(PDrawOut, CurrentX, CurrentY, CurrentX + (float)(CurrentOutgoingX), CurrentY + (float)(CurrentOutgoingY * -Math.Sign(selection))); //Subtraction because flipped Y axis
+            if (DrawTangents)
+                g.DrawLine(PDrawOut, CurrentX, CurrentY, CurrentX + (float)(CurrentOutgoingX), CurrentY + (float)(CurrentOutgoingY * -Math.Sign(selection))); //Subtraction because flipped Y axis
 
             float TangentInLineDistance = TangentLineDist; //Z
             double AngleCurrentIngoing = Math.Atan(Math.Abs(DP.InSlope * TangentScale / 30)); //y Angle
@@ -213,7 +213,9 @@ public partial class J3DTrackControl : UserControl
             if (CurrentIngoingY is float.NaN)
                 CurrentIngoingY = 0;
 
-            g.DrawLine(PDrawIn, CurrentX, CurrentY, CurrentX - (float)(CurrentIngoingX), CurrentY - (float)(CurrentIngoingY * -Math.Sign(DP.InSlope))); //Addition because flipped Y axis
+            if (DrawTangents)
+                g.DrawLine(PDrawIn, CurrentX, CurrentY, CurrentX - (float)(CurrentIngoingX), CurrentY - (float)(CurrentIngoingY * -Math.Sign(DP.InSlope))); //Addition because flipped Y axis
+
 
             if (HighlightPoints.Contains(i))
                 g.FillEllipse(BrushCircle, CurrentX - 5, CurrentY - 5, 10, 10);
