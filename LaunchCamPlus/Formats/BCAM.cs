@@ -1453,7 +1453,9 @@ public static partial class BCAMUtility
 
             { "移動用砲台固有", new("Player Cannon", true, false) },
             { "１ＵＰキノコ固有", new("1-UP Appearence", true, false) },
+            { "ライフアップキノコ固有", new("Life Mushroom Appearence", true, false) },
             { "？コイン固有", new("?-Coin Collection", true, false) },
+            { "無敵スター固有", new("Rainbow Star Appearance", true, false) },
 
             { "伸び植物固有出現デモ", new("Sproutle Vine Appearance", true, false) },
             { "伸び植物固有掴まり", new("Sproutle Vine", true, false) },
@@ -1540,6 +1542,19 @@ public static partial class BCAMUtility
             { "デフォルトフーファイターカメラ", new("Default Flying Mario", false, false) },
             { "スタートカメラ", new("Default Spawn Point", false, false) },
             { "デフォルトカメラ", new("Default Camera", false, false) }
+        };
+        /// <summary>
+        /// For identification purposes only. These events are created by the game.
+        /// </summary>
+        public readonly static Dictionary<string, EventData> GameCreatedEvents = new()
+        {
+            { "スタートアニメカメラ", new("Galaxy Intro Camera", false, false) },
+            { "ブラックホール", new("Default Black Hole Death", false, false) },
+            { "共通会話カメラ", new("Default NPC Dialogue", false, false) },
+            { "主観カメラ", new("First Person Camera", false, false) },
+            { "昇天カメラ", new("Ground Death Camera", false, false) },
+            { "奈落カメラ", new("Air Death Camera", false, false) },
+            { "変身初出カメラ", new("First Time Powerup Get", false, false) },
         };
     }
 
@@ -1643,6 +1658,15 @@ public static partial class BCAMUtility
             if (EventData.OtherEvents.TryGetValue(targetkey, out Evt))
             {
                 result = $"Other: {Evt}";
+                return true;
+            }
+
+            if (EventData.GameCreatedEvents.TryGetValue(targetkey, out Evt))
+            {
+                if (StartsWith.Equals("o:"))
+                    result = $"Other: [System] {Evt}";
+                else
+                    result = $"Event: [System] {Evt}";
                 return true;
             }
 
