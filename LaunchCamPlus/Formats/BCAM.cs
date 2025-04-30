@@ -1710,14 +1710,16 @@ public static partial class BCAMUtility
             Match m = EventNoPartIDRegex().Match(item.Identification);
             if (m.Success && int.TryParse(m.Groups[1].Value, out int NoPartID))
             {
-                UsedValues.Add(NoPartID);
+                if (!UsedValues.Contains(NoPartID))
+                    UsedValues.Add(NoPartID);
                 continue;
             }
 
             m = EventWithPartIDRegex().Match(item.Identification);
             if (m.Success && int.TryParse(m.Groups[1].Value, out int WithPartID))
             {
-                UsedValues.Add(WithPartID);
+                if (!UsedValues.Contains(WithPartID))
+                    UsedValues.Add(WithPartID);
                 continue;
             }
         }
