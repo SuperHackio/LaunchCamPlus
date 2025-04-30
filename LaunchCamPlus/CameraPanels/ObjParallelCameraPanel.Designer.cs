@@ -125,8 +125,8 @@
             FovYColourNumericUpDown.Font = new Font("Microsoft Sans Serif", 8.25F);
             FovYColourNumericUpDown.Location = new Point(65, 164);
             FovYColourNumericUpDown.Margin = new Padding(3, 1, 3, 1);
-            FovYColourNumericUpDown.Maximum = new decimal(new int[] { 1799, 0, 0, 65536 });
-            FovYColourNumericUpDown.Minimum = new decimal(new int[] { 1799, 0, 0, -2147418112 });
+            FovYColourNumericUpDown.Maximum = new decimal(new int[] { 179999, 0, 0, 196608 });
+            FovYColourNumericUpDown.Minimum = new decimal(new int[] { 179999, 0, 0, -2147287040 });
             FovYColourNumericUpDown.Name = "FovYColourNumericUpDown";
             FovYColourNumericUpDown.Size = new Size(86, 20);
             FovYColourNumericUpDown.TabIndex = 79;

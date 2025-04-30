@@ -28,24 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            CameraHeightArrange = new ExtraControls.CameraHeightControl();
+            CameraHeightArrange = new LaunchCamPlus.ExtraControls.CameraHeightControl();
             StringLabel = new Label();
-            StringColourTextBox = new ExtraControls.ColourTextBox();
+            StringColourTextBox = new LaunchCamPlus.ExtraControls.ColourTextBox();
             NoFovYCheckBox = new CheckBox();
-            VersionColourNumericUpDown = new ExtraControls.ColourNumericUpDown();
+            VersionColourNumericUpDown = new LaunchCamPlus.ExtraControls.ColourNumericUpDown();
             VersionLabel = new Label();
-            FovYColourNumericUpDown = new ExtraControls.ColourNumericUpDown();
+            FovYColourNumericUpDown = new LaunchCamPlus.ExtraControls.ColourNumericUpDown();
             FovYLabel = new Label();
-            RollColourNumericUpDown = new ExtraControls.ColourNumericUpDown();
+            RollColourNumericUpDown = new LaunchCamPlus.ExtraControls.ColourNumericUpDown();
             RollLabel = new Label();
-            AngleAColourNumericUpDown = new ExtraControls.ColourNumericUpDown();
+            AngleAColourNumericUpDown = new LaunchCamPlus.ExtraControls.ColourNumericUpDown();
             AngleALabel = new Label();
-            CameraLOfs = new ExtraControls.CameraLookOffsetControl();
-            CameraVariant = new ExtraControls.CameraVariantControl();
-            WOffsetVector3NumericUpDown = new ExtraControls.Vector3NumericUpDown();
-            AxisXColourNumericUpDown = new ExtraControls.ColourNumericUpDown();
+            CameraLOfs = new LaunchCamPlus.ExtraControls.CameraLookOffsetControl();
+            CameraVariant = new LaunchCamPlus.ExtraControls.CameraVariantControl();
+            WOffsetVector3NumericUpDown = new LaunchCamPlus.ExtraControls.Vector3NumericUpDown();
+            AxisXColourNumericUpDown = new LaunchCamPlus.ExtraControls.ColourNumericUpDown();
             label1 = new Label();
-            AxisYColourNumericUpDown = new ExtraControls.ColourNumericUpDown();
+            AxisYColourNumericUpDown = new LaunchCamPlus.ExtraControls.ColourNumericUpDown();
             label2 = new Label();
             BehaviourGroupBox = new GroupBox();
             SubjectiveOffCheckBox = new CheckBox();
@@ -133,7 +133,8 @@
             FovYColourNumericUpDown.Font = new Font("Microsoft Sans Serif", 8.25F);
             FovYColourNumericUpDown.Location = new Point(77, 120);
             FovYColourNumericUpDown.Margin = new Padding(3, 1, 3, 1);
-            FovYColourNumericUpDown.Maximum = new decimal(new int[] { 1799, 0, 0, 65536 });
+            FovYColourNumericUpDown.Maximum = new decimal(new int[] { 179999, 0, 0, 196608 });
+            FovYColourNumericUpDown.Minimum = new decimal(new int[] { 179999, 0, 0, -2147287040 });
             FovYColourNumericUpDown.Name = "FovYColourNumericUpDown";
             FovYColourNumericUpDown.Size = new Size(74, 20);
             FovYColourNumericUpDown.TabIndex = 79;

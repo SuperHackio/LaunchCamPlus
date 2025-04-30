@@ -28,32 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-            CameraHeightArrange = new ExtraControls.CameraHeightControl();
+            CameraHeightArrange = new LaunchCamPlus.ExtraControls.CameraHeightControl();
             StringLabel = new Label();
-            StringColourTextBox = new ExtraControls.ColourTextBox();
+            StringColourTextBox = new LaunchCamPlus.ExtraControls.ColourTextBox();
             NoFovYCheckBox = new CheckBox();
-            VersionColourNumericUpDown = new ExtraControls.ColourNumericUpDown();
+            VersionColourNumericUpDown = new LaunchCamPlus.ExtraControls.ColourNumericUpDown();
             VersionLabel = new Label();
-            FovYColourNumericUpDown = new ExtraControls.ColourNumericUpDown();
+            FovYColourNumericUpDown = new LaunchCamPlus.ExtraControls.ColourNumericUpDown();
             FovYLabel = new Label();
-            DistColourNumericUpDown = new ExtraControls.ColourNumericUpDown();
+            DistColourNumericUpDown = new LaunchCamPlus.ExtraControls.ColourNumericUpDown();
             DistLabel = new Label();
-            RollColourNumericUpDown = new ExtraControls.ColourNumericUpDown();
+            RollColourNumericUpDown = new LaunchCamPlus.ExtraControls.ColourNumericUpDown();
             RollLabel = new Label();
-            AngleAColourNumericUpDown = new ExtraControls.ColourNumericUpDown();
+            AngleAColourNumericUpDown = new LaunchCamPlus.ExtraControls.ColourNumericUpDown();
             AngleALabel = new Label();
-            AngleBColourNumericUpDown = new ExtraControls.ColourNumericUpDown();
+            AngleBColourNumericUpDown = new LaunchCamPlus.ExtraControls.ColourNumericUpDown();
             AngleBLabel = new Label();
-            CameraLOfs = new ExtraControls.CameraLookOffsetControl();
-            CameraVariant = new ExtraControls.CameraVariantControl();
-            WOffsetVector3NumericUpDown = new ExtraControls.Vector3NumericUpDown();
+            CameraLOfs = new LaunchCamPlus.ExtraControls.CameraLookOffsetControl();
+            CameraVariant = new LaunchCamPlus.ExtraControls.CameraVariantControl();
+            WOffsetVector3NumericUpDown = new LaunchCamPlus.ExtraControls.Vector3NumericUpDown();
             SubjectiveOffCheckBox = new CheckBox();
             CollisionOffCheckBox = new CheckBox();
             AntiBlurOffCheckBox = new CheckBox();
             NoResetCheckBox = new CheckBox();
             BehaviourGroupBox = new GroupBox();
-            WPointVector3NumericUpDown = new ExtraControls.Vector3NumericUpDown();
-            AxisVector3NumericUpDown = new ExtraControls.Vector3NumericUpDown();
+            WPointVector3NumericUpDown = new LaunchCamPlus.ExtraControls.Vector3NumericUpDown();
+            AxisVector3NumericUpDown = new LaunchCamPlus.ExtraControls.Vector3NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)VersionColourNumericUpDown).BeginInit();
             ((System.ComponentModel.ISupportInitialize)FovYColourNumericUpDown).BeginInit();
             ((System.ComponentModel.ISupportInitialize)DistColourNumericUpDown).BeginInit();
@@ -135,7 +135,8 @@
             FovYColourNumericUpDown.Font = new Font("Microsoft Sans Serif", 8.25F);
             FovYColourNumericUpDown.Location = new Point(65, 164);
             FovYColourNumericUpDown.Margin = new Padding(3, 1, 3, 1);
-            FovYColourNumericUpDown.Maximum = new decimal(new int[] { 1799, 0, 0, 65536 });
+            FovYColourNumericUpDown.Maximum = new decimal(new int[] { 179999, 0, 0, 196608 });
+            FovYColourNumericUpDown.Minimum = new decimal(new int[] { 179999, 0, 0, -2147287040 });
             FovYColourNumericUpDown.Name = "FovYColourNumericUpDown";
             FovYColourNumericUpDown.Size = new Size(86, 20);
             FovYColourNumericUpDown.TabIndex = 79;
@@ -352,7 +353,7 @@
             AxisVector3NumericUpDown.TabIndex = 93;
             AxisVector3NumericUpDown.Text = "Tower Axis Normal";
             // 
-            // TowerCameraPanel
+            // InwardTowerCameraPanel
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -378,7 +379,7 @@
             Controls.Add(StringLabel);
             Controls.Add(StringColourTextBox);
             Controls.Add(CameraHeightArrange);
-            Name = "TowerCameraPanel";
+            Name = "InwardTowerCameraPanel";
             Controls.SetChildIndex(CameraHeightArrange, 0);
             Controls.SetChildIndex(StringColourTextBox, 0);
             Controls.SetChildIndex(StringLabel, 0);

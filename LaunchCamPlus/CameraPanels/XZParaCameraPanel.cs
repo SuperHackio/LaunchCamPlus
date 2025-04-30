@@ -21,7 +21,7 @@ public partial class XZParaCameraPanel : CameraPanelBase
         AngleAColourNumericUpDown.Value = (decimal)Entry.AngleA.RadianToDegree();
         RollColourNumericUpDown.Value = (decimal)Entry.Roll.RadianToDegree();
         DistColourNumericUpDown.Value = (decimal)Entry.Dist;
-        FovYColourNumericUpDown.Value = (decimal)Entry.FieldOfViewY;
+        FovYColourNumericUpDown.Value = (decimal)RoundAndClampFoV(Entry.FieldOfViewY);
         WOffsetVector3NumericUpDown.LoadVector3(Entry.WOffset);
 
         DPadCheckBox.Checked = Entry.Num1 == 1;

@@ -21,7 +21,7 @@ public partial class CharmedFixCameraPanel : CameraPanelBase
         //AngleAColourNumericUpDown.Value = (decimal)Entry.AxisY.RadianToDegree();
         RollColourNumericUpDown.Value = (decimal)Entry.Roll.RadianToDegree();
         //DistColourNumericUpDown.Value = (decimal)Entry.Dist;
-        FovYColourNumericUpDown.Value = (decimal)Entry.FieldOfViewY;
+        FovYColourNumericUpDown.Value = (decimal)RoundAndClampFoV(Entry.FieldOfViewY);
         WPointVector3NumericUpDown.LoadVector3(Entry.WPoint);
         AxisVector3NumericUpDown.LoadVector3(Entry.Axis);
         UpVector3NumericUpDown.LoadVector3(Entry.Up);

@@ -29,22 +29,22 @@
         private void InitializeComponent()
         {
             StringLabel = new Label();
-            StringColourTextBox = new ExtraControls.ColourTextBox();
+            StringColourTextBox = new LaunchCamPlus.ExtraControls.ColourTextBox();
             NoFovYCheckBox = new CheckBox();
-            VersionColourNumericUpDown = new ExtraControls.ColourNumericUpDown();
+            VersionColourNumericUpDown = new LaunchCamPlus.ExtraControls.ColourNumericUpDown();
             VersionLabel = new Label();
-            FovYColourNumericUpDown = new ExtraControls.ColourNumericUpDown();
+            FovYColourNumericUpDown = new LaunchCamPlus.ExtraControls.ColourNumericUpDown();
             FovYLabel = new Label();
-            RollColourNumericUpDown = new ExtraControls.ColourNumericUpDown();
+            RollColourNumericUpDown = new LaunchCamPlus.ExtraControls.ColourNumericUpDown();
             RollLabel = new Label();
-            CameraVariant = new ExtraControls.CameraVariantControl();
-            WPointVector3NumericUpDown = new ExtraControls.Vector3NumericUpDown();
+            CameraVariant = new LaunchCamPlus.ExtraControls.CameraVariantControl();
+            WPointVector3NumericUpDown = new LaunchCamPlus.ExtraControls.Vector3NumericUpDown();
             SubjectiveOffCheckBox = new CheckBox();
             CollisionOffCheckBox = new CheckBox();
             NoResetCheckBox = new CheckBox();
             BehaviourGroupBox = new GroupBox();
-            AxisVector3NumericUpDown = new ExtraControls.Vector3NumericUpDown();
-            UpVector3NumericUpDown = new ExtraControls.Vector3NumericUpDown();
+            AxisVector3NumericUpDown = new LaunchCamPlus.ExtraControls.Vector3NumericUpDown();
+            UpVector3NumericUpDown = new LaunchCamPlus.ExtraControls.Vector3NumericUpDown();
             label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)VersionColourNumericUpDown).BeginInit();
             ((System.ComponentModel.ISupportInitialize)FovYColourNumericUpDown).BeginInit();
@@ -116,7 +116,8 @@
             FovYColourNumericUpDown.Font = new Font("Microsoft Sans Serif", 8.25F);
             FovYColourNumericUpDown.Location = new Point(65, 98);
             FovYColourNumericUpDown.Margin = new Padding(3, 1, 3, 1);
-            FovYColourNumericUpDown.Maximum = new decimal(new int[] { 1799, 0, 0, 65536 });
+            FovYColourNumericUpDown.Maximum = new decimal(new int[] { 179999, 0, 0, 196608 });
+            FovYColourNumericUpDown.Minimum = new decimal(new int[] { 179999, 0, 0, -2147287040 });
             FovYColourNumericUpDown.Name = "FovYColourNumericUpDown";
             FovYColourNumericUpDown.Size = new Size(86, 20);
             FovYColourNumericUpDown.TabIndex = 79;

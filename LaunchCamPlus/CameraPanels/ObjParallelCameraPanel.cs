@@ -21,7 +21,7 @@ public partial class ObjParallelCameraPanel : CameraPanelBase
         AngleAColourNumericUpDown.Value = (decimal)Entry.AngleB.RadianToDegree();
         RollColourNumericUpDown.Value = (decimal)Entry.Roll.RadianToDegree();
         DistColourNumericUpDown.Value = (decimal)Entry.Dist;
-        FovYColourNumericUpDown.Value = (decimal)Entry.FieldOfViewY;
+        FovYColourNumericUpDown.Value = (decimal)RoundAndClampFoV(Entry.FieldOfViewY);
         WOffsetVector3NumericUpDown.LoadVector3(Entry.WOffset);
 
         NoResetCheckBox.Checked = Entry.NoReset == 1;

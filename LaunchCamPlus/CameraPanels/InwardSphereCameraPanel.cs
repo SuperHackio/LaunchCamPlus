@@ -21,7 +21,7 @@ public partial class InwardSphereCameraPanel : CameraPanelBase
         AngleAColourNumericUpDown.Value = (decimal)Math.Clamp(Entry.AngleA.RadianToDegree(), (float)AngleAColourNumericUpDown.Minimum, (float)AngleAColourNumericUpDown.Maximum);
         RollColourNumericUpDown.Value = (decimal)Entry.Roll.RadianToDegree();
         DistColourNumericUpDown.Value = (decimal)Entry.Dist;
-        FovYColourNumericUpDown.Value = (decimal)Entry.FieldOfViewY;
+        FovYColourNumericUpDown.Value = (decimal)RoundAndClampFoV(Entry.FieldOfViewY);
 
         WOffsetVector3NumericUpDown.LoadVector3(Entry.WOffset);
         WPointVector3NumericUpDown.LoadVector3(Entry.WPoint);

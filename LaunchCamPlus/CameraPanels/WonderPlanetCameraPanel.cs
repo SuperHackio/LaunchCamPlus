@@ -19,7 +19,7 @@ public partial class WonderPlanetCameraPanel : CameraPanelBase
         VersionColourNumericUpDown.Value = Entry.Version;
         AngleAColourNumericUpDown.Value = (decimal)Entry.AngleA.RadianToDegree();
         RollColourNumericUpDown.Value = (decimal)Entry.Roll.RadianToDegree();
-        FovYColourNumericUpDown.Value = (decimal)Entry.FieldOfViewY;
+        FovYColourNumericUpDown.Value = (decimal)RoundAndClampFoV(Entry.FieldOfViewY);
         WOffsetVector3NumericUpDown.LoadVector3(Entry.WOffset);
         AxisXColourNumericUpDown.Value = (decimal)Entry.AxisX;
         AxisYColourNumericUpDown.Value = (decimal)Entry.AxisY;

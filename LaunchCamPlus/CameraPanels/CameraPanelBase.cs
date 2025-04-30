@@ -161,4 +161,11 @@ public partial class CameraPanelBase : UserControl, ICameraPanel, IReloadTheme
         Console.WriteLine(Msg);
         Console.WriteLine("----------------------------");
     }
+
+    protected static float RoundAndClampFoV(float fov)
+    {
+        float abs = Math.Abs(fov);
+        float v = abs % 179.9991f; // Genius???
+        return v * Math.Sign(fov);
+    }
 }
