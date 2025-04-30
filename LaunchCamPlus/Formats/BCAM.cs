@@ -1464,6 +1464,10 @@ public static partial class BCAMUtility
             { "空中ブランコ固有", new("Trapeze Vine", true, false) },
             { "スイングロープ固有", new("Swinging Vine", true, false) },
 
+            { "宇宙まゆ固有ウェイト", new("Sling Pod (Waiting)", true, false) },
+            { "宇宙まゆ固有狙い中", new("Sling Pod (Aiming)", true, false) },
+            { "宇宙まゆ固有攻撃中", new("Sling Pod (Flying)", true, false) },
+
             { "ポイハナ固有", new("Cataquack Launch", true, false) },
 
             { "音符の妖精固有", new("Note Fairy Appearance", true, false) },
