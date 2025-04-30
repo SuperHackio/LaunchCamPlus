@@ -9,6 +9,9 @@ public partial class TowerPosCameraPanel : CameraPanelBase
     {
         InitializeComponent();
         OnCameraIdChange += CameraVariant.SetStatus;
+
+        AngleAColourNumericUpDown.Minimum = (decimal)-1.0f.RadianToDegree();
+        AngleAColourNumericUpDown.Maximum = (decimal)1.0f.RadianToDegree();
     }
 
     public override void LoadCamera(BCAM.Entry Entry)

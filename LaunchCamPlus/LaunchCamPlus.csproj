@@ -40,6 +40,9 @@
     <Compile Update="CameraPanels\CharmedFixCameraPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="CameraPanels\AnimCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="CameraPanels\EyePosFixThereCameraPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -71,6 +74,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="CameraPanels\SpiralDemoCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="CameraPanels\ObjParallelCameraPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">

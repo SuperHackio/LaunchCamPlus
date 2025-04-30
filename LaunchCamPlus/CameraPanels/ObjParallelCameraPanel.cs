@@ -3,15 +3,12 @@ using LaunchCamPlus.Formats;
 
 namespace LaunchCamPlus.CameraPanels;
 
-public partial class TowerCameraPanel : CameraPanelBase
+public partial class ObjParallelCameraPanel : CameraPanelBase
 {
-    public TowerCameraPanel()
+    public ObjParallelCameraPanel()
     {
         InitializeComponent();
         OnCameraIdChange += CameraVariant.SetStatus;
-
-        AngleAColourNumericUpDown.Minimum = (decimal)-1.0f.RadianToDegree();
-        AngleAColourNumericUpDown.Maximum = (decimal)1.0f.RadianToDegree();
     }
 
     public override void LoadCamera(BCAM.Entry Entry)
@@ -20,15 +17,12 @@ public partial class TowerCameraPanel : CameraPanelBase
         base.LoadCamera(Entry);
 
         VersionColourNumericUpDown.Value = Entry.Version;
-        AngleBColourNumericUpDown.Value = (decimal)Entry.AngleB.RadianToDegree();
-        AngleAColourNumericUpDown.Value = (decimal)Math.Clamp(Entry.AngleA.RadianToDegree(), (float)AngleAColourNumericUpDown.Minimum, (float)AngleAColourNumericUpDown.Maximum);
+        AngleBColourNumericUpDown.Value = -(decimal)Entry.AngleA.RadianToDegree();
+        AngleAColourNumericUpDown.Value = (decimal)Entry.AngleB.RadianToDegree();
         RollColourNumericUpDown.Value = (decimal)Entry.Roll.RadianToDegree();
         DistColourNumericUpDown.Value = (decimal)Entry.Dist;
         FovYColourNumericUpDown.Value = (decimal)Entry.FieldOfViewY;
-
         WOffsetVector3NumericUpDown.LoadVector3(Entry.WOffset);
-        WPointVector3NumericUpDown.LoadVector3(Entry.WPoint);
-        AxisVector3NumericUpDown.LoadVector3(Entry.Axis);
 
         NoResetCheckBox.Checked = Entry.NoReset == 1;
         NoFovYCheckBox.Checked = Entry.NoFieldOfViewY == 1;
@@ -37,7 +31,6 @@ public partial class TowerCameraPanel : CameraPanelBase
         SubjectiveOffCheckBox.Checked = Entry.SubjectiveOff != 1;
 
         CameraVariant.LoadCamera(Entry);
-        CameraHeightArrange.LoadCamera(Entry);
         CameraLOfs.LoadCamera(Entry);
 
         StringColourTextBox.Text = Entry.String;
@@ -48,15 +41,12 @@ public partial class TowerCameraPanel : CameraPanelBase
     {
         base.UnloadCamera();
         Item.Version = (int)VersionColourNumericUpDown.Value;
-        Item.AngleB = ((float)AngleBColourNumericUpDown.Value).DegreeToRadian();
-        Item.AngleA = ((float)AngleAColourNumericUpDown.Value).DegreeToRadian();
+        Item.AngleA = -((float)AngleBColourNumericUpDown.Value).DegreeToRadian();
+        Item.AngleB = ((float)AngleAColourNumericUpDown.Value).DegreeToRadian();
         Item.Roll = ((float)RollColourNumericUpDown.Value).DegreeToRadian();
         Item.Dist = (float)DistColourNumericUpDown.Value;
         Item.FieldOfViewY = (float)FovYColourNumericUpDown.Value;
-
         Item.WOffset = WOffsetVector3NumericUpDown.GetVector3();
-        Item.WPoint = WPointVector3NumericUpDown.GetVector3();
-        Item.Axis = AxisVector3NumericUpDown.GetVector3();
 
         Item.NoReset = NoResetCheckBox.Checked ? 1 : 0;
         Item.NoFieldOfViewY = NoFovYCheckBox.Checked ? 1 : 0;
@@ -66,7 +56,6 @@ public partial class TowerCameraPanel : CameraPanelBase
 
         BCAM.Entry Entry = Item;
         CameraVariant.UnloadCamera(ref Entry);
-        CameraHeightArrange.UnloadCamera(ref Entry);
         CameraLOfs.UnloadCamera(ref Entry);
 
         Item.String = StringColourTextBox.Text;

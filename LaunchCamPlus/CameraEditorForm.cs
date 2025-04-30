@@ -72,6 +72,8 @@ public partial class CameraEditorForm : Form, IReloadTheme
                 { "CAM_TYPE_CUBE_PLANET", new CubePlanetCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_CHARMED_FIX", new CharmedFixCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_SPIRAL_DEMO", new SpiralDemoCameraPanel() { Dock = DockStyle.Fill } },
+                { "CAM_TYPE_ANIM", new AnimCameraPanel() { Dock = DockStyle.Fill } },
+                { "CAM_TYPE_OBJ_PARALLEL", new ObjParallelCameraPanel() { Dock = DockStyle.Fill } },
             };
 
         if (args.Length > 0)
