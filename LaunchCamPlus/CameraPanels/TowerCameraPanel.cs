@@ -10,7 +10,7 @@ public partial class TowerCameraPanel : CameraPanelBase
         InitializeComponent();
         OnCameraIdChange += CameraVariant.SetStatus;
 
-        AngleAColourNumericUpDown.Minimum = (decimal)-1.0f.RadianToDegree();
+        AngleAColourNumericUpDown.Minimum = (decimal)-1.25f.RadianToDegree(); //This is just enough to allow full 360 camera rotation
         AngleAColourNumericUpDown.Maximum = (decimal)1.0f.RadianToDegree();
     }
 
