@@ -43,13 +43,12 @@ public class LCPP
     public LCPP() { }
     public LCPP(string Filename)
     {
+        StreamUtil.PushEndianLittle();
         FileStream FS = new(Filename, FileMode.Open);
         string id = FS.ReadString(4, Encoding.ASCII);
         if (!id.Equals(MAGIC) && !id.Equals(MAGIC_COMPRESSED))
-        {
-            FS.Close();
-            return;
-        }
+            goto End;
+
         if (id.Equals(MAGIC))
         {
             Version FileVersion = new(FS.ReadByte(), FS.ReadByte());
@@ -68,7 +67,9 @@ public class LCPP
         }
 
         FileLoader(FS);
+    End:
         FS.Close();
+        StreamUtil.PopEndian();
     }
 
     public void Save(string Filename, BackgroundWorker? BGW)
@@ -89,7 +90,7 @@ public class LCPP
     /// <param name="FS"></param>
     public void LoadModernFile(Stream FS)
     {
-        StreamUtil.SetEndianLittle();
+        StreamUtil.PushEndianLittle();
         Name = FS.ReadStringJIS();
         Creator = FS.ReadStringJIS();
         int count = FS.ReadInt32();
@@ -97,6 +98,7 @@ public class LCPP
             FS.Position++;
         for (int i = 0; i < count; i++)
             Entries.Add(FS.ReadStringJIS());
+        StreamUtil.PopEndian();
     }
     /// <summary>
     /// LCPP Versions 0.1 and 0.2
@@ -450,7 +452,7 @@ public class LCPP
 
     public void SaveModernFile(Stream FS, BackgroundWorker? BGW)
     {
-        StreamUtil.SetEndianLittle();
+        StreamUtil.PushEndianLittle();
         FS.Write("LCPP"u8.ToArray(), 0, 4);
         FS.WriteByte((byte)LatestVersion.Major);
         FS.WriteByte((byte)LatestVersion.Minor);
@@ -461,11 +463,12 @@ public class LCPP
             FS.WriteByte(0x00);
         for (int i = 0; i < Entries.Count; i++)
             FS.WriteStringJIS(Entries[i], 0x00);
+        StreamUtil.PopEndian();
     }
 
     public MemoryStream SaveModernFile()
     {
-        StreamUtil.SetEndianLittle();
+        StreamUtil.PushEndianLittle();
         MemoryStream FS = new();
         FS.Write("LCPP"u8.ToArray(), 0, 4);
         FS.WriteByte((byte)LatestVersion.Major);
@@ -478,6 +481,7 @@ public class LCPP
         for (int i = 0; i < Entries.Count; i++)
             FS.WriteStringJIS(Entries[i], 0x00);
 
+        StreamUtil.PopEndian();
         return FS;
     }
 
@@ -485,7 +489,7 @@ public class LCPP
     {
         FS.Write("LCPCNW"u8.ToArray(), 0, 4);
         byte[] e = SaveModernFile().ToArray();
-        byte[] Result = YAZ0.Compress(e, BGW);
+        byte[] Result = YAZ0.Compress_Strong(e, BGW);
         FS.Write(Result, 0, Result.Length);
     }
 }

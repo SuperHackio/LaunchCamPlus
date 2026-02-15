@@ -1,5 +1,4 @@
-﻿using LaunchCamPlus.ExtraControls;
-using LaunchCamPlus.Formats;
+﻿using LaunchCamPlus.Formats;
 using System.Text.RegularExpressions;
 
 namespace LaunchCamPlus
@@ -50,7 +49,7 @@ namespace LaunchCamPlus
 
         private void EventComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (EventComboBox.SelectedIndex == -1)
+            if (EventComboBox.SelectedIndex == -1 || EventComboBox.SelectedItem is null)
             {
                 SubCamIDNumericUpDown.Enabled = false;
                 return;
@@ -77,22 +76,20 @@ namespace LaunchCamPlus
                     final += "s:" + ((int)CamIDNumericUpDown.Value).ToString("x4");
                     break;
                 case 2:
-                    if (EventComboBox.SelectedValue is null)
+                    if (EventComboBox.SelectedValue is null ||
+                        EventComboBox.SelectedItem is null ||
+                        EventComboBox.SelectedValue.ToString() is not string x)
                         break;
-                    string? x = EventComboBox.SelectedValue.ToString();
-                    if (x is null)
-                        break;
+
                     if (!x.StartsWith("g:"))
                         final += "e:";
                     final += x;
+
                     if (((dynamic)EventComboBox.SelectedItem).Value.NeedsSubID)
-                    {
                         final += $":{(int)CamIDNumericUpDown.Value:000}:{(int)SubCamIDNumericUpDown.Value:00}番目";
-                    }
                     else if (((dynamic)EventComboBox.SelectedItem).Value.NeedsID)
-                    {
                         final += $"{(int)CamIDNumericUpDown.Value:000}";
-                    }
+
                     break;
                 case 3:
                     final += "o:" + EventComboBox.SelectedValue?.ToString();
@@ -125,11 +122,10 @@ namespace LaunchCamPlus
                     CamIDNumericUpDown.Value = BCAMUtility.GetNextOpenShortNumber(x.Cameras, BCAMUtility.StartIDRegex());
                     break;
                 case 2:
-                    if (EventComboBox.SelectedValue is null)
+                    if (EventComboBox.SelectedValue is null ||
+                        EventComboBox.SelectedValue.ToString() is not string why)
                         break;
-                    string? why = EventComboBox.SelectedValue.ToString();
-                    if (why is null)
-                        break;
+
                     BCAMUtility.EventData evt = BCAMUtility.EventData.Events[why];
                     Regex EventRegex = BCAMUtility.CreateEventIDRegex(why, evt.NeedsSubID);
                     CamIDNumericUpDown.Value = BCAMUtility.GetNextOpenEventNumber(x.Cameras, EventRegex);

@@ -1,5 +1,4 @@
 ﻿using Hack.io.Utility;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace LaunchCamPlus.ExtraControls;
 
@@ -47,8 +46,8 @@ public partial class J3DTrackControl : UserControl
     {
         InitializeComponent();
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
-        Points = new();
-        HighlightPoints = new();
+        Points = [];
+        HighlightPoints = [];
     }
 
     protected override void OnMouseWheel(MouseEventArgs e)

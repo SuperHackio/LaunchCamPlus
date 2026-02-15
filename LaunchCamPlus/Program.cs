@@ -1,4 +1,3 @@
-using Hack.io.Utility;
 using LaunchCamPlus.ExtraControls;
 using LaunchCamPlus.Formats;
 using System.Diagnostics;
@@ -59,7 +58,7 @@ internal static class Program
         if (args.Any(A => A.Equals("-le")))
         {
             IsGameFileLittleEndian = true;
-            args = args.Where(A => !A.Equals("-le")).ToArray();
+            args = [.. args.Where(A => !A.Equals("-le"))];
         }
 
         Thread.Sleep(250);

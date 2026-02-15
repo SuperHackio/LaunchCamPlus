@@ -201,7 +201,7 @@
             PasteToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+V";
             PasteToolStripMenuItem.Size = new Size(215, 22);
             PasteToolStripMenuItem.Text = "&Paste";
-            PasteToolStripMenuItem.Click += MoveToTopToolStripMenuItem_Click;
+            PasteToolStripMenuItem.Click += PasteToolStripMenuItem_Click;
             // 
             // MoveToTopToolStripMenuItem
             // 
@@ -375,10 +375,11 @@
             CameraListBox.BorderStyle = BorderStyle.None;
             CameraListBox.Dock = DockStyle.Fill;
             CameraListBox.Enabled = false;
-            CameraListBox.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            CameraListBox.Font = new Font("Microsoft Sans Serif", 8.25F);
             CameraListBox.FormattingEnabled = true;
             CameraListBox.HorizontalScrollbar = true;
             CameraListBox.IntegralHeight = false;
+            CameraListBox.ItemHeight = 13;
             CameraListBox.Location = new Point(0, 0);
             CameraListBox.Margin = new Padding(4, 3, 4, 3);
             CameraListBox.Name = "CameraListBox";

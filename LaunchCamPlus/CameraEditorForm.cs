@@ -6,7 +6,6 @@ using LaunchCamPlus.CameraPanels;
 using LaunchCamPlus.ExtraControls;
 using LaunchCamPlus.Formats;
 using LaunchCamPlus.Properties;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using static LaunchCamPlus.Formats.BCAMUtility;
 
@@ -15,9 +14,9 @@ namespace LaunchCamPlus;
 public partial class CameraEditorForm : Form, IReloadTheme
 {
     private const string DEFAULT_EDITOR_KEY = "DEFAULT";
-    private const string FILTER_OPEN = "Supported Files|*.bcam;*.arc;*.rarc;*.canm|Camera Files|*.bcam|Level Archive|*.rarc;*.arc|Keyframed Cameras|*.canm";
+    private const string FILTER_OPEN = "Supported Files|*.bcam;*.arc;*.rarc;*.canm;*.json|Camera Files|*.bcam|Level Archive|*.rarc;*.arc|Keyframed Cameras|*.canm|JSON CANM Data|*.json";
     private const string FILTER_BCAM = "Supported Files|*.bcam;*.arc;*.rarc|Camera Files|*.bcam|Level Archive|*.rarc;*.arc";
-    private const string FILTER_CANM = "Supported Files|*.canm|Keyframed Cameras|*.canm";
+    private const string FILTER_CANM = "Supported Files|*.canm;*.json|Keyframed Cameras|*.canm|JSON CANM Data|*.json";
     private readonly OpenFileDialog ofd = new() { Filter = FILTER_OPEN };
     private readonly SaveFileDialog sfd = new() { Filter = FILTER_BCAM };
     [AllowNull]
@@ -40,6 +39,11 @@ public partial class CameraEditorForm : Form, IReloadTheme
 
     public CameraEditorForm(string[] args)
     {
+        if (Program.IsGameFileLittleEndian)
+            StreamUtil.PushEndianLittle();
+        else
+            StreamUtil.PushEndianBig();
+
         InitializeComponent();
         CenterToScreen();
         Text = Application.ProductName + " - " + Program.ApplicationVersion;
@@ -96,11 +100,6 @@ public partial class CameraEditorForm : Form, IReloadTheme
 
     public void Open(string file)
     {
-        if (Program.IsGameFileLittleEndian)
-            StreamUtil.SetEndianLittle();
-        else
-            StreamUtil.SetEndianBig();
-
         CameraListBox.SelectedIndex = -1;
         Filename = file;
 
@@ -111,7 +110,7 @@ public partial class CameraEditorForm : Form, IReloadTheme
             return;
         }
 
-        if (FI.Extension.Equals(".canm"))
+        if (FI.Extension.Equals(".canm") || FI.Extension.Equals(".json"))
         {
             OpenCANM();
             UpdateControlState(this, true);
@@ -123,11 +122,11 @@ public partial class CameraEditorForm : Form, IReloadTheme
         void OpenBCAM()
         {
             KeyframeCamera = null;
+            Cameras = new() { Encoding = Program.IsGameFileLittleEndian ? System.Text.Encoding.UTF8 : StreamUtil.ShiftJIS };
             switch (FI.Extension)
             {
                 case ".bcam":
                     Console.WriteLine("Loading as a Binary Camera file:");
-                    Cameras = new();
                     FileUtil.LoadFile(Filename, Cameras.Load);
                     Console.WriteLine("Load Complete!");
                     break;
@@ -166,7 +165,6 @@ public partial class CameraEditorForm : Form, IReloadTheme
                         return;
                     }
                     RARC.File cc = (RARC.File)c;
-                    Cameras = new();
                     Cameras.Load((MemoryStream)cc);
                     Console.WriteLine("Load Complete!");
                     break;
@@ -197,8 +195,26 @@ public partial class CameraEditorForm : Form, IReloadTheme
         {
             Console.WriteLine("Loading as a CANM file:");
             Cameras = null;
-            KeyframeCamera = new();
-            FileUtil.LoadFile(Filename, KeyframeCamera.Load);
+
+            if (FI.Extension.Equals(".json"))
+            {
+                try
+                {
+                    KeyframeCamera = JSON.FromJSON(File.ReadAllText(Filename));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Load Failed!\n\n{ex.Message}");
+                    KeyframeCamera = null;
+                    return;
+                }
+            }
+            else
+            {
+                KeyframeCamera = new();
+                FileUtil.LoadFile(Filename, KeyframeCamera.Load);
+            }
+
             Console.WriteLine("Load Complete!");
 
             CameraListBox.Enabled = false;
@@ -216,11 +232,6 @@ public partial class CameraEditorForm : Form, IReloadTheme
 
     private void Save()
     {
-        if (Program.IsGameFileLittleEndian)
-            StreamUtil.SetEndianLittle();
-        else
-            StreamUtil.SetEndianBig();
-
         Console.WriteLine();
         FileInfo fi = new(Filename);
         if (File.Exists(Filename) && fi.IsFileLocked())
@@ -236,8 +247,18 @@ public partial class CameraEditorForm : Form, IReloadTheme
 
         if (KeyframeCamera is not null)
         {
-            Console.WriteLine("Saving as a Camera Animation:");
-            FileUtil.SaveFile(Filename, KeyframeCamera.Save);
+            switch (fi.Extension)
+            {
+                case ".json":
+                    Console.WriteLine("Saving as a JSON Animation:");
+                    string str = JSON.ToJSON(KeyframeCamera);
+                    File.WriteAllText(Filename, str);
+                    break;
+                default:
+                    Console.WriteLine("Saving as a Camera Animation:");
+                    FileUtil.SaveFile(Filename, KeyframeCamera.Save);
+                    break;
+            }
             Console.WriteLine("Save Complete!");
             Console.WriteLine("Current time of Save: " + DateTime.Now.ToString("h:mm tt"));
             Program.IsUnsavedChanges = false;
@@ -251,6 +272,8 @@ public partial class CameraEditorForm : Form, IReloadTheme
             Cameras.Optimize(BCAM.PreferredHashOrder); //""""Optimize"""" we're really just putting all the hashes in fresh
 
         BaseSave();
+
+        Cameras.Encoding = Program.IsGameFileLittleEndian ? System.Text.Encoding.UTF8 : StreamUtil.ShiftJIS;
 
         switch (fi.Extension)
         {
@@ -1170,7 +1193,7 @@ public partial class CameraEditorForm : Form, IReloadTheme
             return;
         FileInfo FI = new((string)e.Argument);
         byte[] Original = File.ReadAllBytes(FI.FullName);
-        byte[] Compressed = YAZ0.Compress(Original, Yaz0BackgroundWorker);
+        byte[] Compressed = YAZ0.Compress_Strong(Original, Yaz0BackgroundWorker);
         File.WriteAllBytes(FI.FullName, Compressed);
     }
 
