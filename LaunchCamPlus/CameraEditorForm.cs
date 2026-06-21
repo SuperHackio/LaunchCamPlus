@@ -69,7 +69,7 @@ public partial class CameraEditorForm : Form, IReloadTheme
                 { "CAM_TYPE_WONDER_PLANET", new WonderPlanetCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_POINT_FIX", new PointFixCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_EYEPOS_FIX", new EyePosFixCameraPanel() { Dock = DockStyle.Fill } },
-                //{ "CAM_TYPE_SLIDER", new ...() { Dock = DockStyle.Fill } }, // Isn't this useless because the slider camera is hardcoded?
+                { "CAM_TYPE_SLIDER", new SliderCameraPanel() { Dock = DockStyle.Fill } },
                 //{ "CAM_TYPE_INWARD_TOWER", new ...() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_EYEPOS_FIX_THERE", new EyePosFixThereCameraPanel() { Dock = DockStyle.Fill } },
                 //{ "CAM_TYPE_TRIPOD_BOSS", new ...() { Dock = DockStyle.Fill } }, // SMG1 Only without custom code
@@ -101,7 +101,7 @@ public partial class CameraEditorForm : Form, IReloadTheme
                 //{ "CAM_TYPE_2D_SLIDE", new ...() { Dock = DockStyle.Fill } }, // HIGH PRIORITY
                 //{ "CAM_TYPE_FOO_FIGHTER", new ...() { Dock = DockStyle.Fill } }, // Is this actually useful?
                 //{ "CAM_TYPE_FOO_FIGHTER_PLANET", new ...() { Dock = DockStyle.Fill } }, // Is this actually useful?
-                //{ "CAM_TYPE_FREEZE", new ...() { Dock = DockStyle.Fill } }, // HIGH PRIORITY
+                { "CAM_TYPE_FREEZE", new EmptyCameraPanel() { Dock = DockStyle.Fill } }, // HIGH PRIORITY
                 //{ "CAM_TYPE_BLACK_HOLE", new ...() { Dock = DockStyle.Fill } }, // Is this actually useful?
                 { "CAM_TYPE_ANIM", new AnimCameraPanel() { Dock = DockStyle.Fill } },
                 //{ "CAM_TYPE_DPD", new ...() { Dock = DockStyle.Fill } }, // Is this actually useful?
@@ -109,7 +109,7 @@ public partial class CameraEditorForm : Form, IReloadTheme
                 //{ "CAM_TYPE_WATER_PLANET", new ...() { Dock = DockStyle.Fill } },
                 //{ "CAM_TYPE_WATER_PLANET_BOSS", new ...() { Dock = DockStyle.Fill } },
                 //{ "CAM_TYPE_RAIL_WATCH", new ...() { Dock = DockStyle.Fill } },
-                //{ "CAM_TYPE_SUBJECTIVE", new ...() { Dock = DockStyle.Fill } }, // Is this actually useful?
+                { "CAM_TYPE_SUBJECTIVE", new EmptyCameraPanel() { Dock = DockStyle.Fill } },
             };
         // Alias Camera Names
         PreBufferedPanels.Add("CAM_TYPE_ICECUBE_PLANET", PreBufferedPanels["CAM_TYPE_CUBE_PLANET"]); // Requires Version 196617 (0x00030009)

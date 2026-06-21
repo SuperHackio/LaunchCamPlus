@@ -34,6 +34,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="CameraPanels\EmptyCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="CameraPanels\CubePlanetCameraPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -77,6 +80,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="CameraPanels\ObjParallelCameraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="CameraPanels\SliderCameraPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
