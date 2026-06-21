@@ -7,7 +7,6 @@ using LaunchCamPlus.ExtraControls;
 using LaunchCamPlus.Formats;
 using LaunchCamPlus.Properties;
 using System.Diagnostics.CodeAnalysis;
-using static Hack.io.CANM.CANM;
 using static LaunchCamPlus.Formats.BCAMUtility;
 
 namespace LaunchCamPlus;
@@ -133,22 +132,22 @@ public partial class CameraEditorForm : Form, IReloadTheme
         {
             Cameras = null;
             KeyframeCamera = new() { Length = 480 };
-            KeyframeCamera[TrackSelection.PositionX].UseSingleSlope = true;
-            KeyframeCamera[TrackSelection.PositionY].UseSingleSlope = true;
-            KeyframeCamera[TrackSelection.PositionZ].UseSingleSlope = true;
-            KeyframeCamera[TrackSelection.TargetX].UseSingleSlope = true;
-            KeyframeCamera[TrackSelection.TargetY].UseSingleSlope = true;
-            KeyframeCamera[TrackSelection.TargetZ].UseSingleSlope = true;
-            KeyframeCamera[TrackSelection.Roll].UseSingleSlope = true;
-            KeyframeCamera[TrackSelection.FieldOfView].UseSingleSlope = true;
-            KeyframeCamera[TrackSelection.PositionX].Add(new());
-            KeyframeCamera[TrackSelection.PositionY].Add(new());
-            KeyframeCamera[TrackSelection.PositionZ].Add(new());
-            KeyframeCamera[TrackSelection.TargetX].Add(new());
-            KeyframeCamera[TrackSelection.TargetY].Add(new());
-            KeyframeCamera[TrackSelection.TargetZ].Add(new());
-            KeyframeCamera[TrackSelection.Roll].Add(new());
-            KeyframeCamera[TrackSelection.FieldOfView].Add(new());
+            KeyframeCamera[CANM.TrackSelection.PositionX].UseSingleSlope = true;
+            KeyframeCamera[CANM.TrackSelection.PositionY].UseSingleSlope = true;
+            KeyframeCamera[CANM.TrackSelection.PositionZ].UseSingleSlope = true;
+            KeyframeCamera[CANM.TrackSelection.TargetX].UseSingleSlope = true;
+            KeyframeCamera[CANM.TrackSelection.TargetY].UseSingleSlope = true;
+            KeyframeCamera[CANM.TrackSelection.TargetZ].UseSingleSlope = true;
+            KeyframeCamera[CANM.TrackSelection.Roll].UseSingleSlope = true;
+            KeyframeCamera[CANM.TrackSelection.FieldOfView].UseSingleSlope = true;
+            KeyframeCamera[CANM.TrackSelection.PositionX].Add(new());
+            KeyframeCamera[CANM.TrackSelection.PositionY].Add(new());
+            KeyframeCamera[CANM.TrackSelection.PositionZ].Add(new());
+            KeyframeCamera[CANM.TrackSelection.TargetX].Add(new());
+            KeyframeCamera[CANM.TrackSelection.TargetY].Add(new());
+            KeyframeCamera[CANM.TrackSelection.TargetZ].Add(new());
+            KeyframeCamera[CANM.TrackSelection.Roll].Add(new());
+            KeyframeCamera[CANM.TrackSelection.FieldOfView].Add(new());
             InitCanmListBox();
         }
     }
@@ -661,6 +660,7 @@ public partial class CameraEditorForm : Form, IReloadTheme
         t.UseSingleSlope = !t.UseSingleSlope;
         InitCanmListBox();
         CameraListBox.SelectedIndex = Selected;
+        Program.IsUnsavedChanges = true;
     }
 
     public KeyValuePair<BCAM.Entry, int>? StealSelected()
@@ -893,21 +893,21 @@ public partial class CameraEditorForm : Form, IReloadTheme
     {
         CameraListBox.Items.Clear();
 
-        CameraListBox.Items.Add("Position X        " + SlopeType(0));
-        CameraListBox.Items.Add("Position Y        " + SlopeType(1));
-        CameraListBox.Items.Add("Position Z        " + SlopeType(2));
-        CameraListBox.Items.Add("Target X\t        " + SlopeType(3));
-        CameraListBox.Items.Add("Target Y\t        " + SlopeType(4));
-        CameraListBox.Items.Add("Target Z\t        " + SlopeType(5));
-        CameraListBox.Items.Add("Roll\t        " + SlopeType(6));
-        CameraListBox.Items.Add("Field of View Y" + SlopeType(7));
+        CameraListBox.Items.Add("Position X        " + SlopeType(CANM.TrackSelection.PositionX));
+        CameraListBox.Items.Add("Position Y        " + SlopeType(CANM.TrackSelection.PositionY));
+        CameraListBox.Items.Add("Position Z        " + SlopeType(CANM.TrackSelection.PositionZ));
+        CameraListBox.Items.Add("Target X\t        " + SlopeType(CANM.TrackSelection.TargetX));
+        CameraListBox.Items.Add("Target Y\t        " + SlopeType(CANM.TrackSelection.TargetY));
+        CameraListBox.Items.Add("Target Z\t        " + SlopeType(CANM.TrackSelection.TargetZ));
+        CameraListBox.Items.Add("Roll\t        " + SlopeType(CANM.TrackSelection.Roll));
+        CameraListBox.Items.Add("Field of View Y" + SlopeType(CANM.TrackSelection.FieldOfView));
 
-        string SlopeType(int x)
+        string SlopeType(CANM.TrackSelection x)
         {
             if (KeyframeCamera.IsFullFrames)
                 return "(Full-Frame)";
 
-            return KeyframeCamera[(CANM.TrackSelection)x].UseSingleSlope ? " (Symmetric)" : " (Piece-wise)";
+            return KeyframeCamera[x].UseSingleSlope ? " (Symmetric)" : " (Piece-wise)";
         }
     }
 
@@ -925,6 +925,7 @@ public partial class CameraEditorForm : Form, IReloadTheme
         TrackSelected.Sort((L, R) => L.FrameId.CompareTo(R.FrameId));
         PreBufferedCANM.SetTime(KeyframeCamera.Length);
         PreBufferedCANM.LoadTrack(KeyframeCamera[selection], KeyframeCamera.IsFullFrames);
+        Program.IsUnsavedChanges = true;
     }
 
     private void DeleteCANMKeyframe(int index, CANM.TrackSelection selection)
@@ -947,6 +948,7 @@ public partial class CameraEditorForm : Form, IReloadTheme
         if (index > 0)
             index--;
         PreBufferedCANM.LoadTrack(KeyframeCamera[selection], KeyframeCamera.IsFullFrames, index);
+        Program.IsUnsavedChanges = true;
     }
 
     private void UpdateTime(int e)
@@ -954,6 +956,7 @@ public partial class CameraEditorForm : Form, IReloadTheme
         if (KeyframeCamera is null)
             return;
         KeyframeCamera.Length = e;
+        Program.IsUnsavedChanges = true;
     }
     #endregion
 
