@@ -65,6 +65,7 @@
             MainSplitContainer = new SplitContainer();
             CameraListBox = new ListBox();
             Yaz0BackgroundWorker = new System.ComponentModel.BackgroundWorker();
+            New2ToolStripMenuItem = new ToolStripMenuItem();
             EditorMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)MainSplitContainer).BeginInit();
             MainSplitContainer.Panel1.SuspendLayout();
@@ -82,7 +83,7 @@
             // 
             // FileToolStripMenuItem
             // 
-            FileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { NewToolStripMenuItem, OpenToolStripMenuItem, SaveToolStripMenuItem, SaveAsToolStripMenuItem, ExitToolStripMenuItem });
+            FileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { NewToolStripMenuItem, New2ToolStripMenuItem, OpenToolStripMenuItem, SaveToolStripMenuItem, SaveAsToolStripMenuItem, ExitToolStripMenuItem });
             FileToolStripMenuItem.Name = "FileToolStripMenuItem";
             FileToolStripMenuItem.Size = new Size(37, 20);
             FileToolStripMenuItem.Text = "File";
@@ -93,8 +94,8 @@
             NewToolStripMenuItem.ImageTransparentColor = Color.Magenta;
             NewToolStripMenuItem.Name = "NewToolStripMenuItem";
             NewToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.N;
-            NewToolStripMenuItem.Size = new Size(186, 22);
-            NewToolStripMenuItem.Text = "&New";
+            NewToolStripMenuItem.Size = new Size(212, 22);
+            NewToolStripMenuItem.Text = "&New BCAM";
             NewToolStripMenuItem.Click += NewToolStripMenuItem_Click;
             // 
             // OpenToolStripMenuItem
@@ -103,7 +104,7 @@
             OpenToolStripMenuItem.ImageTransparentColor = Color.Magenta;
             OpenToolStripMenuItem.Name = "OpenToolStripMenuItem";
             OpenToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.O;
-            OpenToolStripMenuItem.Size = new Size(186, 22);
+            OpenToolStripMenuItem.Size = new Size(212, 22);
             OpenToolStripMenuItem.Text = "&Open";
             OpenToolStripMenuItem.Click += OpenToolStripMenuItem_Click;
             // 
@@ -114,7 +115,7 @@
             SaveToolStripMenuItem.ImageTransparentColor = Color.Magenta;
             SaveToolStripMenuItem.Name = "SaveToolStripMenuItem";
             SaveToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
-            SaveToolStripMenuItem.Size = new Size(186, 22);
+            SaveToolStripMenuItem.Size = new Size(212, 22);
             SaveToolStripMenuItem.Text = "&Save";
             SaveToolStripMenuItem.Click += SaveToolStripMenuItem_Click;
             // 
@@ -124,14 +125,14 @@
             SaveAsToolStripMenuItem.Image = Properties.Resources.Save_As;
             SaveAsToolStripMenuItem.Name = "SaveAsToolStripMenuItem";
             SaveAsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Shift | Keys.S;
-            SaveAsToolStripMenuItem.Size = new Size(186, 22);
+            SaveAsToolStripMenuItem.Size = new Size(212, 22);
             SaveAsToolStripMenuItem.Text = "Save &As";
             SaveAsToolStripMenuItem.Click += SaveAsToolStripMenuItem_Click;
             // 
             // ExitToolStripMenuItem
             // 
             ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            ExitToolStripMenuItem.Size = new Size(186, 22);
+            ExitToolStripMenuItem.Size = new Size(212, 22);
             ExitToolStripMenuItem.Text = "E&xit";
             ExitToolStripMenuItem.Click += ExitToolStripMenuItem_Click;
             // 
@@ -395,6 +396,15 @@
             Yaz0BackgroundWorker.DoWork += Yaz0BackgroundWorker_DoWork;
             Yaz0BackgroundWorker.ProgressChanged += Yaz0BackgroundWorker_ProgressChanged;
             // 
+            // New2ToolStripMenuItem
+            // 
+            New2ToolStripMenuItem.Image = Properties.Resources.New;
+            New2ToolStripMenuItem.Name = "New2ToolStripMenuItem";
+            New2ToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Shift | Keys.N;
+            New2ToolStripMenuItem.Size = new Size(212, 22);
+            New2ToolStripMenuItem.Text = "New CAN&M";
+            New2ToolStripMenuItem.Click += New2ToolStripMenuItem_Click;
+            // 
             // CameraEditorForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -457,5 +467,6 @@
         private ToolStripMenuItem DeleteCANMKeyframeToolStripMenuItem;
         private ToolStripMenuItem SetAllToLinearToolStripMenuItem;
         private ToolStripMenuItem SetAllToZeroToolStripMenuItem;
+        private ToolStripMenuItem New2ToolStripMenuItem;
     }
 }

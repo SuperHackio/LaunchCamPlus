@@ -7,6 +7,7 @@ using LaunchCamPlus.ExtraControls;
 using LaunchCamPlus.Formats;
 using LaunchCamPlus.Properties;
 using System.Diagnostics.CodeAnalysis;
+using static Hack.io.CANM.CANM;
 using static LaunchCamPlus.Formats.BCAMUtility;
 
 namespace LaunchCamPlus;
@@ -96,6 +97,58 @@ public partial class CameraEditorForm : Form, IReloadTheme
             Console.WriteLine("ID Assist: Off");
 
         UpdateControlState(this, true);
+    }
+
+    public void New(bool isCANM)
+    {
+        Filename = null;
+        CancelPreset(null);
+        MainSplitContainer.Panel2.Controls.Clear();
+        SaveToolStripMenuItem.Enabled = true;
+        SaveAsToolStripMenuItem.Enabled = true;
+        CameraListBox.Items.Clear();
+
+        if (isCANM)
+            NewCANM();
+        else
+            NewBCAM();
+
+        CameraListBox.Enabled = true;
+        CameraListBox.SelectedIndex = 0;
+        Console.WriteLine("New File Started!");
+        Program.IsUnsavedChanges = false;
+
+        UpdateControlState(this, true);
+
+        void NewBCAM()
+        {
+            Cameras = new();
+            KeyframeCamera = null;
+            ExportPresetToolStripMenuItem.Enabled = true;
+            AddDefaultCameraToolStripMenuItem_Click(null, EventArgs.Empty);
+        }
+        void NewCANM()
+        {
+            Cameras = null;
+            KeyframeCamera = new() { Length = 480 };
+            KeyframeCamera[TrackSelection.PositionX].UseSingleSlope = true;
+            KeyframeCamera[TrackSelection.PositionY].UseSingleSlope = true;
+            KeyframeCamera[TrackSelection.PositionZ].UseSingleSlope = true;
+            KeyframeCamera[TrackSelection.TargetX].UseSingleSlope = true;
+            KeyframeCamera[TrackSelection.TargetY].UseSingleSlope = true;
+            KeyframeCamera[TrackSelection.TargetZ].UseSingleSlope = true;
+            KeyframeCamera[TrackSelection.Roll].UseSingleSlope = true;
+            KeyframeCamera[TrackSelection.FieldOfView].UseSingleSlope = true;
+            KeyframeCamera[TrackSelection.PositionX].Add(new());
+            KeyframeCamera[TrackSelection.PositionY].Add(new());
+            KeyframeCamera[TrackSelection.PositionZ].Add(new());
+            KeyframeCamera[TrackSelection.TargetX].Add(new());
+            KeyframeCamera[TrackSelection.TargetY].Add(new());
+            KeyframeCamera[TrackSelection.TargetZ].Add(new());
+            KeyframeCamera[TrackSelection.Roll].Add(new());
+            KeyframeCamera[TrackSelection.FieldOfView].Add(new());
+            InitCanmListBox();
+        }
     }
 
     public void Open(string file)
@@ -910,21 +963,15 @@ public partial class CameraEditorForm : Form, IReloadTheme
         if (Program.IsUnsavedChanges && !IsDiscardChanges())
             return;
 
-        Filename = null;
-        MainSplitContainer.Panel2.Controls.Clear();
-        Cameras = new BCAM();
-        KeyframeCamera = null;
-        CameraListBox.Enabled = true;
-        SaveToolStripMenuItem.Enabled = true;
-        SaveAsToolStripMenuItem.Enabled = true;
-        ExportPresetToolStripMenuItem.Enabled = true;
-        CameraListBox.Items.Clear();
-        Console.WriteLine("New File Started!");
-        AddDefaultCameraToolStripMenuItem_Click(null, EventArgs.Empty);
-        CameraListBox.SelectedIndex = 0;
-        Program.IsUnsavedChanges = false;
+        New(false);
+    }
 
-        UpdateControlState(this, true);
+    private void New2ToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        if (Program.IsUnsavedChanges && !IsDiscardChanges())
+            return;
+
+        New(true);
     }
 
     private void OpenToolStripMenuItem_Click(object? sender, EventArgs e)
