@@ -80,6 +80,8 @@ public partial class CameraEditorForm : Form, IReloadTheme
                 { "CAM_TYPE_ANIM", new AnimCameraPanel() { Dock = DockStyle.Fill } },
                 { "CAM_TYPE_OBJ_PARALLEL", new ObjParallelCameraPanel() { Dock = DockStyle.Fill } },
             };
+        // Alias Camera Names
+        PreBufferedPanels.Add("CAM_TYPE_ICECUBE_PLANET", PreBufferedPanels["CAM_TYPE_CUBE_PLANET"]); // Requires Version 196617 (0x00030009)
 
         if (args.Length > 0)
         {
